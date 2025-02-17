@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin index{% endblock %}
+
+{% block body %}
+    <h1>Admin index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+              
+                <th>Email</th>
+                <th>Role</th>
+                <th>Password</th>
+                <th>IsVerified</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>DateDeNaissance</th>
+                <th>NumTel</th>
+                <th>Adresse</th>
+                <th>Bio</th>
+                <th>PhotoDeProfil</th>
+                <th>DateInscrit</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for admin in admins %}
+            {% if admin.role == 'ROLE_ADMIN' %}
+                <tr>
+                   
+                    <td>{{ admin.email }}</td>
+                    <td>{{ admin.role }}</td>
+                    <td>{{ admin.password }}</td>
+                    <td>{{ admin.isVerified ? 'Yes' : 'No' }}</td>
+                    <td>{{ admin.nom }}</td>
+                    <td>{{ admin.prenom }}</td>
+                    <td>{{ admin.dateDeNaissance ? admin.dateDeNaissance|date('Y-m-d') : '' }}</td>
+                    <td>{{ admin.numTel }}</td>
+                    <td>{{ admin.adresse }}</td>
+                    <td>{{ admin.bio }}</td>
+                    <td>{{ admin.photoDeProfil }}</td>
+                    <td>{{ admin.dateInscrit ? admin.dateInscrit|date('Y-m-d H:i:s') : '' }}</td>
+                    <td>
+                        <a href="{{ path('app_admin_show', {'id': admin.id}) }}">show</a>
+                        <a href="{{ path('app_admin_edit', {'id': admin.id}) }}">edit</a>
+                    </td>
+                </tr>
+            {% endif %}
+        {% else %}
+            <tr>
+                <td colspan="14">Aucun administrateur trouvé.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_admin_new') }}">Créer un nouvel administrateur</a>
+
+{% endblock %}
