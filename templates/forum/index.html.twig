@@ -7,27 +7,39 @@
     <div class="forum-container">
         <div class="post">
             <div class="post-header">
-                <img src="{{ asset('uploads/profile_pictures/' ~ (app.user.photoDeProfil ?: '67b31cb9765e7.jpg')) }}" alt="Profile" class="rounded-circle">
+                <img src="{{ asset('uploads/profile_pictures/' ~ (app.user.photoDeProfil ?: '67b31cb9765e7.jpg')) }}" alt="Profile" class="rounded-circle" style="width: 40px; height: 40px;">
                 <span>{{ app.user.nom }} {{ app.user.prenom }}</span>
             </div>
             <div class="post-body">
                 <p>What's on your mind?</p>
-                <textarea class="form-control" rows="3"></textarea>
-                <button class="btn btn-primary mt-2">Post</button>
+                {{ include('post/_form.html.twig', { 'form': form }) }}
             </div>
         </div>
         <div class="posts-list">
-            <!-- Example post -->
-            <div class="post">
-                <div class="post-header">
-                    <img src="{{ asset('img/user1.jpg') }}" alt="Profile" class="rounded-circle">
-                    <span>John Doe</span>
+            {% for post in posts %}
+                <div class="post">
+                    <div class="post-header">
+                        <img src="{{ asset('uploads/profile_pictures/' ~ (post.user.photoDeProfil ?: '67b31cb9765e7.jpg')) }}" alt="Profile" class="rounded-circle" style="width: 40px; height: 40px;">
+                        <span>{{ post.user.nom }} {{ post.user.prenom }}</span>
+                    </div>
+                    <div class="post-body">
+                        <p>{{ post.contenu }}</p>
+                        {% if post.user == app.user %}
+                            <button class="btn btn-link" onclick="document.getElementById('edit-form-{{ post.id }}').style.display='block'">Edit</button>
+                            <div id="edit-form-{{ post.id }}" style="display: none;">
+                                {{ form_start(edit_forms[post.id]) }}
+                                {{ form_widget(edit_forms[post.id]) }}
+                                <button class="btn btn-primary mt-2" type="submit">Save</button>
+                                {{ form_end(edit_forms[post.id]) }}
+                            </div>
+                            <form method="post" action="{{ path('app_post_delete', {'id': post.id}) }}" onsubmit="return confirm('Are you sure you want to delete this post?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+                                <button class="btn btn-danger mt-2">Delete</button>
+                            </form>
+                        {% endif %}
+                    </div>
                 </div>
-                <div class="post-body">
-                    <p>This is an example post.</p>
-                </div>
-            </div>
-            <!-- Add more posts here -->
+            {% endfor %}
         </div>
     </div>
 {% endblock %}

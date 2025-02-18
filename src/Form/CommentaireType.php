@@ -22,7 +22,6 @@ class CommentaireType extends AbstractType
                 'label' => false,
             ])
             ->add('dateCreation', null, [
-                'widget' => 'single_text',
                 'attr' => [
                     'class' => 'form-control',
                 ],
