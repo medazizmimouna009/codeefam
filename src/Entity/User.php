@@ -67,6 +67,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $dateInscrit = null;
 
+    #[ORM\ManyToOne(inversedBy: 'idUser')]
+    private ?Commentaire $commentaire = null;
+
     public function __construct()
     {
         $this->dateInscrit = new \DateTime(); // Set the registration date automatically
@@ -226,6 +229,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDateInscrit(\DateTimeInterface $dateInscrit): static
     {
         $this->dateInscrit = $dateInscrit;
+        return $this;
+    }
+
+    public function getCommentaire(): ?Commentaire
+    {
+        return $this->commentaire;
+    }
+
+    public function setCommentaire(?Commentaire $commentaire): static
+    {
+        $this->commentaire = $commentaire;
+
         return $this;
     }
 }
