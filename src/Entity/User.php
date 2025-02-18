@@ -11,6 +11,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\Tuteur;
 use App\Entity\Admin;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -67,14 +69,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $dateInscrit = null;
 
-    #[ORM\ManyToOne(inversedBy: 'idUser')]
-    private ?Commentaire $commentaire = null;
-
-    public function __construct()
-    {
-        $this->dateInscrit = new \DateTime(); // Set the registration date automatically
-    }
-
+   
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -232,15 +228,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getCommentaire(): ?Commentaire
-    {
-        return $this->commentaire;
-    }
+   
+   
 
-    public function setCommentaire(?Commentaire $commentaire): static
-    {
-        $this->commentaire = $commentaire;
+    
 
-        return $this;
-    }
+    
+   
 }
