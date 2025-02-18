@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Forum{% endblock %}
+
+{% block body %}
+    <h1>Forum</h1>
+    <div class="forum-container">
+        <div class="post">
+            <div class="post-header">
+                <img src="{{ asset('uploads/profile_pictures/' ~ (app.user.photoDeProfil ?: '67b31cb9765e7.jpg')) }}" alt="Profile" class="rounded-circle">
+                <span>{{ app.user.nom }} {{ app.user.prenom }}</span>
+            </div>
+            <div class="post-body">
+                <p>What's on your mind?</p>
+                <textarea class="form-control" rows="3"></textarea>
+                <button class="btn btn-primary mt-2">Post</button>
+            </div>
+        </div>
+        <div class="posts-list">
+            <!-- Example post -->
+            <div class="post">
+                <div class="post-header">
+                    <img src="{{ asset('img/user1.jpg') }}" alt="Profile" class="rounded-circle">
+                    <span>John Doe</span>
+                </div>
+                <div class="post-body">
+                    <p>This is an example post.</p>
+                </div>
+            </div>
+            <!-- Add more posts here -->
+        </div>
+    </div>
+{% endblock %}

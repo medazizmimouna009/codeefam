@@ -21,7 +21,11 @@ class Commentaire
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateCreation = null;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]  // La clé étrangère user_id sera obligatoire
+    private $user;
 
+  
 
     
     public function getId(): ?int
@@ -59,6 +63,17 @@ class Commentaire
 
         return $this;
     }
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
 
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+   
     
 }

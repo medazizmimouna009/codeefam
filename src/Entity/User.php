@@ -69,6 +69,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $dateInscrit = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Commentaire::class)]
+    private $commentaires;
+
    
     
     public function getId(): ?int
@@ -226,6 +229,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->dateInscrit = $dateInscrit;
         return $this;
+    }
+
+    public function __construct()
+    {
+        $this->commentaires = new ArrayCollection();
+    }
+
+    // Getter pour commentaires
+    public function getCommentaires(): Collection
+    {
+        return $this->commentaires;
     }
 
    
