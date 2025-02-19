@@ -3,15 +3,12 @@
 namespace App\Form;
 
 use App\Entity\Post;
-use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\File;
-use Symfony\Component\Validator\Constraints\Length;
 
 class PostType extends AbstractType
 {
@@ -22,19 +19,12 @@ class PostType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 2,
+                    'required' => false,
                     'placeholder' => 'Write your post here...',
                     'style' => 'margin-bottom: 15px; border-radius: 10px; padding: 10px;'
                 ],
                 'label' => false,
-                'constraints' => [
-                    new Length([
-                        'max' => 20,
-                        'maxMessage' => 'The content cannot be longer than {{ limit }} characters',
-                    ]),
-                ],
             ])
-           
-        
             ->add('image', FileType::class, [
                 'label' => 'Post Image',
                 'mapped' => false,
@@ -42,17 +32,6 @@ class PostType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'style' => 'margin-bottom: 15px; border-radius: 10px; padding: 10px;'
-                ],
-                'constraints' => [
-                    new File([
-                        'maxSize' => '5M',
-                        'mimeTypes' => [
-                            'image/jpeg',
-                            'image/png',
-                            'image/gif',
-                        ],
-                        'mimeTypesMessage' => 'Please upload a valid image file (JPEG, PNG, GIF)',
-                    ])
                 ],
             ])
         ;

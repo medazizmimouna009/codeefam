@@ -48,8 +48,8 @@
     <h1>{{ is_edit ? 'Edit Post' : 'Create Post' }}</h1>
 
     <div class="card">
-        <div class="card-body">
-            {{ form_start(form) }}
+        <div class="card-body"> 
+            {{ form_start(form, {'attr': { 'novalidate': 'novalidate' }}) }}
                 {{ form_widget(form) }}
                 <button class="btn btn-primary">{{ button_label|default(is_edit ? 'Save' : 'Create') }}</button>
             {{ form_end(form) }}

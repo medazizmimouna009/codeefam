@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 class Post
@@ -14,11 +15,12 @@ class Post
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+   
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?User $idUser = null;
-
+    #[Assert\NotBlank(message:"ne doit etre vide") ]
     #[ORM\Column(length: 255)]
     private ?string $contenu = null;
 
@@ -27,7 +29,7 @@ class Post
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $image = null;
-
+   
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: Commentaire::class, cascade: ['remove'])]
     private Collection $commentaires;
 
@@ -38,7 +40,7 @@ class Post
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->id;   
     }
 
     public function setId(int $id): static
