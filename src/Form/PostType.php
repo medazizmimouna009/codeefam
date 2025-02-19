@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Length;
 
 class PostType extends AbstractType
 {
@@ -25,6 +26,12 @@ class PostType extends AbstractType
                     'style' => 'margin-bottom: 15px; border-radius: 10px; padding: 10px;'
                 ],
                 'label' => false,
+                'constraints' => [
+                    new Length([
+                        'max' => 20,
+                        'maxMessage' => 'The content cannot be longer than {{ limit }} characters',
+                    ]),
+                ],
             ])
            
         

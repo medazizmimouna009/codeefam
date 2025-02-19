@@ -417,7 +417,25 @@
         </ul>
     </li><!-- End Icons Nav -->
     {% endif %}
-
+ {% if is_granted('ROLE_USER') %}
+     <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ path('app_commentaire_index') }}">
+            <i class="bi bi-chat-text" style="font-size: 1.8em;"></i><span>Gérer forum(partie admin)</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="forum-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <li>
+                <a href="{{ path('app_commentaire_new') }}">
+                    <i class="bi bi-circle"></i><span>Ajouter</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('app_commentaire_new') }}">
+                    <i class="bi bi-circle"></i><span>Liste</span>
+                </a>
+            </li>     
+        </ul>
+    </li><!-- End Icons Nav -->
+    {% endif %}
 
  <li class="nav-item">
  <a class="nav-link collapsed" data-bs-target="#Event-nav" data-bs-toggle="collapse" href="#">
