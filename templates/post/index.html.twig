@@ -39,7 +39,6 @@
     <h1>Post index</h1>
 
     <div class="mb-4">
-   
         {{ form_start(form, {'attr': { 'novalidate': 'novalidate' }}) }}
             <div class="form-group">
                 {{ form_label(form.contenu) }}
@@ -58,19 +57,16 @@
     <div class="row">
         {% for post in posts %}
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card">
+                <div class="card" data-id="{{ post.id }}">
                     {% if post.image %}
                         <img src="{{ asset('uploads/images/' ~ post.image) }}" class="card-img-top" alt="Post Image">
                     {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ post.contenu }}</h5>
                         <p class="card-text"><small class="text-muted">{{ post.dateCreation ? post.dateCreation|date('Y-m-d H:i:s') : '' }}</small></p>
-                        <a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn btn-primary">View Comments</a>
+                        <a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn btn-primary">Add Comments</a>
                         <a href="{{ path('app_post_edit', {'id': post.id, 'user_id': user_id}) }}" class="btn btn-primary">Edit</a>
-                        <form method="post" action="{{ path('app_post_delete', {'id': post.id}) }}" style="display:inline;">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
-                            <button class="btn btn-danger">Delete</button>
-                        </form>
+                        <button class="btn btn-danger delete-post" data-csrf-token="{{ csrf_token('delete' ~ post.id) }}">Delete</button>
                     </div>
                 </div>
             </div>
@@ -80,4 +76,38 @@
             </div>
         {% endfor %}
     </div>
+
+    <script>
+        document.querySelectorAll('.delete-post').forEach(button => {
+            button.addEventListener('click', function() {
+                const postElement = this.closest('.card');
+                const postId = postElement.getAttribute('data-id');
+                const csrfToken = this.getAttribute('data-csrf-token');
+
+                console.log('Post ID:', postId);
+                console.log('CSRF Token:', csrfToken);
+
+                fetch(`/post/${postId}/delete`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Post deleted successfully');
+                        postElement.remove();
+                    } else {
+                        console.error('Failed to delete post. Status:', response.status);
+                        alert('Failed to delete post.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while trying to delete the post.');
+                });
+            });
+        });
+    </script>
 {% endblock %}

@@ -46,7 +46,7 @@
                     </td>
                     <td>{{ post.dateCreation ? post.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
                     <td>
-                        <button class="btn btn-danger delete-post" data-csrf-token="{{ csrf_token('delete_post') }}">Delete</button>
+                        <button class="btn btn-danger delete-post" data-csrf-token="{{ csrf_token('delete' ~ post.id) }}">Delete</button>
                     </td>
                 </tr>
             {% else %}
@@ -64,18 +64,28 @@
                 const postId = postElement.getAttribute('data-id');
                 const csrfToken = this.getAttribute('data-csrf-token');
 
-                fetch(`/post/delete/${postId}`, {
+                console.log('Post ID:', postId);
+                console.log('CSRF Token:', csrfToken);
+
+                fetch(`/post/${postId}/delete`, {
                     method: 'DELETE',
                     headers: {
-                        'X-CSRF-TOKEN': csrfToken
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Content-Type': 'application/json'
                     }
                 })
                 .then(response => {
                     if (response.ok) {
+                        console.log('Post deleted successfully');
                         postElement.remove();
                     } else {
+                        console.error('Failed to delete post. Status:', response.status);
                         alert('Failed to delete post.');
                     }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while trying to delete the post.');
                 });
             });
         });

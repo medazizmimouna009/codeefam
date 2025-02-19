@@ -104,18 +104,20 @@ final class PostController extends AbstractController
             throw $this->createNotFoundException('Post not found');
         }
 
-        if ($post->getIdUser() !== $this->getUser()) {
+        $user = $this->getUser();
+        if ($post->getIdUser() !== $user && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('You cannot delete this post.');
         }
 
-        if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->headers->get('X-CSRF-TOKEN'))) {
-            $entityManager->remove($post);
-            $entityManager->flush();
-
-            return new Response(null, 204);
+        $csrfToken = $request->headers->get('X-CSRF-TOKEN');
+        if (!$this->isCsrfTokenValid('delete'.$post->getId(), $csrfToken)) {
+            return new Response('Invalid CSRF token', 400);
         }
 
-        return new Response('Invalid CSRF token', 400);
+        $entityManager->remove($post);
+        $entityManager->flush();
+
+        return new Response(null, 204);
     }
 
     #[Route('/{id}', name: 'app_post_show', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]

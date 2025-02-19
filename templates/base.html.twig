@@ -417,7 +417,7 @@
         </ul>
     </li><!-- End Icons Nav -->
     {% endif %}
- {% if is_granted('ROLE_USER') %}
+ {% if is_granted('ROLE_ADMIN') %}
     <li class="nav-item">
         <a class="nav-link collapsed" href="{{ path('app_post_admin_index') }}">
             <i class="bi bi-chat-text" style="font-size: 1.8em;"></i><span>Gérer forum(partie admin)</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -436,7 +436,7 @@
         </ul>
     </li><!-- End Icons Nav -->
 {% endif %}
-     {% if is_granted('ROLE_USER') %}
+     {% if is_granted('ROLE_ADMIN') %}
      <li class="nav-item">
         <a class="nav-link collapsed" href="{{ path('app_commentaire_index') }}">
             <i class="bi bi-chat-text" style="font-size: 1.8em;"></i><span>Gérer forum(partie admin)</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -455,7 +455,7 @@
         </ul>
     </li><!-- End Icons Nav -->
     {% endif %}
-     {% if is_granted('ROLE_USER') %}
+     {% if is_granted('ROLE_ADMIN') %}
      <li class="nav-item">
         <a class="nav-link collapsed" href="{{ path('app_commentaire_index') }}">
             <i class="bi bi-chat-text" style="font-size: 1.8em;"></i><span>Gérer forum(partie admin)</span><i class="bi bi-chevron-down ms-auto"></i>
