@@ -96,24 +96,36 @@ final class PostController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'app_post_delete', methods: ['POST'])]
-    public function delete(Request $request, Post $post, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/delete', name: 'app_post_delete', methods: ['DELETE'], requirements: ['id' => '\d+'])]
+    public function delete(Request $request, PostRepository $postRepository, EntityManagerInterface $entityManager, int $id): Response
     {
+        $post = $postRepository->find($id);
+        if (!$post) {
+            throw $this->createNotFoundException('Post not found');
+        }
+
         if ($post->getIdUser() !== $this->getUser()) {
             throw $this->createAccessDeniedException('You cannot delete this post.');
         }
 
-        if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->headers->get('X-CSRF-TOKEN'))) {
             $entityManager->remove($post);
             $entityManager->flush();
+
+            return new Response(null, 204);
         }
 
-        return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
+        return new Response('Invalid CSRF token', 400);
     }
 
-    #[Route('/{id}', name: 'app_post_show', methods: ['GET', 'POST'])]
-    public function show(Request $request, Post $post, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}', name: 'app_post_show', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    public function show(Request $request, PostRepository $postRepository, EntityManagerInterface $entityManager, int $id): Response
     {
+        $post = $postRepository->find($id);
+        if (!$post) {
+            throw $this->createNotFoundException('Post not found');
+        }
+
         $commentaire = new Commentaire();
         $form = $this->createForm(CommentaireType::class, $commentaire);
         $form->handleRequest($request);
@@ -163,5 +175,13 @@ final class PostController extends AbstractController
         }
 
         return $this->redirectToRoute('app_post_show', ['id' => $commentaire->getPost()->getId()], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/admin', name: 'app_post_admin_index', methods: ['GET'])]
+    public function adminIndex(PostRepository $postRepository): Response
+    {
+        return $this->render('post/admin_index.html.twig', [
+            'posts' => $postRepository->findAll(),
+        ]);
     }
 }

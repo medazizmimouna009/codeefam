@@ -98,6 +98,6 @@ final class CommentaireController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_commentaire_new', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_post_show', ['id' => $commentaire->getPost()->getId()]);
     }
 }
