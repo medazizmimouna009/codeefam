@@ -36,6 +36,9 @@ final class CommentaireController extends AbstractController
                 $commentaire->setUser($user);
             }
 
+            // Set the date_creation field
+            $commentaire->setDateCreation(new \DateTime());
+
             $entityManager->persist($commentaire);
             $entityManager->flush();
 

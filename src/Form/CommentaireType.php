@@ -16,14 +16,8 @@ class CommentaireType extends AbstractType
             ->add('contenu', TextareaType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'rows' => 5,
+                    'rows' => 3,
                     'placeholder' => 'Write your comment here...',
-                ],
-                'label' => false,
-            ])
-            ->add('dateCreation', null, [
-                'attr' => [
-                    'class' => 'form-control',
                 ],
                 'label' => false,
             ])

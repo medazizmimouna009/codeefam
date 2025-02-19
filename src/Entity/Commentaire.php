@@ -21,13 +21,14 @@ class Commentaire
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateCreation = null;
+
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]  // La clé étrangère user_id sera obligatoire
     private $user;
 
-  
+    #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'commentaires')]
+    private ?Post $post = null;
 
-    
     public function getId(): ?int
     {
         return $this->id;
@@ -63,6 +64,7 @@ class Commentaire
 
         return $this;
     }
+
     public function getUser(): ?User
     {
         return $this->user;
@@ -71,9 +73,19 @@ class Commentaire
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
         return $this;
     }
 
-   
-    
+    public function getPost(): ?Post
+    {
+        return $this->post;
+    }
+
+    public function setPost(?Post $post): self
+    {
+        $this->post = $post;
+
+        return $this;
+    }
 }

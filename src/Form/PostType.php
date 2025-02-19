@@ -20,25 +20,22 @@ class PostType extends AbstractType
             ->add('contenu', TextareaType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'rows' => 5,
+                    'rows' => 2,
                     'placeholder' => 'Write your post here...',
+                    'style' => 'margin-bottom: 15px; border-radius: 10px; padding: 10px;'
                 ],
                 'label' => false,
             ])
-            ->add('dateCreation', null, [
-                'attr' => [
-                    'class' => 'form-control',
-                ],
-                'label' => false,
-            ])
-            ->add('idUser', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-            ])
+           
+        
             ->add('image', FileType::class, [
                 'label' => 'Post Image',
                 'mapped' => false,
                 'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'style' => 'margin-bottom: 15px; border-radius: 10px; padding: 10px;'
+                ],
                 'constraints' => [
                     new File([
                         'maxSize' => '5M',
