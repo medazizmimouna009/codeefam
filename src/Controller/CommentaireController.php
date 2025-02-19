@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 #[Route('/commentaire')]
 final class CommentaireController extends AbstractController
@@ -86,18 +87,29 @@ final class CommentaireController extends AbstractController
         return $this->redirectToRoute('app_commentaire_new', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}', name: 'app_commentaire_delete', methods: ['POST'])]
-    public function delete(Request $request, Commentaire $commentaire, EntityManagerInterface $entityManager): Response
-    {
-        if ($commentaire->getUser() !== $this->getUser()) {
-            throw $this->createAccessDeniedException('You cannot delete this comment.');
-        }
-
-        if ($this->isCsrfTokenValid('delete'.$commentaire->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($commentaire);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('app_post_show', ['id' => $commentaire->getPost()->getId()]);
+    #[Route('/{id}/delete', name: 'app_commentaire_delete', methods: ['POST'])]
+public function delete(Request $request, EntityManagerInterface $entityManager, AuthorizationCheckerInterface $authChecker, int $id): Response
+{
+    $commentaire = $entityManager->getRepository(Commentaire::class)->find($id);
+    
+    if (!$commentaire) {
+        return $this->json(['message' => 'Comment not found'], Response::HTTP_NOT_FOUND);
     }
+
+    $user = $this->getUser();
+    
+    if ($commentaire->getUser() !== $user && !$authChecker->isGranted('ROLE_ADMIN')) {
+        return $this->json(['message' => 'Access Denied'], Response::HTTP_FORBIDDEN);
+    }
+
+    if (!$this->isCsrfTokenValid('delete'.$commentaire->getId(), $request->request->get('_token'))) {
+        return $this->json(['message' => 'Invalid CSRF token'], Response::HTTP_BAD_REQUEST);
+    }
+
+    $entityManager->remove($commentaire);
+    $entityManager->flush();
+
+    return $this->json(['message' => 'Comment deleted'], Response::HTTP_NO_CONTENT);
+}
+
 }

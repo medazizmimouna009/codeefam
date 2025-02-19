@@ -11,6 +11,8 @@
                 <th>Id</th>
                 <th>Contenu</th>
                 <th>DateCreation</th>
+                <th>IdUser</th>
+                <th>IdPost</th>
             </tr>
         </thead>
         <tbody>
@@ -20,6 +22,8 @@
                         <td>{{ commentaire.id }}</td>
                         <td>{{ commentaire.contenu }}</td>
                         <td>{{ commentaire.dateCreation ? commentaire.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ commentaire.iduser }}</td>
+                        <td>{{ commentaire.idpost }}</td>
                     </tr>
                 {% endif %}
             {% endfor %}
