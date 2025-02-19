@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>{% block title %}Codefam{% endblock %}</title>
+    <title>{% block title %}My Application{% endblock %}</title>/title>
     <meta content="{% block description %}{% endblock %}" name="description">
     <meta content="{% block keywords %}{% endblock %}" name="keywords">
 
@@ -118,8 +118,8 @@
 
                 <li class="nav-item dropdown pe-3">
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-            <img src="{{ asset('uploads/profile_pictures/' ~ (app.user.photoDeProfil ?: '67b31cb9765e7.jpg')) }}" alt="Profile" class="rounded-circle">         
-           <span class="d-none d-md-block dropdown-toggle ps-2">{{ app.user.nom }} {{ app.user.prenom }}</span>
+            {# <img src="{{ asset('uploads/profile_pictures/' ~ (app.user.photoDeProfil ?: '67b31cb9765e7.jpg')) }}" alt="Profile" class="rounded-circle">          #}
+           {# <span class="d-none d-md-block dropdown-toggle ps-2">{{ app.user.nom }} {{ app.user.prenom }}</span> #}
                     </a>
                     <!-- End Profile Image Icon -->
 
@@ -308,44 +308,27 @@
                  </ul>
              </li><!-- End Tables Nav -->
             {% endif %}
-             <li class="nav-item">
+            
+
+                 <li class="nav-item">
                  <a class="nav-link collapsed" data-bs-target="#cours-nav" data-bs-toggle="collapse" href="#">
-             <i class="bi bi-book"   style="font-size: 1.8em;"></i><span>Gérer Cours</span><i class="bi bi-chevron-down ms-auto"></i>
+                 <i class="bi bi-book"   style="font-size: 1.8em;"></i><span>Gérer Offre et Achats</span><i class="bi bi-chevron-down ms-auto"></i>
                  </a>
                  <ul id="cours-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                      <li>
-                         <a href="{{ path('app_home') }}">
-                             <i class="bi bi-circle"></i><span>Ajouter Cours</span>
+                         <a href="{{ path('app_achat_index') }}">
+                             <i class="bi bi-circle"></i><span>Offres</span>
                          </a>
                      </li>
                      <li>
-                         <a href="{{ path('app_home') }}">
-                             <i class="bi bi-circle"></i><span>Liste Cours</span>
+                         <a href="{{ path('app_offre_index') }}">
+                             <i class="bi bi-circle"></i><span>Achat</span>
                          </a>
                      </li>
-                     <li>
-                         <a href="{{ path('app_home') }}">
-                             <i class="bi bi-circle"></i><span>Ajouter Categorie</span>
-                         </a>
-                     </li>
-                     <li>
-                        <a href="{{ path('app_home') }}">
-                            <i class="bi bi-circle"></i><span>Liste Categorie</span>
-                        </a>
-                    </li>
-                     <li>
-                         <a href="{{ path('app_home') }}">
-                             <i class="bi bi-circle"></i><span>Ajouter Nom Cours</span>
-                         </a>
-                         <li>
-                            <a href="{{ path('app_home') }}">
-                                <i class="bi bi-circle"></i><span>Liste Nom Cours</span>
-                            </a>
-                        </li>
+                     
                      </li>
                  </ul>
              </li><!-- End Charts Nav -->
-
 
              <li class="nav-item">
              <a class="nav-link collapsed" data-bs-target="#quiz-nav" data-bs-toggle="collapse" href="#">
