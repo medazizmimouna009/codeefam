@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Cour{% endblock %}
+
+{% block body %}
+    <h1>Créer Cour</h1>
+
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+   
+        <div class="mb-3">
+            {{ form_label(form.titre, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.titre, {'attr': {'class': 'invalid-feedback'}}) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.description, {'attr': {'class': 'invalid-feedback'}}) }}
+        </div>
+
+         <div class="mb-3">
+            {{ form_label(form.prix, 'Prix', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.prix, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.prix, {'attr': {'class': 'invalid-feedback'}}) }}
+        </div>
+
+          <div class="mb-3">
+            {{ form_label(form.duree, 'Duree', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.duree, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.duree, {'attr': {'class': 'invalid-feedback'}}) }}
+        </div>
+
+
+
+         <div class="mb-3">
+            {{ form_label(form.fichierFile, 'Fichier (PDF)', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.fichierFile, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.fichierFile, {'attr': {'class': 'invalid-feedback'}}) }}
+        </div>
+
+         <div class="mb-3">
+            {{ form_label(form.videos, 'Videos', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.videos, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.videos, {'attr': {'class': 'invalid-feedback'}}) }}
+        </div>
+
+        
+
+        <div class="mb-3">
+            {{ form_label(form.updatedAt, 'Date de mise a jour', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.updatedAt, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.updatedAt, {'attr': {'class': 'invalid-feedback'}}) }}
+        </div>
+
+
+         <div class="mb-3">
+            {{ form_label(form.categorie, 'Categories', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.categorie, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.categorie, {'attr': {'class': 'invalid-feedback'}}) }}
+        </div>
+
+         <div class="mb-3">
+            {{ form_label(form.nomCours, 'Nom du Cours', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.nomCours, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.nomCours, {'attr': {'class': 'invalid-feedback'}}) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.tuteur, 'tuteur', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.tuteur, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.tuteur, {'attr': {'class': 'invalid-feedback'}}) }}
+        </div>
+        
+
+
+        <button type="submit" class="btn btn-primary">Create</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_categorie_index') }}">back to list</a>
+{% endblock %}

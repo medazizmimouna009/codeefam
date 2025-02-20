@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Video{% endblock %}
+
+{% block body %}
+    <h1>Create new Video</h1>
+
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+        <div class="mb-3">
+            {{ form_label(form.titre, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.titre, {'attr': {'class': 'form-control' ~ (form.titre.vars.valid ? '' : ' is-invalid')}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.titre) }}
+            </div>
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control' ~ (form.description.vars.valid ? '' : ' is-invalid')}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.description) }}
+            </div>
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.chemainVideo, 'Chemin de la vidéo', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.chemainVideo, {'attr': {'class': 'form-control' ~ (form.chemainVideo.vars.valid ? '' : ' is-invalid')}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.chemainVideo) }}
+            </div>
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.dateAjout, 'Date d\'ajout', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.dateAjout, {'attr': {'class': 'form-control' ~ (form.dateAjout.vars.valid ? '' : ' is-invalid')}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.dateAjout) }}
+            </div>
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.cours, 'Cours', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.cours, {'attr': {'class': 'form-control' ~ (form.cours.vars.valid ? '' : ' is-invalid')}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.cours) }}
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_video_index') }}">back to list</a>
+{% endblock %}

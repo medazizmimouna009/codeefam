@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cours{% endblock %}
+
+{% block body %}
+    <h1>Cours</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ cour.id }}</td>
+            </tr>
+            <tr>
+                <th>Titre</th>
+                <td>{{ cour.titre }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ cour.description }}</td>
+            </tr>
+            <tr>
+                <th>Prix</th>
+                <td>{{ cour.prix }}</td>
+            </tr>
+            <tr>
+                <th>Duree</th>
+                <td>{{ cour.duree }}</td>
+            </tr>
+            <tr>
+                <th>Fichier</th>
+                <td>
+                {% if cour.fichier %}
+        <a href="{{ path('app_cours_download', {'id': cour.id}) }}" class="btn btn-primary">
+            Télécharger le PDF
+        </a>
+    {% else %}
+        <p>Aucun fichier PDF disponible.</p>
+    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>UpdatedAt</th>
+                <td>{{ cour.updatedAt ? cour.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_cours_index') }}">back to list</a>
+
+    <a href="{{ path('app_cours_edit', {'id': cour.id}) }}">edit</a>
+
+    {{ include('cours/_delete_form.html.twig') }}
+{% endblock %}

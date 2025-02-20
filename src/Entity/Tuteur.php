@@ -21,6 +21,8 @@ class Tuteur extends User
         return $this;
     }
 
+    #[ORM\OneToMany(mappedBy: 'tuteur', targetEntity: Cours::class)]
+    private $cours;
 
     public function __construct()
     {

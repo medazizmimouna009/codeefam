@@ -323,37 +323,39 @@
                  </ul>
              </li><!-- End Tables Nav -->
             {% endif %}
+
+
              <li class="nav-item">
                  <a class="nav-link collapsed" data-bs-target="#cours-nav" data-bs-toggle="collapse" href="#">
              <i class="bi bi-book"   style="font-size: 1.8em;"></i><span>Gérer Cours</span><i class="bi bi-chevron-down ms-auto"></i>
                  </a>
                  <ul id="cours-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                      <li>
-                         <a href="{{ path('app_home') }}">
+                         <a href="{{ path('app_cours_new') }}">
                              <i class="bi bi-circle"></i><span>Ajouter Cours</span>
                          </a>
                      </li>
                      <li>
-                         <a href="{{ path('app_home') }}">
+                         <a href="{{ path('app_cours_index') }}">
                              <i class="bi bi-circle"></i><span>Liste Cours</span>
                          </a>
                      </li>
                      <li>
-                         <a href="{{ path('app_home') }}">
+                         <a href="{{ path('app_categorie_new') }}">
                              <i class="bi bi-circle"></i><span>Ajouter Categorie</span>
                          </a>
                      </li>
                      <li>
-                        <a href="{{ path('app_home') }}">
+                        <a href="{{ path('app_categorie_index') }}">
                             <i class="bi bi-circle"></i><span>Liste Categorie</span>
                         </a>
                     </li>
                      <li>
-                         <a href="{{ path('app_home') }}">
+                         <a href="{{ path('app_nom_cours_new') }}">
                              <i class="bi bi-circle"></i><span>Ajouter Nom Cours</span>
                          </a>
                          <li>
-                            <a href="{{ path('app_home') }}">
+                            <a href="{{ path('app_nom_cours_index') }}">
                                 <i class="bi bi-circle"></i><span>Liste Nom Cours</span>
                             </a>
                         </li>
