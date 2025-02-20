@@ -46,6 +46,9 @@ class RegistrationController extends AbstractController
                 $user->setPhotoDeProfil($newFilename);
             }
 
+            // Set the date_inscrit field
+            $user->setDateInscrit(new \DateTime());
+
             $entityManager->persist($user);
             $entityManager->flush();
 

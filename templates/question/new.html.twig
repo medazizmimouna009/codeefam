@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une nouvelle question{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        /* Custom styles for the question form */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color:rgb(17, 31, 122) !important;
+            color: white;
+        }
+        .card-footer {
+            background-color: #f8f9fa;
+        }
+        .form-control {
+            border-radius: 5px;
+        }
+        .btn-primary {
+            background-color:rgb(17, 31, 122) !important;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color:rgb(17, 31, 122) !important;
+        }
+        .btn-secondary {
+            background-color:rgb(17, 31, 122) !important;
+            border: none;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .invalid-feedback {
+            color: #dc3545;
+            font-size: 0.875em;
+        }
+    </style>
+
+
+{% endblock %}
+
+{% block body %}
+    <main>
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white">
+                            <h1 class="h4 mb-0">Créer une nouvelle question</h1>
+                        </div>
+                        <div class="card-body">
+                            {{ form_start(form, {'attr': {'class': 'row g-3 needs-validation', 'novalidate': 'novalidate'}}) }}
+                                <!-- Texte Input -->
+                                <div class="col-12">
+                                    {{ form_label(form.Texte, 'Contenu de la question', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.Texte, {'attr': {'class': 'form-control', 'placeholder': 'Entrez la question', 'required': 'required'}}) }}
+                                    <div class="invalid-feedback">Veuillez entrer une question valide.</div>
+                                </div>
+
+                                <!-- NomCours Input -->
+                                <div class="col-12">
+                                    {{ form_label(form.nomCours, 'Nom du cours', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.nomCours, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                                    <div class="invalid-feedback">Veuillez sélectionner un cours.</div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="col-12">
+                                    <button class="btn btn-primary w-100" type="submit">Créer</button>
+                                </div>
+                            {{ form_end(form) }}
+                        </div>
+                        <div class="card-footer text-end">
+                            <a href="{{ path('app_question_index') }}" class="btn btn-secondary">Retour à la liste</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}

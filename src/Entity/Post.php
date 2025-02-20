@@ -21,12 +21,21 @@ class Post
     #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?User $idUser = null;
     #[Assert\NotBlank(message:"ne doit etre vide") ]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+       
+    )]
     #[ORM\Column(length: 255)]
     private ?string $contenu = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateCreation = null;
-
+    #[Assert\File(
+        maxSize: "2M",
+        mimeTypes: ["image/jpeg", "image/png", "image/webp"],
+        mimeTypesMessage: "Veuillez télécharger une image valide (JPG, PNG, WEBP)."
+    )]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $image = null;
    

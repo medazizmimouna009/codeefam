@@ -241,6 +241,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->commentaires = new ArrayCollection();
         $this->posts = new ArrayCollection();
+        $this->dateInscrit = new \DateTime(); // Set the default value for dateInscrit
     }
 
     // Getter pour commentaires

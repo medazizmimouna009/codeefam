@@ -1,5 +1,3 @@
-
-
 {% block stylesheets %}
     <style>
         /* Custom styles for the registration page */
@@ -102,12 +100,14 @@
                                             {{ form_label(registrationForm.nom, 'Your Name', {'label_attr': {'class': 'form-label'}}) }}
                                             {{ form_widget(registrationForm.nom, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
                                             <div class="invalid-feedback">Please, enter your name!</div>
+                                            {{ form_errors(registrationForm.nom) }}
                                         </div>
                                           <!-- prenom Input -->
                                           <div class="col-12">
                                           {{ form_label(registrationForm.prenom, 'Your prenom', {'label_attr': {'class': 'form-label'}}) }}
                                           {{ form_widget(registrationForm.prenom, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
                                           <div class="invalid-feedback">Please, enter your prenom!</div>
+                                          {{ form_errors(registrationForm.prenom) }}
                                       </div>
 
                                         <!-- Email Input -->
@@ -115,6 +115,7 @@
                                             {{ form_label(registrationForm.email, 'Your Email', {'label_attr': {'class': 'form-label'}}) }}
                                             {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
                                             <div class="invalid-feedback">Please enter a valid Email address!</div>
+                                            {{ form_errors(registrationForm.email) }}
                                         </div>
 
                                         <!-- Phone Number Input -->
@@ -122,6 +123,7 @@
                                             {{ form_label(registrationForm.numTel, 'Phone Number', {'label_attr': {'class': 'form-label'}}) }}
                                             {{ form_widget(registrationForm.numTel, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
                                             <div class="invalid-feedback">Please enter your phone number!</div>
+                                            {{ form_errors(registrationForm.numTel) }}
                                         </div>
 
                                         <!-- Date of Birth Input -->
@@ -129,6 +131,7 @@
                                             {{ form_label(registrationForm.dateDeNaissance, 'Date of Birth', {'label_attr': {'class': 'form-label'}}) }}
                                             {{ form_widget(registrationForm.dateDeNaissance, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
                                             <div class="invalid-feedback">Please enter your date of birth!</div>
+                                            {{ form_errors(registrationForm.dateDeNaissance) }}
                                         </div>
 
                                         <!-- Address Input -->
@@ -136,6 +139,7 @@
                                             {{ form_label(registrationForm.adresse, 'Address', {'label_attr': {'class': 'form-label'}}) }}
                                             {{ form_widget(registrationForm.adresse, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
                                             <div class="invalid-feedback">Please enter your address!</div>
+                                            {{ form_errors(registrationForm.adresse) }}
                                         </div>
 
                                         <!-- Password Input -->
@@ -143,6 +147,7 @@
                                             {{ form_label(registrationForm.plainPassword, 'Password', {'label_attr': {'class': 'form-label'}}) }}
                                             {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
                                             <div class="invalid-feedback">Please enter your password!</div>
+                                            {{ form_errors(registrationForm.plainPassword) }}
                                         </div>
 
                                         <!-- Terms and Conditions Checkbox -->
@@ -151,6 +156,7 @@
                                                 {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input', 'required': 'required'}}) }}
                                                 {{ form_label(registrationForm.agreeTerms, 'I agree and accept the terms and conditions', {'label_attr': {'class': 'form-check-label'}}) }}
                                                 <div class="invalid-feedback">You must agree before submitting.</div>
+                                                {{ form_errors(registrationForm.agreeTerms) }}
                                             </div>
                                         </div>
 

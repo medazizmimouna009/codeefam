@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CommentaireRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -16,16 +17,25 @@ class Commentaire
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank(message: "Le contenu ne doit pas être vide.")]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+       
+    )]
     #[ORM\Column(length: 255)]
     private ?string $contenu = null;
 
+   
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateCreation = null;
 
+    
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false)]  // La clé étrangère user_id sera obligatoire
-    private $user;
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
+    
     #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'commentaires')]
     private ?Post $post = null;
 
@@ -37,7 +47,6 @@ class Commentaire
     public function setId(int $id): static
     {
         $this->id = $id;
-
         return $this;
     }
 
@@ -49,7 +58,6 @@ class Commentaire
     public function setContenu(string $contenu): static
     {
         $this->contenu = $contenu;
-
         return $this;
     }
 
@@ -61,7 +69,6 @@ class Commentaire
     public function setDateCreation(\DateTimeInterface $dateCreation): static
     {
         $this->dateCreation = $dateCreation;
-
         return $this;
     }
 
@@ -73,7 +80,6 @@ class Commentaire
     public function setUser(?User $user): self
     {
         $this->user = $user;
-
         return $this;
     }
 
@@ -85,7 +91,6 @@ class Commentaire
     public function setPost(?Post $post): self
     {
         $this->post = $post;
-
         return $this;
     }
 }

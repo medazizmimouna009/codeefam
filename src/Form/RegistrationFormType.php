@@ -14,6 +14,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class RegistrationFormType extends AbstractType
 {
@@ -25,12 +27,22 @@ class RegistrationFormType extends AbstractType
                     new NotBlank([
                         'message' => 'Please enter your name',
                     ]),
+                    new Length([
+                        'min' => 2,
+                        'minMessage' => 'Your name should be at least {{ limit }} characters',
+                        'max' => 50,
+                    ]),
                 ],
             ])
             ->add('prenom', TextType::class, [
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Please enter your lastname',
+                    ]),
+                    new Length([
+                        'min' => 2,
+                        'minMessage' => 'Your lastname should be at least {{ limit }} characters',
+                        'max' => 50,
                     ]),
                 ],
             ])
@@ -39,12 +51,19 @@ class RegistrationFormType extends AbstractType
                     new NotBlank([
                         'message' => 'Please enter a valid email address',
                     ]),
+                    new Email([
+                        'message' => 'The email "{{ value }}" is not a valid email.',
+                    ]),
                 ],
             ])
             ->add('numTel', TextType::class, [
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Please enter your phone number',
+                    ]),
+                    new Regex([
+                        'pattern' => '/^[0-9]{8}$/',
+                        'message' => 'Please enter a valid phone number with exactly 8 digits',
                     ]),
                 ],
             ])

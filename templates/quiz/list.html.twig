@@ -1,0 +1,41 @@
+{# templates/quiz/list.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Quiz List{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="h4 mb-0">Quiz List</h1>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Quiz Name</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for quiz in quizzes %}
+                                    <tr>
+                                        <td>{{ quiz.nom }}</td>
+                                        <td>
+                                            <a href="{{ path('app_quiz_take', {'id': quiz.id}) }}" class="btn btn-primary btn-sm">
+                                                <i class="bi bi-play-circle"></i> Participate
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

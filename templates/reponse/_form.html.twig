@@ -1,0 +1,29 @@
+{{ form_start(form, {'attr': {'class': 'row g-3 needs-validation', 'novalidate': 'novalidate'}}) }}
+    <!-- Texte Input -->
+    <div class="col-12">
+        {{ form_label(form.texte, 'Texte de la réponse', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.texte, {'attr': {'class': 'form-control', 'placeholder': 'Entrez la réponse', 'required': 'required'}}) }}
+        <div class="invalid-feedback">Veuillez entrer une réponse valide.</div>
+    </div>
+
+    <!-- EstCorrecte Input -->
+    <div class="col-12">
+        <div class="form-check">
+            {{ form_widget(form.estCorrecte, {'attr': {'class': 'form-check-input'}}) }}
+            {{ form_label(form.estCorrecte, 'Est-ce la réponse correcte ?', {'label_attr': {'class': 'form-check-label'}}) }}
+            <div class="invalid-feedback">Veuillez spécifier si cette réponse est correcte.</div>
+        </div>
+    </div>
+
+    <!-- Question Input -->
+    <div class="col-12">
+        {{ form_label(form.question, 'Question associée', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.question, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+        <div class="invalid-feedback">Veuillez sélectionner une question.</div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="col-12">
+        <button class="btn btn-primary w-100" type="submit">Créer</button>
+    </div>
+{{ form_end(form) }}

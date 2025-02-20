@@ -1,0 +1,77 @@
+{# templates/quiz/new.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Create New Quiz{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg">
+                    <div  class="card-header bg-primary text-white">
+                        <h1 class="h4 mb-0">Create New Quiz</h1>
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                            <div class="mb-4">
+                                {{ form_label(form.nom, 'Quiz Name', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+
+                            <div class="mb-4">
+                                {{ form_label(form.nomCours, 'Associated Course', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.nomCours, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="generated_question" class="form-label">Generated Question</label>
+                                <input type="text" id="generated_question" name="generated_question" class="form-control" readonly>
+                                <button type="button" id="generate-question" class="btn btn-secondary mt-2">
+                                    Generate Random Question
+                                </button>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">Create Quiz</button>
+                                <a href="{{ path('app_quiz_index') }}" class="btn btn-secondary btn-lg">Back to List</a>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const generateButton = document.getElementById('generate-question');
+            const generatedQuestionInput = document.getElementById('generated_question');
+            const nomCoursSelect = document.querySelector('select[name="quiz[nomCours]"]');
+
+            generateButton.addEventListener('click', function() {
+                const coursId = nomCoursSelect.value;
+                if (!coursId) {
+                    alert('Please select a course.');
+                    return;
+                }
+
+                fetch('{{ path('app_quiz_randomize_questions') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `cours_id=${coursId}`,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.questions.length > 0) {
+                        generatedQuestionInput.value = data.questions[0].texte;
+                    } else {
+                        alert('No questions available for this course.');
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

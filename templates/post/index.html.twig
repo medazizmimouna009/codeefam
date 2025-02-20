@@ -65,8 +65,10 @@
                         <h5 class="card-title">{{ post.contenu }}</h5>
                         <p class="card-text"><small class="text-muted">{{ post.dateCreation ? post.dateCreation|date('Y-m-d H:i:s') : '' }}</small></p>
                         <a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn btn-primary">Add Comments</a>
-                        <a href="{{ path('app_post_edit', {'id': post.id, 'user_id': user_id}) }}" class="btn btn-primary">Edit</a>
-                        <button class="btn btn-danger delete-post" data-csrf-token="{{ csrf_token('delete' ~ post.id) }}">Delete</button>
+                        {% if app.user and app.user == post.idUser %}
+                            <a href="{{ path('app_post_edit', {'id': post.id, 'user_id': user_id}) }}" class="btn btn-primary">Edit</a>
+                            <button class="btn btn-danger delete-post" data-csrf-token="{{ csrf_token('delete' ~ post.id) }}">Delete</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
