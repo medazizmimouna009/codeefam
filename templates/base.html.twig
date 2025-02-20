@@ -14,6 +14,7 @@
     <!-- Vendor CSS Files -->
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link href="{{ asset('vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/quill/quill.snow.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/quill/quill.bubble.css') }}" rel="stylesheet">
@@ -158,7 +159,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{{ path('app_home') }}">
+                            <a class="dropdown-item d-flex align-items-center" href="{{ path('app_logout') }}">
                                 <i class="bi bi-box-arrow-right"></i>
                                 <span>Sign Out</span>
                             </a>
@@ -349,11 +350,11 @@
                         </a>
                     </li>
                      <li>
-                         <a href="{{ path('app_home') }}">
+                         <a href="{{ path('app_nom_cours_new') }}">
                              <i class="bi bi-circle"></i><span>Ajouter Nom Cours</span>
                          </a>
                          <li>
-                            <a href="{{ path('app_home') }}">
+                            <a href="{{ path('app_nom_cours_index') }}">
                                 <i class="bi bi-circle"></i><span>Liste Nom Cours</span>
                             </a>
                         </li>
@@ -364,18 +365,117 @@
 
              <li class="nav-item">
              <a class="nav-link collapsed" data-bs-target="#quiz-nav" data-bs-toggle="collapse" href="#">
+               {% if is_granted('ROLE_USER') %}
+         <i class="bi bi-question-circle"  style="font-size: 1.8em;" ></i><span>Quiz</span><i class="bi bi-chevron-down ms-auto"></i>
+          {% endif %} 
+          {% if is_granted('ROLE_ADMIN') %}
+        <i class="bi bi-question-circle"  style="font-size: 1.8em;" ></i><span>Gérer Quiz</span><i class="bi bi-chevron-down ms-auto"></i>
+           {% endif %} 
+           {% if is_granted('ROLE_TUTEUR') %}
          <i class="bi bi-question-circle"  style="font-size: 1.8em;" ></i><span>Gérer Quiz</span><i class="bi bi-chevron-down ms-auto"></i>
+             {% endif %} 
              </a>
              <ul id="quiz-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                  <li>
-                     <a href="{{ path('app_home') }}">
-                         <i class="bi bi-circle"></i><span>Ajouter</span>
+                  {% if is_granted('ROLE_ADMIN') %}
+                     <a href="{{ path('app_quiz_new') }}">
+                         <i class="bi bi-circle"></i><span>Ajouter Quiz</span>
                      </a>
+                        {% endif %} 
+                         {% if is_granted('ROLE_TUTEUR') %}
+                     <a href="{{ path('app_quiz_new') }}">
+                         <i class="bi bi-circle"></i><span>Ajouter Quiz</span>
+                     </a>
+                         {% endif %} 
+                
+
+                      {% if is_granted('ROLE_USER') %}
+                  <a href="{{ path('app_quiz_list') }}">
+                         <i class="bi bi-circle"></i><span> Voir Liste</span>
+                     </a>
+          
+              {% endif %} 
+                  
+                  {% if is_granted('ROLE_ADMIN') %}
+                       <a href="{{ path('app_quiz_index') }}">
+                         <i class="bi bi-circle"></i><span>Liste Quiz</span>
+                     </a>
+                       {% endif %} 
+                       {% if is_granted('ROLE_TUTEUR') %}
+                       <a href="{{ path('app_quiz_index') }}">
+                         <i class="bi bi-circle"></i><span>Liste Quiz</span>
+                     </a>
+                       {% endif %} 
+                 </li>
+                  
+                 <li>
+
+
+                 </li>
+
+                    <li>
+                      {% if is_granted('ROLE_ADMIN') %}
+                     <a href="{{ path('app_question_new') }}">
+                         <i class="bi bi-circle"></i><span>Ajouter Question</span>
+                     </a>
+                      {% endif %} 
+                          {% if is_granted('ROLE_TUTEUR') %}
+                     <a href="{{ path('app_question_new') }}">
+                         <i class="bi bi-circle"></i><span>Ajouter Question</span>
+                     </a>
+                      {% endif %} 
                  </li>
                  <li>
-                     <a href="{{ path('app_home') }}">
-                         <i class="bi bi-circle"></i><span>Liste</span>
+                    {% if is_granted('ROLE_ADMIN') %}
+                     <a href="{{ path('app_question_index') }}">
+                         <i class="bi bi-circle"></i><span>Liste Question</span>
                      </a>
+                       {% endif %} 
+                        {% if is_granted('ROLE_TUTEUR') %}
+                     <a href="{{ path('app_question_index') }}">
+                         <i class="bi bi-circle"></i><span>Liste Question</span>
+                     </a>
+                       {% endif %}
+                 </li>
+                         <li>
+                        {% if is_granted('ROLE_ADMIN') %}
+                     <a href="{{ path('app_reponse_new') }}">
+                         <i class="bi bi-circle"></i><span>Ajouter Reponse</span>
+                     </a>
+                       {% endif %} 
+                
+
+                    
+                        {% if is_granted('ROLE_TUTEUR') %}
+                     <a href="{{ path('app_reponse_new') }}">
+                         <i class="bi bi-circle"></i><span>Ajouter Reponse</span>
+                     </a>
+                       {% endif %} 
+             
+ </li>
+
+
+
+
+                 <li>
+
+
+
+                    {% if is_granted('ROLE_ADMIN') %}
+                     <a href="{{ path('app_reponse_index') }}">
+                         <i class="bi bi-circle"></i><span>Liste Reponse</span>
+                     </a>
+                          {% endif %}
+
+
+
+
+
+                            {% if is_granted('ROLE_TUTEUR') %}
+                     <a href="{{ path('app_reponse_index') }}">
+                         <i class="bi bi-circle"></i><span>Liste Reponse</span>
+                     </a>
+                          {% endif %}
                  </li>
                 
              </ul>

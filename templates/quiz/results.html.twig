@@ -1,0 +1,55 @@
+{# templates/quiz/result.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultat du Quiz : {{ quiz.nom }}{% endblock %}
+
+{% block body %}
+    <h1>Résultat du Quiz : {{ quiz.nom }}</h1>
+    <p>Votre score : <strong>{{ score }} / {{ totalQuestions }}</strong></p>
+
+    <h2>Détails des réponses :</h2>
+    <ul>
+        {% for question in quiz.questions %}
+            <li>
+                <strong>Question {{ loop.index }} : {{ question.texte }}</strong>
+                <ul>
+                    <li>
+                        <strong>Réponses correctes :</strong>
+                        <ul>
+                            {% for reponse in question.reponses %}
+                                {% if reponse.estCorrecte %}
+                                    <li>{{ reponse.texte }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Vos réponses :</strong>
+                        <ul>
+                            {% if userAnswers[question.id] is defined %}
+                                {% for reponseId in userAnswers[question.id] %}
+                                    {% for reponse in question.reponses %}
+                                        {% if reponse.id == reponseId %}
+                                            <li>
+                                                {{ reponse.texte }}
+                                                {% if reponse.estCorrecte %}
+                                                    <span style="color: green;">✓ Correct</span>
+                                                {% else %}
+                                                    <span style="color: red;">✗ Incorrect</span>
+                                                {% endif %}
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            {% else %}
+                                <li>Aucune réponse sélectionnée.</li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ path('app_quiz_list') }}" class="btn btn-primary">Retour à la liste des quiz</a>
+{% endblock %}

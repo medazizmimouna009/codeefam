@@ -1,0 +1,20 @@
+{{ form_start(form, {'attr': {'class': 'row g-3 needs-validation', 'novalidate': 'novalidate'}}) }}
+    <!-- Texte Input -->
+    <div class="col-12">
+        {{ form_label(form.Texte, 'Contenu de la question', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.Texte, {'attr': {'class': 'form-control', 'placeholder': 'Entrez la question', 'required': 'required'}}) }}
+        <div class="invalid-feedback">Veuillez entrer une question valide.</div>
+    </div>
+
+    <!-- NomCours Input -->
+    <div class="col-12">
+        {{ form_label(form.nomCours, 'Nom du cours', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.nomCours, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+        <div class="invalid-feedback">Veuillez sélectionner un cours.</div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="col-12">
+        <button class="btn btn-primary w-100" type="submit">Créer</button>
+    </div>
+{{ form_end(form) }}

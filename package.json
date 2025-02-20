@@ -23,9 +23,12 @@
         "aos": "^2.3.4",
         "bootstrap": "5.3.3",
         "bootstrap-icons": "^1.11.3",
+        "bootstrap-select": "^1.13.18",
         "file-loader": "^6.2.0",
         "glightbox": "^3.3.1",
+        "jquery": "^3.7.1",
         "postcss-loader": "8.1.0",
+        "select2": "^4.1.0-rc.0",
         "swiper": "^11.2.4",
         "tinymce": "^7.6.1"
     }

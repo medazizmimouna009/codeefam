@@ -1,0 +1,152 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Quiz index{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Your existing custom styles */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: rgb(17, 31, 122) !important;
+            color: white;
+        }
+        .card-footer {
+            background-color: #f8f9fa;
+        }
+        .form-control {
+            border-radius: 5px;
+        }
+        .btn-primary {
+            background-color:rgb(17, 31, 122) !important;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color:rgb(17, 31, 122) !important;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .invalid-feedback {
+            color: #dc3545;
+            font-size: 0.875em;
+        }
+        .correct-tick {
+            color: green;
+            font-weight: bold;
+        }
+
+        /* Custom spacing for action buttons */
+        .action-buttons .btn {
+            margin-right: 30px; /* Adjust the spacing as needed */
+        }
+        .action-buttons .btn:last-child {
+            margin-right: -100px; /* Remove margin from the last button */
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <main>
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-12">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white">
+                            <h1 class="h4 mb-0">Liste des Quiz</h1>
+                        </div>
+                        <div class="card-body">
+                            <!-- Formulaire de recherche et de filtre -->
+                            <div class="mb-3">
+                                <form method="get" action="{{ path('app_quiz_index') }}" class="form-inline">
+                                    <div class="form-group mx-sm-3 mb-2">
+                                        <input type="text" name="search" class="form-control" placeholder="Rechercher un quiz..." value="{{ app.request.query.get('search') }}">
+                                    </div>
+                                    <div class="form-group mx-sm-3 mb-2">
+                                        <select name="cours" class="form-control">
+                                            <option value="">Tous les cours</option>
+                                            {% for cours in cours %}
+                                                <option value="{{ cours.id }}" {{ app.request.query.get('cours') == cours.id ? 'selected' : '' }}>{{ cours.nom }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mb-2">Rechercher</button>
+                                </form>
+                            </div>
+
+                            <!-- Tableau des quiz -->
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Nom</th>
+                                        <th>Cours</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for quiz in quizzes %}
+                                    <tr>
+                                        <td>{{ quiz.id }}</td>
+                                        <td>{{ quiz.nom }}</td>
+                                        <td>{{ quiz.nomCours ? quiz.nomCours.nom : 'Non associé' }}</td>
+                                        <td class="action-buttons">
+                                            <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#quizModal{{ quiz.id }}" title="Voir">
+                                                <i class="fas fa-eye fa-sm"></i>
+                                            </button>
+                                            <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}" class="btn btn-warning btn-sm" title="Modifier">
+                                                <i class="fas fa-pen fa-sm"></i>
+                                            </a>
+                                            <form method="post" action="{{ path('app_quiz_delete', {'id': quiz.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce quiz ?');" style="display: inline;">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ quiz.id) }}">
+                                                <button class="btn btn-danger btn-sm" title="Supprimer">
+                                                    <i class="fas fa-trash fa-sm"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Modal for viewing quiz details -->
+                                    <div class="modal fade" id="quizModal{{ quiz.id }}" tabindex="-1" aria-labelledby="quizModalLabel{{ quiz.id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="quizModalLabel{{ quiz.id }}">Détails du Quiz</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p><strong>Nom:</strong> {{ quiz.nom }}</p>
+                                                    <p><strong>Cours associé:</strong> {{ quiz.nomCours ? quiz.nomCours.nom : 'Non associé' }}</p>
+                                                  
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="4">Aucun quiz trouvé</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-footer text-end">
+                            <a href="{{ path('app_quiz_new') }}" class="btn btn-success">Créer un nouveau quiz</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

@@ -1,0 +1,27 @@
+{# templates/quiz/take.html.twig #}
+{% extends 'base.html.twig' %}
+{% block body %}
+<h1>Test du Quiz : {{ quiz.nom }}</h1>
+
+<form method="POST">
+    {% for question in questions %}
+        <div class="question">
+            <h3>Question {{ loop.index }} : {{ question.texte }}</h3>
+            {% if question.reponses is not empty %}
+                {% for reponse in question.reponses %}
+                    <div class="reponse">
+                        <label>
+                            <input type="radio" name="question_{{ question.id }}" value="{{ reponse.id }}">
+                            {{ reponse.texte }}
+                        </label>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Aucune réponse disponible pour cette question.</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary">Soumettre</button>
+</form>
+{% endblock %}
