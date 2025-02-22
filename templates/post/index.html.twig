@@ -32,6 +32,16 @@
         .btn {
             margin-right: 5px;
         }
+        .reactions {
+            margin-top: 10px;
+        }
+        .emoji-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5em;
+            margin-right: 5px;
+        }
     </style>
 {% endblock %}
 
@@ -69,6 +79,14 @@
                             <a href="{{ path('app_post_edit', {'id': post.id, 'user_id': user_id}) }}" class="btn btn-primary">Edit</a>
                             <button class="btn btn-danger delete-post" data-csrf-token="{{ csrf_token('delete' ~ post.id) }}">Delete</button>
                         {% endif %}
+                        <div class="reactions">
+                            {% for reaction in post.reactions %}
+                                <span>{{ reaction.emoji }} ({{ post.reactions|length }})</span>
+                            {% endfor %}
+                            <button class="emoji-btn" data-emoji="👍" data-post-id="{{ post.id }}">👍</button>
+                            <button class="emoji-btn" data-emoji="❤️" data-post-id="{{ post.id }}">❤️</button>
+                            <button class="emoji-btn" data-emoji="😂" data-post-id="{{ post.id }}">😂</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -108,6 +126,36 @@
                 .catch(error => {
                     console.error('Error:', error);
                     alert('An error occurred while trying to delete the post.');
+                });
+            });
+        });
+
+        document.querySelectorAll('.emoji-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const emoji = this.getAttribute('data-emoji');
+                const postId = this.getAttribute('data-post-id');
+
+                fetch(`/post/${postId}/react`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token('react') }}'
+                    },
+                    body: JSON.stringify({ emoji: emoji })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Reaction added successfully');
+                        location.reload();
+                    } else {
+                        console.error('Failed to add reaction');
+                        alert('Failed to add reaction.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while trying to add the reaction.');
                 });
             });
         });

@@ -18,36 +18,36 @@ class Commentaire
     private ?int $id = null;
 
     #[Assert\NotBlank(message: "Le contenu ne doit pas être vide.")]
-    #[Assert\Length(
-        min: 3,
-        max: 255,
-       
-    )]
+    #[Assert\Length(min: 3, max: 255)]
     #[ORM\Column(length: 255)]
     private ?string $contenu = null;
 
-   
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateCreation = null;
 
-    
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    
     #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'commentaires')]
     private ?Post $post = null;
+
+    #[ORM\OneToMany(mappedBy: 'commentaire', targetEntity: Reaction::class, cascade: ['remove'])]
+    private Collection $reactions;
+
+    public function __construct()
+    {
+        $this->reactions = new ArrayCollection(); // ✅ Fix: Initialize reactions
+    }
+
+    public function getReactions(): Collection
+    {
+        return $this->reactions;
+    }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-        return $this;
     }
 
     public function getContenu(): ?string
@@ -77,7 +77,7 @@ class Commentaire
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(?User $user): static
     {
         $this->user = $user;
         return $this;
@@ -88,7 +88,7 @@ class Commentaire
         return $this->post;
     }
 
-    public function setPost(?Post $post): self
+    public function setPost(?Post $post): static
     {
         $this->post = $post;
         return $this;

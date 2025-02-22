@@ -8,6 +8,8 @@ use App\Form\PostType;
 use App\Repository\PostRepository;
 use App\Entity\Commentaire;
 use App\Form\CommentaireType;
+use App\Entity\Reaction;
+use App\Repository\ReactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -185,5 +187,31 @@ final class PostController extends AbstractController
         return $this->render('post/admin_index.html.twig', [
             'posts' => $postRepository->findAll(),
         ]);
+    }
+
+    #[Route('/{id}/react', name: 'app_post_react', methods: ['POST'])]
+    public function react(Request $request, Post $post, ReactionRepository $reactionRepository, EntityManagerInterface $entityManager): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $emoji = $data['emoji'] ?? null;
+
+        if (!$emoji) {
+            return $this->json(['success' => false, 'message' => 'Invalid emoji'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['success' => false, 'message' => 'User not authenticated'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $reaction = new Reaction();
+        $reaction->setEmoji($emoji);
+        $reaction->setPost($post);
+        $reaction->setUser($user);
+
+        $entityManager->persist($reaction);
+        $entityManager->flush();
+
+        return $this->json(['success' => true]);
     }
 }
