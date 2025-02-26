@@ -42,6 +42,9 @@
             font-size: 1.5em;
             margin-right: 5px;
         }
+        .chat-form {
+            margin-top: 20px;
+        }
     </style>
 {% endblock %}
 
@@ -95,6 +98,22 @@
                 <p>No records found</p>
             </div>
         {% endfor %}
+    </div>
+
+    <div class="chat-form">
+        <h2>Chat </h2>
+        <form method="get" action="{{ path('app_post_index') }}">
+            <div class="form-group">
+                <label for="message">Your Message:</label>
+                <input type="text" id="message" name="message" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Send</button>
+        </form>
+        
+        {% if responseMessage %}
+            <h3>Response:</h3>
+            <p>{{ responseMessage }}</p>
+        {% endif %}
     </div>
 
     <script>
@@ -160,4 +179,13 @@
             });
         });
     </script>
+    <script>
+(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="-EqE_ByXNvl5ubTE9IVI6";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+</script>
+<iframe
+    src="https://www.chatbase.co/chatbot-iframe/-EqE_ByXNvl5ubTE9IVI6"
+    width="100%"
+    style="height: 100%; min-height: 700px"
+    frameborder="0"
+></iframe>
 {% endblock %}

@@ -10,20 +10,31 @@ use App\Entity\Commentaire;
 use App\Form\CommentaireType;
 use App\Entity\Reaction;
 use App\Repository\ReactionRepository;
+use App\Service\GeminiService;
+use App\Service\ProfanityFilterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/post')]
 final class PostController extends AbstractController
 {
+    private GeminiService $geminiService;
+    private ProfanityFilterService $profanityFilterService;
+
+    public function __construct(GeminiService $geminiService, ProfanityFilterService $profanityFilterService)
+    {
+        $this->geminiService = $geminiService;
+        $this->profanityFilterService = $profanityFilterService;
+    }
+
     #[Route(name: 'app_post_index', methods: ['GET', 'POST'])]
     public function index(Request $request, PostRepository $postRepository, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
-        $user_id = $user instanceof User ? $user->getId() : null; // Assuming you have a method to get the current user ID
+        $user_id = $user instanceof User ? $user->getId() : null;
 
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
@@ -33,6 +44,10 @@ final class PostController extends AbstractController
             if ($user instanceof User) {
                 $post->setIdUser($user);
             }
+
+            // Censor the content
+            $censoredContent = $this->profanityFilterService->censorText($post->getContenu());
+            $post->setContenu($censoredContent);
 
             // Handle image upload
             $imageFile = $form->get('image')->getData();
@@ -54,10 +69,23 @@ final class PostController extends AbstractController
             return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        $userMessage = $request->get('message', '');
+        $responseMessage = '';
+
+        if ($userMessage) {
+            // Get response from Gemini
+            try {
+                $responseMessage = $this->geminiService->getGeminiResponse($userMessage);
+            } catch (\Exception $e) {
+                $responseMessage = 'Sorry, the service is currently unavailable. Please try again later.';
+            }
+        }
+
         return $this->render('post/index.html.twig', [
             'posts' => $postRepository->findAll(),
             'form' => $form->createView(),
-            'user_id' => $user_id, // Pass the user_id to the template
+            'user_id' => $user_id,
+            'responseMessage' => $responseMessage,
         ]);
     }
 
@@ -65,7 +93,7 @@ final class PostController extends AbstractController
     public function edit(Request $request, Post $post, PostRepository $postRepository, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
-        $user_id = $user instanceof User ? $user->getId() : null; // Assuming you have a method to get the current user ID
+        $user_id = $user instanceof User ? $user->getId() : null;
         if ($post->getIdUser() !== $this->getUser()) {
             throw $this->createAccessDeniedException('You cannot edit this post.');
         }
@@ -74,6 +102,10 @@ final class PostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Censor the content
+            $censoredContent = $this->profanityFilterService->censorText($post->getContenu());
+            $post->setContenu($censoredContent);
+
             // Handle image upload
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
@@ -93,8 +125,8 @@ final class PostController extends AbstractController
         return $this->render('post/index.html.twig', [
             'posts' => $postRepository->findAll(),
             'form' => $form->createView(),
-            'user_id' => $user_id, // Pass the user_id to the template
-            'edit_post' => $post, // Pass the post being edited to the template
+            'user_id' => $user_id,
+            'edit_post' => $post,
         ]);
     }
 
@@ -130,6 +162,10 @@ final class PostController extends AbstractController
             throw $this->createNotFoundException('Post not found');
         }
 
+        // Censor the content before displaying
+        $censoredContent = $this->profanityFilterService->censorText($post->getContenu());
+        $post->setContenu($censoredContent);
+
         $commentaire = new Commentaire();
         $form = $this->createForm(CommentaireType::class, $commentaire);
         $form->handleRequest($request);
@@ -140,6 +176,10 @@ final class PostController extends AbstractController
                 $commentaire->setUser($user);
             }
             $commentaire->setPost($post);
+
+            // Censor the comment content
+            $censoredCommentContent = $this->profanityFilterService->censorText($commentaire->getContenu());
+            $commentaire->setContenu($censoredCommentContent);
 
             // Set the date_creation field
             $commentaire->setDateCreation(new \DateTime());
@@ -173,6 +213,10 @@ final class PostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Censor the comment content
+            $censoredCommentContent = $this->profanityFilterService->censorText($commentaire->getContenu());
+            $commentaire->setContenu($censoredCommentContent);
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_post_show', ['id' => $commentaire->getPost()->getId()], Response::HTTP_SEE_OTHER);
