@@ -35,9 +35,17 @@ class Commentaire
     #[ORM\OneToMany(mappedBy: 'commentaire', targetEntity: Reaction::class, cascade: ['remove'])]
     private Collection $reactions;
 
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'replies')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    private ?self $parent = null;
+
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class, cascade: ['remove'])]
+    private Collection $replies;
+
     public function __construct()
     {
-        $this->reactions = new ArrayCollection(); // ✅ Fix: Initialize reactions
+        $this->reactions = new ArrayCollection();
+        $this->replies = new ArrayCollection();
     }
 
     public function getReactions(): Collection
@@ -91,6 +99,47 @@ class Commentaire
     public function setPost(?Post $post): static
     {
         $this->post = $post;
+        return $this;
+    }
+
+    public function getParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?self $parent): static
+    {
+        $this->parent = $parent;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getReplies(): Collection
+    {
+        return $this->replies;
+    }
+
+    public function addReply(self $reply): static
+    {
+        if (!$this->replies->contains($reply)) {
+            $this->replies->add($reply);
+            $reply->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReply(self $reply): static
+    {
+        if ($this->replies->removeElement($reply)) {
+            // set the owning side to null (unless already changed)
+            if ($reply->getParent() === $this) {
+                $reply->setParent(null);
+            }
+        }
+
         return $this;
     }
 }

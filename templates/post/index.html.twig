@@ -99,23 +99,7 @@
             </div>
         {% endfor %}
     </div>
-
-    <div class="chat-form">
-        <h2>Chat </h2>
-        <form method="get" action="{{ path('app_post_index') }}">
-            <div class="form-group">
-                <label for="message">Your Message:</label>
-                <input type="text" id="message" name="message" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary mt-2">Send</button>
-        </form>
-        
-        {% if responseMessage %}
-            <h3>Response:</h3>
-            <p>{{ responseMessage }}</p>
-        {% endif %}
-    </div>
-
+    
     <script>
         document.querySelectorAll('.delete-post').forEach(button => {
             button.addEventListener('click', function() {
@@ -187,5 +171,5 @@
     width="100%"
     style="height: 100%; min-height: 700px"
     frameborder="0"
-></iframe>
+></iframe> 
 {% endblock %}

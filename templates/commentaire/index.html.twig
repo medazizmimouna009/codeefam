@@ -25,7 +25,7 @@
                 <td>{{ commentaire.user.id }}</td>
                 <td>{{ commentaire.post.id }}</td>
                 <td>
-                    <form method="post" action="{{ path('app_commentaire_delete', {'id': commentaire.id}) }}" style="display:inline;">
+                    <form method="post" action="{{ path('app_commentaire_delete', {'id': commentaire.id}) }}" style="display:inline;" novalidate>
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ commentaire.id) }}">
                         <button class="btn btn-danger delete-commentaire" data-id="{{ commentaire.id }}">Delete</button>
                     </form>
@@ -38,10 +38,7 @@
         {% endfor %}
         </tbody>
     </table>
-
-    
-
-<script>
+    <script>
     document.querySelectorAll('.delete-commentaire').forEach(button => {
         button.addEventListener('click', function(event) {
             event.preventDefault();
@@ -76,5 +73,4 @@
         });
     });
 </script>
-
 {% endblock %}

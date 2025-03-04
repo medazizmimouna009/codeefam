@@ -1,0 +1,10 @@
+knp_snappy:
+    pdf:
+        enabled: true
+        binary: '%env(resolve:SNAPPY_PDF_BINARY)%' # Use the environment variable
+        options:
+            encoding: 'utf-8'
+    image:
+        enabled: true
+        binary: '%env(resolve:SNAPPY_PDF_BINARY)%' # Use the environment variable
+        options: []

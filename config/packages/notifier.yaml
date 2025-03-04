@@ -1,8 +1,12 @@
 framework:
     notifier:
         chatter_transports:
+            # Add your chat transports here
         texter_transports:
+            browser: 'browser://'
         channel_policy:
+            # Define which channels to use for each notification type
+            'App\Notification\CommentNotification': ['browser']
             # use chat/slack, chat/telegram, sms/twilio or sms/nexmo
             urgent: ['email']
             high: ['email']

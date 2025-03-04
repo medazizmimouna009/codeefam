@@ -37,4 +37,17 @@ class ProfanityFilterService
             return $text; // Handle errors gracefully
         }
     }
+
+    public function containsProfanity(string $text): bool
+    {
+        // Implement the logic to check if the text contains profanity
+        // This is a placeholder implementation
+        $badWords = ['badword1', 'badword2']; // Replace with actual bad words
+        foreach ($badWords as $badWord) {
+            if (stripos($text, $badWord) !== false) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

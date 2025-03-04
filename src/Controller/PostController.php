@@ -13,21 +13,28 @@ use App\Repository\ReactionRepository;
 use App\Service\GeminiService;
 use App\Service\ProfanityFilterService;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use Knp\Snappy\Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
+use Psr\Log\LoggerInterface;
 
 #[Route('/post')]
 final class PostController extends AbstractController
 {
-    private GeminiService $geminiService;
     private ProfanityFilterService $profanityFilterService;
+    private MailerInterface $mailer;
+    private LoggerInterface $logger;
 
-    public function __construct(GeminiService $geminiService, ProfanityFilterService $profanityFilterService)
+    public function __construct(ProfanityFilterService $profanityFilterService, MailerInterface $mailer, LoggerInterface $logger)
     {
-        $this->geminiService = $geminiService;
         $this->profanityFilterService = $profanityFilterService;
+        $this->mailer = $mailer;
+        $this->logger = $logger;
     }
 
     #[Route(name: 'app_post_index', methods: ['GET', 'POST'])]
@@ -48,6 +55,12 @@ final class PostController extends AbstractController
             // Censor the content
             $censoredContent = $this->profanityFilterService->censorText($post->getContenu());
             $post->setContenu($censoredContent);
+
+            // Check if the content contains bad words
+            if ($this->profanityFilterService->containsProfanity($post->getContenu())) {
+                // Send email to admin
+                $this->sendProfanityAlertEmail($user, $post);
+            }
 
             // Handle image upload
             $imageFile = $form->get('image')->getData();
@@ -72,21 +85,43 @@ final class PostController extends AbstractController
         $userMessage = $request->get('message', '');
         $responseMessage = '';
 
-        if ($userMessage) {
-            // Get response from Gemini
-            try {
-                $responseMessage = $this->geminiService->getGeminiResponse($userMessage);
-            } catch (\Exception $e) {
-                $responseMessage = 'Sorry, the service is currently unavailable. Please try again later.';
-            }
-        }
-
         return $this->render('post/index.html.twig', [
             'posts' => $postRepository->findAll(),
             'form' => $form->createView(),
             'user_id' => $user_id,
             'responseMessage' => $responseMessage,
         ]);
+    }
+
+    private function sendProfanityAlertEmail(User $user, Post $post): void
+    {
+        $adminEmail = 'admin@example.com'; // Replace with the actual admin email
+        $email = (new Email())
+            ->from('no-reply@example.com')
+            ->to($adminEmail)
+            ->subject('Profanity Alert')
+            ->html(sprintf(
+                'User %s (ID: %d) has posted content with bad words: <br><br> %s',
+               
+                $user->getId(),
+                $post->getContenu()
+            ));
+
+        try {
+            $this->mailer->send($email);
+            $this->logger->info('Profanity alert email sent to admin.', [
+                'user_id' => $user->getId(),
+                'post_id' => $post->getId(),
+                'admin_email' => $adminEmail,
+            ]);
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to send profanity alert email.', [
+                'error' => $e->getMessage(),
+                'user_id' => $user->getId(),
+                'post_id' => $post->getId(),
+                'admin_email' => $adminEmail,
+            ]);
+        }
     }
 
     #[Route('/{id}/edit', name: 'app_post_edit', methods: ['GET', 'POST'])]
@@ -187,6 +222,9 @@ final class PostController extends AbstractController
             $entityManager->persist($commentaire);
             $entityManager->flush();
 
+            // Add flash message
+            $this->addFlash('success', 'Commentaire ajouté avec succès!');
+
             return $this->redirectToRoute('app_post_show', ['id' => $post->getId()], Response::HTTP_SEE_OTHER);
         }
 
@@ -248,14 +286,55 @@ final class PostController extends AbstractController
             return $this->json(['success' => false, 'message' => 'User not authenticated'], Response::HTTP_UNAUTHORIZED);
         }
 
-        $reaction = new Reaction();
-        $reaction->setEmoji($emoji);
-        $reaction->setPost($post);
-        $reaction->setUser($user);
+        // Check if the reaction already exists
+        $existingReaction = $reactionRepository->findOneBy([
+            'post' => $post,
+            'user' => $user,
+            'emoji' => $emoji,
+        ]);
 
-        $entityManager->persist($reaction);
-        $entityManager->flush();
+        if ($existingReaction) {
+            // If the reaction exists, remove it
+            $entityManager->remove($existingReaction);
+            $entityManager->flush();
 
-        return $this->json(['success' => true]);
+            return $this->json(['success' => true, 'message' => 'Reaction removed']);
+        } else {
+            // If the reaction does not exist, add it
+            $reaction = new Reaction();
+            $reaction->setEmoji($emoji);
+            $reaction->setPost($post);
+            $reaction->setUser($user);
+
+            $entityManager->persist($reaction);
+            $entityManager->flush();
+
+            return $this->json(['success' => true, 'message' => 'Reaction added']);
+        }
+    }
+
+    #[Route('/post/{id}/pdf', name: 'post_pdf', methods: ['GET'])]
+    public function quizResultPdf(int $id, EntityManagerInterface $entityManager, Pdf $knpSnappyPdf): Response
+    {
+        // Retrieve the post entity
+        $post = $entityManager->getRepository(Post::class)->find($id);
+
+        if (!$post) {
+            throw $this->createNotFoundException('Post not found.');
+        }
+
+        // Render the Twig template to HTML
+        $html = $this->renderView('post/quiz_result_pdf.html.twig', [
+            'post' => $post,
+        ]);
+
+        // Generate the PDF
+        $pdf = $knpSnappyPdf->getOutputFromHtml($html);
+
+        // Return the PDF as a response
+        return new PdfResponse(
+            $pdf,
+            'quiz-result.pdf' // Name of the downloaded file
+        );
     }
 }

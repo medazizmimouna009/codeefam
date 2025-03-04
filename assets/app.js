@@ -3,24 +3,25 @@ import './css/style.css';
 import './styles/app.scss';
 
 // Import JavaScript
-import './js/main.js';
-<<<<<<< HEAD
-import 'bootstrap';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-=======
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import 'bootstrap';
-import 'bootstrap-icons/font/bootstrap-icons.css';
-import 'bootstrap-select/dist/js/bootstrap-select.min.js';
-
-import 'tinymce/tinymce.min.js';
-// app.js
 import $ from 'jquery';
-import 'select2/dist/js/select2.full.min';
-import 'select2/dist/css/select2.min.css';
-import 'bootstrap-select';
+import 'bootstrap'; // Bootstrap JavaScript
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // Bootstrap Bundle (includes Popper)
+import 'bootstrap-icons/font/bootstrap-icons.css'; // Bootstrap Icons
+import 'bootstrap-select/dist/js/bootstrap-select.min.js'; // Bootstrap Select
+import 'select2/dist/js/select2.full.min'; // Select2
+import 'select2/dist/css/select2.min.css'; // Select2 CSS
+import 'tinymce/tinymce.min.js'; // TinyMCE
+import 'boxicons/css/boxicons.min.css';
+import 'quill/dist/quill.bubble.css';
+import 'remixicon/fonts/remixicon.css';
+import 'simple-datatables/dist/style.css';
 
+
+// Initialize plugins
 $(document).ready(function() {
+    // Initialize Selectpicker
     $('.selectpicker').selectpicker();
+
+    // Initialize Select2
+    $('.select2').select2();
 });
->>>>>>> origin/gestion1User1
