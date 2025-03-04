@@ -1,3 +1,6 @@
+@import '../css/style.css';
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
 body {
-    background-color: skyblue;
+    font-family: Arial, sans-serif;
 }

@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Question{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4 text-primary fw-bold">
+            <i class="fas fa-question-circle me-2"></i>Modifier une Question
+        </h1>
+
+        <div class="card shadow-lg p-4 mx-auto" style="max-width: 800px;">
+            {{ form_start(form, {'attr': {'class': 'row g-3 needs-validation', 'novalidate': 'novalidate'}}) }}
+                <div class="col-md-12">
+                    {{ form_label(form.texte, 'Texte de la question', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.texte, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le texte de la question', 'required': 'required'}}) }}
+                    <div class="invalid-feedback">
+                    Veuillez entrer un texte de question valide.
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                {{ form_label(form.nomCours, 'Cours', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                {{ form_widget(form.nomCours, {'attr': {'class': 'form-select', 'required': 'required'}}) }}
+                <div class="invalid-feedback">
+                    Veuillez sélectionner un cours.
+                </div>
+            </div>
+
+                <div class="col-md-6">
+                    {{ form_label(form.niveau, 'Niveau de difficulté', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.niveau, {'attr': {'class': 'form-select', 'required': 'required'}}) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.niveau) }}
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary btn-lg" style="margin-left: 300px;">
+                        <i class="fas fa-edit me-2"></i>Mettre à jour
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+
+        <div class="mt-4 text-center">
+            <a href="{{ path('app_question_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        // Exemple de validation côté client personnalisée
+        (function () {
+            'use strict';
+
+            // Récupérer tous les formulaires auxquels nous voulons appliquer la validation
+            var forms = document.querySelectorAll('.needs-validation');
+
+            // Boucler sur chaque formulaire et empêcher la soumission si invalide
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+{% endblock %}

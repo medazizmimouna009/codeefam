@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Résultats du Quiz : {{ quiz.nom }}</title>
+    <style>
+        /* Styles généraux */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* En-tête */
+        .header {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 5px solid #3498db;
+        }
+
+        .header img {
+            width: 100px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .header p {
+            font-size: 14px;
+            margin: 5px 0 0;
+            color: #bdc3c7;
+        }
+
+        /* Contenu principal */
+        .content {
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .score {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .score h2 {
+            font-size: 24px;
+            color: #27ae60;
+            margin: 0;
+        }
+
+        .score p {
+            font-size: 18px;
+            color: #555;
+        }
+
+        /* Détail des réponses */
+        .questions {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-left: 5px solid #3498db;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .question strong {
+            color: #2c3e50;
+        }
+
+        .correct {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .incorrect {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        /* Pied de page */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #2c3e50;
+            color: #fff;
+            font-size: 12px;
+            border-top: 5px solid #3498db;
+        }
+
+        .footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        /* Message de réussite ou d'échec */
+        .result-message {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .result-message.passed {
+            color: #27ae60;
+        }
+
+        .result-message.failed {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <!-- En-tête -->
+    <div class="header">
+        <img src="{{ absolute_url(asset('assets/img/logo.png')) }}" alt="CodeFam">
+        <h1>Résultats du Quiz : {{ quiz.nom }}</h1>
+        <p>CodeFam - Votre plateforme d'apprentissage préférée</p>
+        {% if app.user %}
+            <p>Participant : <strong>{{ app.user.prenom }} {{ app.user.nom }}</strong></p>
+        {% endif %}
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="content">
+        <!-- Score -->
+        <div class="score">
+            <h2>Votre score : <span style="color: #27ae60; font-weight: bold;">{{ score }} / {{ totalQuestions }}</span></h2>
+        </div>
+
+        <!-- Message de réussite ou d'échec -->
+        <div class="result-message {{ passed ? 'passed' : 'failed' }}">
+            {% if passed %}
+                🎉 Félicitations ! Vous avez réussi le quiz. 🎉
+            {% else %}
+                😔 Dommage ! Vous n'avez pas réussi le quiz. Essayez encore ! 😔
+            {% endif %}
+        </div>
+
+        <!-- Détail des réponses -->
+        <div class="questions">
+            <h3>Détail des réponses :</h3>
+            {% for userReponse in userReponses %}
+                <div class="question">
+                    <strong>Question :</strong> {{ userReponse.question.texte }}<br>
+                    <strong>Votre réponse :</strong> {{ userReponse.reponse.texte }}<br>
+                    <strong>Correcte :</strong>
+                    <span class="{{ userReponse.estCorrecte ? 'correct' : 'incorrect' }}">
+                        {{ userReponse.estCorrecte ? '✅ Oui' : '❌ Non' }}
+                    </span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Pied de page -->
+    <div class="footer">
+        <p>Généré le {{ "now"|date("d/m/Y à H:i") }}.</p>
+        <p>© 2025 <a href="https://www.codefam.com">CodeFam</a>. Tous droits réservés.</p>
+    </div>
+</body>
+</html>

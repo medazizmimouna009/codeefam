@@ -1,10 +1,19 @@
-import './bootstrap.js';
-/*
- * Welcome to your app's main JavaScript file!
- *
- * This file will be included onto the page via the importmap() Twig function,
- * which should already be in your base.html.twig.
- */
+// Import CSS
+import './css/style.css';
 import './styles/app.css';
 
-console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+// Import JavaScript
+import './js/main.js';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
+import { startStimulusApp } from '@symfony/stimulus-bundle';
+
+// Registers Stimulus controllers from controllers.json and in the controllers/ directory
+const app = startStimulusApp();
+
+// Import Chart.js
+import { Chart } from 'chart.js';
+
+// Register the Chart.js controller (if needed)
+import ChartController from '@symfony/ux-chartjs';
+app.register('chart', ChartController);

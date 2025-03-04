@@ -1,0 +1,133 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statistiques globales des scores et des quiz passés{% endblock %}
+
+{% block body %}
+    <div class="pagetitle">
+        <h1>Statistiques globales des scores et des quiz passés</h1>
+    </div>
+
+    <section class="section dashboard">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="filter">
+                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                                <h6>Filter</h6>
+                            </li>
+                            <li><a class="dropdown-item" href="#">Today</a></li>
+                            <li><a class="dropdown-item" href="#">This Month</a></li>
+                            <li><a class="dropdown-item" href="#">This Year</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="card-body pb-0">
+                        <!-- Section : Scores des utilisateurs -->
+                        <h5 class="card-title">Scores des utilisateurs <span>| Today</span></h5>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card info-card sales-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Moyenne des scores</h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-bar-chart"></i>
+                                            </div>
+                                            <div class="ps-3">
+                                                <h6>{{ averageScore|number_format(2) }}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="card info-card revenue-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Score maximal</h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-arrow-up"></i>
+                                            </div>
+                                            <div class="ps-3">
+                                                <h6>{{ maxScore }}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="card info-card customers-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Score minimal</h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-arrow-down"></i>
+                                            </div>
+                                            <div class="ps-3">
+                                                <h6>{{ minScore }}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section : Pie Chart pour les quiz passés/non passés -->
+                        <h5 class="card-title mt-4">Répartition des quiz passés et non passés</h5>
+                        <div class="row d-flex justify-content-center"> {# Centrer le pie chart #}
+                            <div class="col-md-6">
+                                <canvas id="quizPieChart" width="400" height="400"></canvas>
+                            </div>
+                        </div>
+
+                     
+
+    </section>
+
+    {# Inclure Chart.js depuis un CDN #}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    {# Script pour créer le pie chart #}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = document.getElementById('quizPieChart').getContext('2d');
+            const quizPieChart = new Chart(ctx, {
+                type: 'pie', {# Type de graphique : pie chart #}
+                data: {
+                    labels: ['Quiz Passés', 'Quiz Non Passés'],
+                    datasets: [{
+                        label: 'Répartition des Quiz',
+                        data: [{{ passedCount }}, {{ notPassedCount }}], {# Données dynamiques #}
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.6)', {# Couleur pour les quiz passés #}
+                            'rgba(255, 99, 132, 0.6)', {# Couleur pour les quiz non passés #}
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true, {# Rendre le graphique responsive #}
+                    maintainAspectRatio: false, {# Désactiver le maintien du ratio pour ajuster la taille #}
+                    plugins: {
+                        legend: {
+                            position: 'top', {# Position de la légende #}
+                        },
+                        title: {
+                            display: true,
+                            text: 'Répartition des Quiz Passés/Non Passés' {# Titre du graphique #}
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

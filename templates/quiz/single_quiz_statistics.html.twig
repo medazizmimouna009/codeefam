@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statistiques du Quiz : {{ quiz.nom }}{% endblock %}
+
+{% block body %}
+    <div class="pagetitle">
+        <h1>Statistiques du Quiz : {{ quiz.nom }}</h1>
+    </div>
+
+    <section class="section dashboard">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Titre de la section -->
+                        <h5 class="card-title">Répartition des quiz passés et non passés</h5>
+
+                        <!-- Canvas pour le graphique -->
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-6">
+                                <canvas id="quizPieChart" width="400" height="400"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Affichage des statistiques -->
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="card info-card sales-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Quiz Passés</h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-check-circle"></i>
+                                            </div>
+                                            <div class="ps-3">
+                                                <h6>{{ passedCount }}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card info-card revenue-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Quiz Non Passés</h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-x-circle"></i>
+                                            </div>
+                                            <div class="ps-3">
+                                                <h6>{{ notPassedCount }}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# Inclure Chart.js depuis un CDN #}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    {# Script pour créer le pie chart #}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = document.getElementById('quizPieChart').getContext('2d');
+            const quizPieChart = new Chart(ctx, {
+                type: 'pie', {# Type de graphique : pie chart #}
+                data: {
+                    labels: ['Quiz Passés', 'Quiz Non Passés'],
+                    datasets: [{
+                        label: 'Répartition des Quiz',
+                        data: [{{ passedCount }}, {{ notPassedCount }}], {# Données dynamiques #}
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.6)', {# Couleur pour les quiz passés #}
+                            'rgba(255, 99, 132, 0.6)', {# Couleur pour les quiz non passés #}
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true, {# Rendre le graphique responsive #}
+                    maintainAspectRatio: false, {# Désactiver le maintien du ratio pour ajuster la taille #}
+                    plugins: {
+                        legend: {
+                            position: 'top', {# Position de la légende #}
+                        },
+                        title: {
+                            display: true,
+                            text: 'Répartition des Quiz Passés/Non Passés' {# Titre du graphique #}
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

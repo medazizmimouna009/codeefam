@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User index{% endblock %}
+
+{% block body %}
+    <h1>User cote tuteur index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+              
+                <th>Email</th>
+            
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>DateDeNaissance</th>
+               
+                <th>Bio</th>
+                <th>PhotoDeProfil</th>
+             
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            {% if user.role == 'ROLE_USER' %}
+            <tr>
+               
+                <td>{{ user.email }}</td>
+             
+                <td>{{ user.nom }}</td>
+                <td>{{ user.prenom }}</td>
+                <td>{{ user.dateDeNaissance ? user.dateDeNaissance|date('Y-m-d') : '' }}</td>
+              
+                <td>{{ user.bio }}</td>
+                <td>{{ user.photoDeProfil }}</td>
+              
+               
+            </tr>
+        {% endif %}
+        {% else %}
+            <tr>
+                <td colspan="14">Aucun utilisateur trouvé</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+ 
+{% endblock %}
