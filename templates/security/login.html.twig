@@ -1,0 +1,216 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        /* Custom styles for the login page */
+        .login {
+            background-color: #f6f9ff;
+            display: flex;
+            justify-content:center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px; /* Ajustez la largeur maximale selon vos besoins */
+            margin-right:200px
+        }
+
+        /* Google Button Styles */
+        .google-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            background-color: #ffffff !important;
+            border: 1px solid #dfdfdf !important;
+            border-radius: 4px !important;
+            color: #333333 !important;
+            font-weight: bold !important;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .google-btn img {
+            width: 30px;
+            margin-right: 10px;
+        }
+
+        .google-btn:hover {
+            background-color: #f1f1f1 !important;
+        }
+
+        /* Divider Styles */
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #dfdfdf !important;
+        }
+
+        .divider::before {
+            margin-right: 10px;
+        }
+
+        .divider::after {
+            margin-left: 10px;
+        }
+
+        .divider span {
+            color: #666 !important;
+            font-size: 14px !important;
+        }
+    </style>
+
+    <!-- Favicons -->
+    <link href="{{ asset('img/favicon.png') }}" rel="icon">
+    <link href="{{ asset('img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+    <!-- Vendor CSS Files -->
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/quill/quill.snow.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/quill/quill.bubble.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/simple-datatables/style.css') }}" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <main>
+        <div class="container">
+            <section class="section login min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+                            <div    style="margin-right:200px" class="d-flex justify-content-center py-4">
+                                <a href="{{ path('app_home') }}" class="logo d-flex align-items-center w-auto">
+                                    <img     src="{{ asset('landing/img/favicon.png') }}" alt="">
+                                    <span class="d-none d-lg-block">Codefam</span>
+                                </a>
+                            </div><!-- End Logo -->
+
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="pt-4 pb-2">
+                                        <h5 class="card-title text-center pb-0 fs-4">Se connecter à votre compte</h5>
+                                        <p class="text-center small">Entrez vos identifiants pour vous connecter</p>
+                                    </div>
+
+                                    <form method="post" class="row g-3 needs-validation" novalidate>
+                                        {% if error %}
+                                            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                        {% endif %}
+
+                                        {% if app.user %}
+                                            <div class="mb-3">
+                                                Vous êtes connecté en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Déconnexion</a>
+                                            </div>
+                                        {% endif %}
+
+                                        <!-- Email Input -->
+                                        <div class="col-12">
+                                            <label for="inputEmail" class="form-label">Email</label>
+                                            <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
+                                            <div class="invalid-feedback">Veuillez entrer une adresse email valide!</div>
+                                        </div>
+
+                                        <!-- Password Input -->
+                                        <div class="col-12">
+                                            <label for="inputPassword" class="form-label">Mot de passe</label>
+                                            <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+                                            <div class="invalid-feedback">Veuillez entrer votre mot de passe!</div>
+                                        </div>
+
+                                        <!-- Remember Me Checkbox -->
+                                        <div class="col-12">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="_remember_me" id="rememberMe">
+                                                <label class="form-check-label" for="rememberMe">Se souvenir de moi</label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Submit Button -->
+                                        <div class="col-12">
+                                            <button class="btn btn-primary w-100" type="submit">Se connecter</button>
+                                        </div>
+
+                                        <!-- Mot de passe oublié Link -->
+                                        <div class="col-12">
+                                            <a class="small mb-0" href="{{ path('app_forgot_password_request') }}">Mot de passe oublié ?</a>
+                                        </div>
+
+                                        <!-- Hidden CSRF Token -->
+                                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                                        <!-- Divider -->
+                                        <div class="divider">
+                                            <span>ou continuer avec</span>
+                                        </div>
+
+                                        <!-- Google Button -->
+                                        <div class="col-12">
+                                            <a href="{{ path('auth_oauth_connect', {service: 'google'}) }}" class="google-btn">
+                                                <img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="Google Logo">
+                                                <span>Continuer avec Google</span>
+                                            </a>
+                                        </div>
+
+                                        <!-- Register Link -->
+                                        <div class="col-12">
+                                            <p class="small mb-0">Vous n'avez pas de compte? <a href="{{ path('app_register') }}">Créer un compte</a></p>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main><!-- End #main -->
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Vendor JS Files -->
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('vendor/quill/quill.js') }}"></script>
+    <script src="{{ asset('vendor/simple-datatables/simple-datatables.js') }}"></script>
+    <script src="{{ asset('vendor/tinymce/tinymce.min.js') }}"></script>
+    <!-- Template Main JS File -->
+    <script src="{{ asset('js/main.js') }}"></script>
+    <!-- Add SweetAlert2 for toast notifications -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            {% for message in app.flashes('success') %}
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: '{{ message }}',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                });
+            {% endfor %}
+        });
+    </script>
+{% endblock %}

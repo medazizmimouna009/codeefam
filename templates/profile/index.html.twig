@@ -1,0 +1,370 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile - {{ app.user.nom }} {{ app.user.prenom }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .profile-sidebar {
+            background: linear-gradient(135deg, #4158D0 0%, #C850C0 100%);
+        }
+
+        .nav-pills .nav-link {
+            color: #6c757d;
+            border-radius: 10px;
+            padding: 12px 20px;
+            margin: 4px 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-pills .nav-link:hover {
+            background-color: #f8f9fa;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: #fff;
+            color: #4158D0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #4158D0 0%,rgb(200, 88, 80) 100%);
+            height: 150px;
+            border-radius: 15px;
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border: 4px solid #fff;
+            margin-top: -60px;
+            background-color: #fff;
+        }
+
+        .settings-card {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .settings-card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-switch .form-check-input {
+            width: 3em;
+            height: 1.5em;
+            margin-left: -3.5em;
+        }
+
+        .activity-item {
+            border-left: 2px solid #e9ecef;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .activity-item::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4158D0;
+            position: absolute;
+            left: -7px;
+            top: 5px;
+        }
+
+        .invalid-feedback {
+            color: red;
+            font-size: 0.875em;
+        }
+
+        .is-invalid {
+            border-color: red;
+        }
+        .spinner {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            font-size: 40px;
+            color: #007bff; /* Spinner color */
+        }
+
+        /* Overlay to block interaction during loading */
+        .overlay {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 999;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+ <!-- Spinner and Overlay -->
+<div class="overlay"></div>
+<div class="spinner">
+    <i class="fas fa-spinner fa-spin"></i> <!-- Font Awesome spinner -->
+</div>
+    <div class="bg-light">
+        <div class="container py-5">
+            <!-- Display flash messages -->
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">{{ message }}</div>
+            {% endfor %}
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger">{{ message }}</div>
+            {% endfor %}
+
+            <!-- Profile Header -->
+            <div class="col-12 mb-4">
+                <div class="profile-header position-relative mb-4"></div>
+                <div class="text-center">
+                    <div class="position-relative d-inline-block">
+                    {% if app.user.photoDeProfil %}
+                        {% if app.user.photoDeProfil starts with 'http' %}
+                            <!-- External URL (Google profile picture) -->
+                            <img src="{{ app.user.photoDeProfil }}" class="rounded-circle profile-pic" alt="Profile Picture">
+                        {% else %}
+                            <!-- Local file (uploaded profile picture) -->
+                            <img src="{{ asset('uploads/profile_pictures/' ~ app.user.photoDeProfil) }}" class="rounded-circle profile-pic" alt="Profile Picture">
+                        {% endif %}
+                    {% else %}
+                        <!-- Default placeholder image -->
+                        <img src="{{ asset('img/placeholderprofile.png') }}" class="rounded-circle profile-pic" alt="Profile Picture">
+                    {% endif %}
+                    <button class="btn btn-primary btn-sm position-absolute bottom-0 end-0 rounded-circle" data-bs-toggle="modal" data-bs-target="#uploadProfilePicModal">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                </div>
+                    <h3 class="mt-3 mb-1">{{ app.user.nom }} {{ app.user.prenom }}</h3>
+                    <p class="text-muted mb-3">
+                        {% if 'ROLE_TUTEUR' in app.user.roles %}
+                            {{ app.user.specialite }}
+                        {% elseif 'ROLE_USER' in app.user.roles %}
+                        Etudiant
+                    {% else %}   
+                    Admin
+                        {% endif %}
+                    </p>
+                    
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="row g-0">
+                            <!-- Sidebar -->
+                        
+<div class="col-lg-3 border-end">
+<div class="p-4">
+    <div class="nav flex-column nav-pills">
+        <a class="nav-link {{ activeTab == 'personal' ? 'active' : '' }}" href="{{ path('app_profile') }}"><i class="fas fa-user me-2"></i>Personal Info</a>
+        <a class="nav-link {{ activeTab == 'security' ? 'active' : '' }}" href="{{ path('app_profile_security') }}"><i class="fas fa-lock me-2"></i>Security</a>
+        <!--a class="nav-link" href="#"><i class="fas fa-bell me-2"></i>Notifications</a-IF YOU WANT TO USE LATER-->
+      
+    </div>
+</div>
+</div>
+                            <!-- Content Area -->
+                            <div class="col-lg-9">
+                                <div class="p-4">
+                                    <!-- Personal Information -->
+                                    {% if activeTab == 'personal' %}
+                                        <div class="mb-4">
+                                            <h5 class="mb-4">Information Personnel</h5>
+                                            <form action="{{ path('app_update_profile') }}" method="post">
+                                                <div class="row g-3">
+                                                    <!-- First Name -->
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Prenom</label>
+                                                        <input type="text" class="form-control {{ errors.prenom is defined ? 'is-invalid' : '' }}" name="prenom" value="{{ user.prenom }}">
+                                                        {% if errors.prenom is defined %}
+                                                            <div class="invalid-feedback">{{ errors.prenom }}</div>
+                                                        {% endif %}
+                                                    </div>
+
+                                                    <!-- Last Name -->
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Nom</label>
+                                                        <input type="text" class="form-control {{ errors.nom is defined ? 'is-invalid' : '' }}" name="nom" value="{{ user.nom }}">
+                                                        {% if errors.nom is defined %}
+                                                            <div class="invalid-feedback">{{ errors.nom }}</div>
+                                                        {% endif %}
+                                                    </div>
+
+                                                    <!-- Email -->
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Email</label>
+                                                        <input type="email" class="form-control {{ errors.email is defined ? 'is-invalid' : '' }}" name="email" value="{{ user.email }}">
+                                                        {% if errors.email is defined %}
+                                                            <div class="invalid-feedback">{{ errors.email }}</div>
+                                                        {% endif %}
+                                                    </div>
+
+                                                    <!-- Phone -->
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Num Telephone</label>
+                                                        <input type="tel" class="form-control {{ errors.numTel is defined ? 'is-invalid' : '' }}" name="numTel" value="{{ user.numTel }}">
+                                                        {% if errors.numTel is defined %}
+                                                            <div class="invalid-feedback">{{ errors.numTel }}</div>
+                                                        {% endif %}
+                                                    </div>
+
+                                                    <!-- Date of Birth -->
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Date de Naissance</label>
+                                                        <input type="date" class="form-control {{ errors.dateDeNaissance is defined ? 'is-invalid' : '' }}" name="dateDeNaissance" value="{{ user.dateDeNaissance|date('Y-m-d') }}">
+                                                        {% if errors.dateDeNaissance is defined %}
+                                                            <div class="invalid-feedback">{{ errors.dateDeNaissance }}</div>
+                                                        {% endif %}
+                                                    </div>
+
+                                                    <!-- Address -->
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Adresse</label>
+                                                        <input type="text" class="form-control {{ errors.adresse is defined ? 'is-invalid' : '' }}" name="adresse" value="{{ user.adresse }}">
+                                                        {% if errors.adresse is defined %}
+                                                            <div class="invalid-feedback">{{ errors.adresse }}</div>
+                                                        {% endif %}
+                                                    </div>
+
+                                                    <!-- Bio -->
+                                                    <div class="col-12">
+                                                        <label class="form-label">Bio</label>
+                                                        <textarea class="form-control {{ errors.bio is defined ? 'is-invalid' : '' }}" name="bio">{{ user.bio }}</textarea>
+                                                        {% if errors.bio is defined %}
+                                                            <div class="invalid-feedback">{{ errors.bio }}</div>
+                                                        {% endif %}
+                                                    </div>
+
+                                                    <!-- Specialite (for Tuteur) -->
+                                                    {% if 'ROLE_TUTEUR' in app.user.roles %}
+                                                        <div class="col-12">
+                                                            <label class="form-label">Specialite</label>
+                                                            <input type="text" class="form-control {{ errors.specialite is defined ? 'is-invalid' : '' }}" name="specialite" value="{{ user.specialite }}">
+                                                            {% if errors.specialite is defined %}
+                                                                <div class="invalid-feedback">{{ errors.specialite }}</div>
+                                                            {% endif %}
+                                                        </div>
+                                                    {% endif %}
+
+                                                    <!-- Save Button -->
+                                                    <div class="col-12">
+                                                        <button type="submit" class="btn btn-primary">Enregistrer les Changements</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    {% endif %}
+
+                              <!-- Security Section -->
+{% if activeTab == 'security' %}
+<div class="mb-4">
+    <h5 class="mb-4">Securité</h5>
+    <form action="{{ path('app_profile_security') }}" method="post">
+        <div class="row g-3">
+            <!-- Old Password -->
+            <div class="col-md-6">
+                <label class="form-label">Ancien Mot de Passe</label>
+                <input type="password" class="form-control {{ errors.oldPassword is defined ? 'is-invalid' : '' }}" name="oldPassword">
+                {% if errors.oldPassword is defined %}
+                    <div class="invalid-feedback">{{ errors.oldPassword }}</div>
+                {% endif %}
+            </div>
+
+            <!-- New Password -->
+            <div class="col-md-6">
+                <label class="form-label">Nouveau Mot de Passe</label>
+                <input type="password" class="form-control {{ errors.newPassword is defined ? 'is-invalid' : '' }}" name="newPassword">
+                {% if errors.newPassword is defined %}
+                    <div class="invalid-feedback">{{ errors.newPassword }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="col-md-6">
+                <label class="form-label">Confirmer Mot de Passe</label>
+                <input type="password" class="form-control {{ errors.confirmPassword is defined ? 'is-invalid' : '' }}" name="confirmPassword">
+                {% if errors.confirmPassword is defined %}
+                    <div class="invalid-feedback">{{ errors.confirmPassword }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Save Button -->
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Changer Mot de Passe</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Upload Profile Picture Modal -->
+    <div class="modal fade" id="uploadProfilePicModal" tabindex="-1" aria-labelledby="uploadProfilePicModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadProfilePicModalLabel">Télecharger une photo de profil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ path('app_upload_profile_pic') }}" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="profilePic" class="form-label">Chosiri la phot de profile</label>
+                            <input type="file" class="form-control" id="profilePic" name="profilePic" accept="image/*">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Télecharger</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Cover Modal -->
+    
+
+
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get all forms on the page
+            const forms = document.querySelectorAll('form');
+
+            forms.forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    // Show the spinner and overlay
+                    document.querySelector('.overlay').style.display = 'block';
+                    document.querySelector('.spinner').style.display = 'block';
+
+                    // Optionally, you can disable the submit button to prevent multiple submissions
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                        submitButton.innerHTML = 'Saving...'; // Change button text
+                    }
+                });
+            });
+        });
+</script>
+{% endblock %}

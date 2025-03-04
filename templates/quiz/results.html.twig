@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Résultats du Quiz : {{ quiz.nom }}</h1>
+
+    <h2>Votre score : {{ score }} / {{ totalQuestions }}</h2>
+
+    <h3>Détail des réponses :</h3>
+    <ul>
+        {% for userReponse in userReponses %}
+            <li>
+                <strong>Question :</strong> {{ userReponse.question.texte }}<br>
+                <strong>Votre réponse :</strong> {{ userReponse.reponse.texte }}<br>
+                <strong>Correcte :</strong> {{ userReponse.estCorrecte ? 'Oui' : 'Non' }}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ path('app_quiz_list') }}" class="btn btn-secondary">Retour à la liste des quiz</a>
+{% endblock %}

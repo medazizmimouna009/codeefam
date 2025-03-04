@@ -1,0 +1,191 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Email de réinitialisation envoyé{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }} {# Hérite des styles de la page de connexion #}
+    <style>
+        /* Styles supplémentaires pour les étapes */
+        
+        
+        
+         .login {
+            background-color: #f6f9ff;
+            display: flex;
+            justify-content:center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px; /* Ajustez la largeur maximale selon vos besoins */
+            margin-right:200px
+        }
+
+        
+        
+        .steps-horizontal {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            max-width: 800px;
+            position: relative;
+            padding: 0;
+            margin-bottom: 2rem;
+        }
+
+        .steps-horizontal::before {
+            content: '';
+            position: absolute;
+            top: 24px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e9ecef;
+            z-index: 1;
+        }
+
+        .step-horizontal {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 20px;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        .step-title {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .step-description {
+            font-size: 12px;
+            color: #adb5bd;
+            max-width: 150px;
+            margin: 0 auto;
+        }
+
+        .step-horizontal.active .step-icon {
+            background: #4361ee;
+            border-color: #4361ee;
+            color: white;
+            box-shadow: 0 0 0 5px rgba(67, 97, 238, 0.2);
+        }
+
+        .step-horizontal.complete .step-icon {
+            background: #2ecc71;
+            border-color: #2ecc71;
+            color: white;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <main>
+        <div class="container">
+            <section class="section login min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+                            <div    style="margin-right:200px"  class="d-flex justify-content-center py-4">
+                                <a href="{{ path('app_home') }}" class="logo d-flex align-items-center w-auto">
+                                    <img src="{{ asset('landing/img/favicon.png') }}" alt="">
+                                    <span class="d-none d-lg-block">Codefam</span>
+                                </a>
+                            </div><!-- End Logo -->
+
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="pt-4 pb-2">
+                                        <h5 class="card-title text-center pb-0 fs-4">Email de réinitialisation envoyé</h5>
+                                        <p class="text-center small">Vérifiez votre boîte de réception</p>
+                                    </div>
+
+                                    <!-- Steps -->
+                                    <div class="steps-horizontal">
+                                        <div class="step-horizontal complete">
+                                            <div class="step-icon">
+                                                <i class="fas fa-envelope"></i>
+                                            </div>
+                                            <div class="step-title">Étape 1</div>
+                                            <div class="step-description">Email envoyé</div>
+                                        </div>
+                                        <div class="step-horizontal">
+                                            <div class="step-icon">
+                                                <i class="fas fa-key"></i>
+                                            </div>
+                                            <div class="step-title">Étape 2</div>
+                                            <div class="step-description">Réinitialisation</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Message de confirmation -->
+                                    <div class="text-center">
+                                        <p>
+                                            Si un compte correspondant à votre email existe, un email vient d'être envoyé contenant un lien pour réinitialiser votre mot de passe.
+                                            Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+                                        </p>
+                                        <p>
+                                            Si vous ne recevez pas d'email, vérifiez votre dossier spam ou
+                                            <a href="{{ path('app_forgot_password_request') }}">essayez à nouveau</a>.
+                                        </p>
+                                    </div>
+
+                                    <!-- Lien de retour à la connexion -->
+                                    <div class="col-12 text-center mt-3">
+                                        <p class="small mb-0">Vous avez déjà un compte ? <a href="{{ path('app_login') }}">Se connecter</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main><!-- End #main -->
+
+    <!-- Vendor JS Files -->
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('vendor/quill/quill.js') }}"></script>
+    <script src="{{ asset('vendor/simple-datatables/simple-datatables.js') }}"></script>
+    <script src="{{ asset('vendor/tinymce/tinymce.min.js') }}"></script>
+    <!-- Template Main JS File -->
+    <script src="{{ asset('js/main.js') }}"></script>
+    <!-- Add SweetAlert2 for toast notifications -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            {% for message in app.flashes('success') %}
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: '{{ message }}',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                });
+            {% endfor %}
+        });
+    </script>
+{% endblock %}

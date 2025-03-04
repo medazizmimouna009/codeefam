@@ -1,0 +1,76 @@
+{{ form_start(form, {'attr': {'class': 'form-horizontal', 'novalidate': 'novalidate'}}) }}
+    {# Texte de la question #}
+    <div class="mb-3">
+        {{ form_label(form.text, 'Texte de la question', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+        {{ form_widget(form.text, {
+            'attr': {
+                'class': 'form-control' ~ (form.text.vars.valid ? '' : ' is-invalid'),
+                'placeholder': 'Entrez le texte de la question'
+            }
+        }) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.text) }}
+        </div>
+    </div>
+
+    {# Type de question #}
+    <div class="mb-3">
+        {{ form_label(form.type, 'Type de question', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+        {{ form_widget(form.type, {
+            'attr': {
+                'class': 'form-select' ~ (form.type.vars.valid ? '' : ' is-invalid')
+            }
+        }) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.type) }}
+        </div>
+    </div>
+
+    {# Difficulté #}
+    <div class="mb-3">
+        {{ form_label(form.difficulty, 'Difficulté', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+        {{ form_widget(form.difficulty, {
+            'attr': {
+                'class': 'form-select' ~ (form.difficulty.vars.valid ? '' : ' is-invalid')
+            }
+        }) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.difficulty) }}
+        </div>
+    </div>
+
+    {# Réponse correcte #}
+    <div class="mb-3">
+        {{ form_label(form.correctAnswer, 'Réponse correcte', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+        {{ form_widget(form.correctAnswer, {
+            'attr': {
+                'class': 'form-control' ~ (form.correctAnswer.vars.valid ? '' : ' is-invalid'),
+                'placeholder': 'Entrez la réponse correcte'
+            }
+        }) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.correctAnswer) }}
+        </div>
+    </div>
+
+    {# Réponses incorrectes #}
+    <div class="mb-3">
+        {{ form_label(form.wrongAnswers, 'Réponses incorrectes', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+        {{ form_widget(form.wrongAnswers, {
+            'attr': {
+                'class': 'form-control' ~ (form.wrongAnswers.vars.valid ? '' : ' is-invalid'),
+                'placeholder': 'Entrez les réponses incorrectes (séparées par des virgules)'
+            }
+        }) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.wrongAnswers) }}
+        </div>
+    </div>
+
+    {# Submit button #}
+    <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-success btn-lg">
+            <i class="fas fa-save me-2"></i>Enregistrer
+        </button>
+    </div>
+{{ form_end(form) }}

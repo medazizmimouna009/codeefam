@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le Quiz{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4 text-primary fw-bold">Modifier le Quiz</h1>
+
+        <div class="card shadow-lg p-4 mx-auto" style="max-width: 600px;">
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                <!-- Nom du Quiz -->
+                <div class="mb-3">
+                    {{ form_label(form.nom, 'Nom du Quiz', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.nom, {'attr': {'class': 'form-control' ~ (form.nom.vars.valid ? '' : ' is-invalid'), 'placeholder': 'Entrez le nom du quiz'}}) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.nom) }}
+                    </div>
+                </div>
+
+                <!-- Bouton de soumission -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-save me-2"></i>Mettre à jour
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+
+        <!-- Bouton de retour avec icône -->
+        <div class="mt-4 text-center">
+            <a href="{{ path('app_quiz_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+            </a>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tuteur index{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <style>
+        .profile-card {
+            max-width: 340px;
+            background-color: #f8f9fa;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .bg-light {
+            background-color: #f6f9ff !important;
+        }
+
+        .list-group-item {
+            background-color: transparent;
+            border: none;
+        }
+
+        .btn-outline-primary {
+            border-color: #0d6efd;
+            color: #0d6efd;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #0d6efd;
+            color: #fff;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="bg-light">
+        <div class="container py-5">
+          
+            <div class="row">
+                {% for tuteur in tuteurs %}
+                    {% if tuteur.role == 'ROLE_TUTEUR' %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card profile-card shadow">
+                                <div class="card-body text-center">
+                                    <!-- Profile Image -->
+                                    {% if tuteur.photoDeProfil %}
+                                    <img src="{{ asset('uploads/profile_images/' ~ tuteur.photoDeProfil) }}" alt="Profile Image" class="profile-img mb-3">
+                                {% else %}
+                                    <img src="{{ asset('img/placeholderprofile.png') }}" alt="Placeholder Image" class="profile-img mb-3">
+                                {% endif %}
+                                    <!-- Nom et Prenom -->
+                                    <h3 class="card-title mb-0">{{ tuteur.nom }} {{ tuteur.prenom }}</h3>
+                                    <p class="text-muted">{{ tuteur.specialite }}</p>
+
+                                    <!-- Bio -->
+                                    <p class="card-text">{{ tuteur.bio }}</p>
+
+                                    <!-- Contact and Location -->
+                                    <ul class="list-group list-group-flush mb-3">
+                                        <li class="list-group-item">
+                                            <i class="bi bi-envelope-fill me-2"></i>{{ tuteur.email }}
+                                        </li>
+                                        <li class="list-group-item">
+                                            <i class="bi bi-geo-alt-fill me-2"></i>{{ tuteur.adresse }}
+                                        </li>
+                                    </ul>
+
+                                    <!-- Social Links (Placeholder) -->
+                                    <div class="d-flex justify-content-center mb-3">
+                                        <a href="#" class="btn btn-outline-primary me-2"><i class="bi bi-twitter"></i></a>
+                                        <a href="#" class="btn btn-outline-primary me-2"><i class="bi bi-linkedin"></i></a>
+                                        <a href="#" class="btn btn-outline-primary"><i class="bi bi-github"></i></a>
+                                    </div>
+
+                                    <!-- Stats -->
+                                    <div class="d-flex justify-content-between text-center mt-4">
+                                        <div>
+                                            <h5 class="mb-0">1.5k</h5>
+                                            <small class="text-muted">Followers</small>
+                                        </div>
+                                        <div>
+                                            <h5 class="mb-0">120</h5>
+                                            <small class="text-muted">Projects</small>
+                                        </div>
+                                        <div>
+                                            <h5 class="mb-0">4.8</h5>
+                                            <small class="text-muted">Rating</small>
+                                        </div>
+                                    </div>
+
+                                    <!-- Connect Button -->
+                                    <button class="btn btn-primary w-100 mt-4">Rate</button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="col-12 text-center">
+                        <p class="text-muted">Aucun tuteur trouvé</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
