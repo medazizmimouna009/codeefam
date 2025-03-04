@@ -1,0 +1,30 @@
+{# templates/chart/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Sales Chart</h2>
+
+    {# Canvas pour le graphique #}
+    <canvas id="myChart" width="400" height="200"></canvas>
+
+    {# Inclure Chart.js depuis un CDN #}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    {# Script pour créer le graphique #}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {{ chart|json_encode|raw }}, // Utilisation des données dynamiques
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

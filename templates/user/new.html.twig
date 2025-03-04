@@ -1,0 +1,165 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un nouvel utilisateur{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4 text-primary fw-bold">
+            Créer un nouvel utilisateur
+        </h1>
+
+        <div class="card shadow-lg p-4 mx-auto" style="max-width: 1200px;">
+            <form action="{{ path('app_user_new') }}" method="post" class="row g-3 needs-validation" novalidate>
+                <!-- First Column -->
+                <div class="col-md-6">
+                    <!-- Prénom -->
+                    <div class="mb-3">
+                        <label for="prenom" class="form-label fw-bold">Prénom</label>
+                        <input type="text" class="form-control {{ errors.prenom is defined ? 'is-invalid' : '' }}" id="prenom" name="prenom" value="{{ formData.prenom ?? '' }}" placeholder="Entrez le prénom" required>
+                        {% if errors.prenom is defined %}
+                            <div class="invalid-feedback">{{ errors.prenom }}</div>
+                        {% else %}
+                            <div class="invalid-feedback">Le prénom ne peut pas être vide.</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Nom -->
+                    <div class="mb-3">
+                        <label for="nom" class="form-label fw-bold">Nom</label>
+                        <input type="text" class="form-control {{ errors.nom is defined ? 'is-invalid' : '' }}" id="nom" name="nom" value="{{ formData.nom ?? '' }}" placeholder="Entrez le nom" required>
+                        {% if errors.nom is defined %}
+                            <div class="invalid-feedback">{{ errors.nom }}</div>
+                        {% else %}
+                            <div class="invalid-feedback">Le nom ne peut pas être vide.</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-bold">Email</label>
+                        <input type="email" class="form-control {{ errors.email is defined ? 'is-invalid' : '' }}" id="email" name="email" value="{{ formData.email ?? '' }}" placeholder="Entrez l'email" required>
+                        {% if errors.email is defined %}
+                            <div class="invalid-feedback">{{ errors.email }}</div>
+                        {% else %}
+                            <div class="invalid-feedback">L'email ne peut pas être vide et doit être valide.</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Mot de passe -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label fw-bold">Mot de passe</label>
+                        <input type="password" class="form-control {{ errors.password is defined ? 'is-invalid' : '' }}" id="password" name="password" placeholder="Entrez le mot de passe" required>
+                        {% if errors.password is defined %}
+                            <div class="invalid-feedback">{{ errors.password }}</div>
+                        {% else %}
+                            <div class="invalid-feedback">Le mot de passe ne peut pas être vide et doit contenir au moins 6 caractères.</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Second Column -->
+                <div class="col-md-6">
+                    <!-- Numéro de téléphone -->
+                    <div class="mb-3">
+                        <label for="numTel" class="form-label fw-bold">Numéro de téléphone</label>
+                        <input type="tel" class="form-control {{ errors.numTel is defined ? 'is-invalid' : '' }}" id="numTel" name="numTel" value="{{ formData.numTel ?? '' }}" placeholder="Entrez le numéro de téléphone" required>
+                        {% if errors.numTel is defined %}
+                            <div class="invalid-feedback">{{ errors.numTel }}</div>
+                        {% else %}
+                            <div class="invalid-feedback">Le numéro de téléphone doit contenir exactement 8 chiffres.</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Date de naissance -->
+                    <div class="mb-3">
+                        <label for="dateDeNaissance" class="form-label fw-bold">Date de naissance</label>
+                        <input type="date" class="form-control {{ errors.dateDeNaissance is defined ? 'is-invalid' : '' }}" id="dateDeNaissance" name="dateDeNaissance" value="{{ formData.dateDeNaissance ?? '' }}" required>
+                        {% if errors.dateDeNaissance is defined %}
+                            <div class="invalid-feedback">{{ errors.dateDeNaissance }}</div>
+                        {% else %}
+                            <div class="invalid-feedback">La date de naissance ne peut pas être vide.</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Adresse -->
+                    <div class="mb-3">
+                        <label for="adresse" class="form-label fw-bold">Adresse</label>
+                        <input type="text" class="form-control {{ errors.adresse is defined ? 'is-invalid' : '' }}" id="adresse" name="adresse" value="{{ formData.adresse ?? '' }}" placeholder="Entrez l'adresse" required>
+                        {% if errors.adresse is defined %}
+                            <div class="invalid-feedback">{{ errors.adresse }}</div>
+                        {% else %}
+                            <div class="invalid-feedback">L'adresse ne peut pas être vide.</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Bio -->
+                    <div class="mb-3">
+                        <label for="bio" class="form-label fw-bold">Bio</label>
+                        <textarea class="form-control {{ errors.bio is defined ? 'is-invalid' : '' }}" id="bio" name="bio" placeholder="Écrivez une courte bio">{{ formData.bio ?? '' }}</textarea>
+                        {% if errors.bio is defined %}
+                            <div class="invalid-feedback">{{ errors.bio }}</div>
+                        {% else %}
+                            <div class="invalid-feedback">La bio ne peut pas dépasser 500 caractères.</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="col-12">
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+            <i class="fas fa-plus me-2"></i>Ajouter
+        </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="mt-4 text-center">
+            <a href="{{ path('app_user_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+            </a>
+        </div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // JavaScript to force showing validation errors
+        (function () {
+            'use strict';
+
+            // Fetch the form element
+            const form = document.querySelector('.needs-validation');
+
+            // Add event listener for form submission
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault(); // Prevent form submission
+                    event.stopPropagation(); // Stop event propagation
+                }
+
+                // Add the 'was-validated' class to show validation errors
+                form.classList.add('was-validated');
+            }, false);
+        })();
+        {# templates/user/index.html.twig #}
+        </script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const flashMessages = {{ app.flashes|json_encode|raw }};
+    
+                if (flashMessages.success) {
+                    flashMessages.success.forEach(message => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: message,
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                        });
+                    });
+                }
+            });
+        </script>
+{% endblock %}

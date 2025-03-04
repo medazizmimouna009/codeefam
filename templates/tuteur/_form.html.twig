@@ -1,0 +1,89 @@
+{# tuteur/_form.html.twig #}
+
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+    {# Email Field #}
+    <div class="mb-3">
+        {{ form_label(form.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.email, {'attr': {'class': 'form-control' ~ (form.email.vars.errors|length ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.email) }}
+        </div>
+    </div>
+
+    {# Password Field #}
+    <div class="mb-3">
+        {{ form_label(form.password, 'Password', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.password, {'attr': {'class': 'form-control' ~ (form.password.vars.errors|length ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.password) }}
+        </div>
+    </div>
+
+    {# First Name Field #}
+    <div class="mb-3">
+        {{ form_label(form.nom, 'First Name', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.nom, {'attr': {'class': 'form-control' ~ (form.nom.vars.errors|length ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.nom) }}
+        </div>
+    </div>
+
+    {# Last Name Field #}
+    <div class="mb-3">
+        {{ form_label(form.prenom, 'Last Name', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.prenom, {'attr': {'class': 'form-control' ~ (form.prenom.vars.errors|length ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.prenom) }}
+        </div>
+    </div>
+
+    {# Date of Birth Field #}
+    <div class="mb-3">
+        {{ form_label(form.dateDeNaissance, 'Date of Birth', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.dateDeNaissance, {'attr': {'class': 'form-control' ~ (form.dateDeNaissance.vars.errors|length ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.dateDeNaissance) }}
+        </div>
+    </div>
+
+    {# Phone Number Field #}
+    <div class="mb-3">
+        {{ form_label(form.numTel, 'Phone Number', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.numTel, {'attr': {'class': 'form-control' ~ (form.numTel.vars.errors|length ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.numTel) }}
+        </div>
+    </div>
+
+    {# Address Field #}
+    <div class="mb-3">
+        {{ form_label(form.adresse, 'Address', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.adresse, {'attr': {'class': 'form-control' ~ (form.adresse.vars.errors|length ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.adresse) }}
+        </div>
+    </div>
+
+    {# specialite Field #}
+    <div class="mb-3">
+        {{ form_label(form.specialite, 'Specialite', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.specialite, {'attr': {'class': 'form-control' ~ (form.specialite.vars.errors|length ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.specialite) }}
+        </div>
+    </div>
+
+    {# Bio Field #}
+    <div class="mb-3">
+        {{ form_label(form.bio, 'Bio', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.bio, {'attr': {'class': 'form-control' ~ (form.bio.vars.errors|length ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.bio) }}
+        </div>
+    </div>
+
+    {# Submit Button #}
+    <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
+
+{{ form_end(form) }}

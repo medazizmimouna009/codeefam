@@ -1,0 +1,90 @@
+{# admin/_form.html.twig #}
+
+{{ form_start(form, {'attr': {'class': 'row g-3 needs-validation', 'novalidate': 'novalidate'}}) }}
+
+    <!-- First Column -->
+    <div class="col-md-6">
+        <!-- Prénom -->
+        <div class="mb-3">
+            {{ form_label(form.prenom, 'Prénom', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            {{ form_widget(form.prenom, {'attr': {'class': 'form-control' ~ (form.prenom.vars.errors|length ? ' is-invalid' : ''), 'placeholder': 'Entrez le prénom'}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.prenom) }}
+            </div>
+        </div>
+
+        <!-- Nom -->
+        <div class="mb-3">
+            {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            {{ form_widget(form.nom, {'attr': {'class': 'form-control' ~ (form.nom.vars.errors|length ? ' is-invalid' : ''), 'placeholder': 'Entrez le nom'}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.nom) }}
+            </div>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+            {{ form_label(form.email, 'Email', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            {{ form_widget(form.email, {'attr': {'class': 'form-control' ~ (form.email.vars.errors|length ? ' is-invalid' : ''), 'placeholder': 'Entrez l\'email'}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.email) }}
+            </div>
+        </div>
+
+        <!-- Mot de passe -->
+        <div class="mb-3">
+            {{ form_label(form.password, 'Mot de passe', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            {{ form_widget(form.password, {'attr': {'class': 'form-control' ~ (form.password.vars.errors|length ? ' is-invalid' : ''), 'placeholder': 'Entrez le mot de passe'}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.password) }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Column -->
+    <div class="col-md-6">
+        <!-- Numéro de téléphone -->
+        <div class="mb-3">
+            {{ form_label(form.numTel, 'Numéro de téléphone', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            {{ form_widget(form.numTel, {'attr': {'class': 'form-control' ~ (form.numTel.vars.errors|length ? ' is-invalid' : ''), 'placeholder': 'Entrez le numéro de téléphone'}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.numTel) }}
+            </div>
+        </div>
+
+        <!-- Date de naissance -->
+        <div class="mb-3">
+            {{ form_label(form.dateDeNaissance, 'Date de naissance', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            {{ form_widget(form.dateDeNaissance, {'attr': {'class': 'form-control' ~ (form.dateDeNaissance.vars.errors|length ? ' is-invalid' : '')}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.dateDeNaissance) }}
+            </div>
+        </div>
+
+        <!-- Adresse -->
+        <div class="mb-3">
+            {{ form_label(form.adresse, 'Adresse', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            {{ form_widget(form.adresse, {'attr': {'class': 'form-control' ~ (form.adresse.vars.errors|length ? ' is-invalid' : ''), 'placeholder': 'Entrez l\'adresse'}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.adresse) }}
+            </div>
+        </div>
+
+        <!-- Bio -->
+        <div class="mb-3">
+            {{ form_label(form.bio, 'Bio', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            {{ form_widget(form.bio, {'attr': {'class': 'form-control' ~ (form.bio.vars.errors|length ? ' is-invalid' : ''), 'placeholder': 'Écrivez une courte bio'}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.bio) }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary btn-lg w-100">
+            <i class="fas {{ button_icon|default('fa-save') }} me-2"></i>{{ button_label|default('Enregistrer') }}
+        </button>
+    </div>
+
+{{ form_end(form) }}

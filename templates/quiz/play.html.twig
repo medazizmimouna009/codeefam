@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Quiz : {{ quiz.nom }}</h1>
+
+    {{ form_start(form) }}
+        {% for question in questions %}
+            <div class="question">
+                <h3>{{ question.texte }}</h3>
+                {% for reponse in question.reponses %}
+                    <div class="reponse">
+                        <input type="radio"
+                               id="question_{{ question.id }}_{{ reponse.id }}"
+                               name="question_{{ question.id }}"
+                               value="{{ reponse.id }}">
+                        <label for="question_{{ question.id }}_{{ reponse.id }}">{{ reponse.texte }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary">Soumettre</button>
+    {{ form_end(form) }}
+{% endblock %}
