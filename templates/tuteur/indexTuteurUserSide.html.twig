@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tuteur index{% endblock %}
+
+{% block body %}
+    <h1>Tuteur cote user index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+              
+                <th>Email</th>
+              
+              
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>DateDeNaissance</th>
+              
+               
+                <th>Bio</th>
+                <th>PhotoDeProfil</th>
+               
+                <th>Specialite</th>
+             
+            </tr>
+        </thead>
+        <tbody>
+        {% for tuteur in tuteurs %}
+        {% if tuteur.role == 'ROLE_TUTEUR' %}
+            <tr>
+          
+                <td>{{ tuteur.email }}</td>
+            
+            
+                <td>{{ tuteur.nom }}</td>
+                <td>{{ tuteur.prenom }}</td>
+                <td>{{ tuteur.dateDeNaissance ? tuteur.dateDeNaissance|date('Y-m-d') : '' }}</td>
+            
+                <td>{{ tuteur.bio }}</td>
+                <td>{{ tuteur.photoDeProfil }}</td>
+        
+                <td>{{ tuteur.specialite }}</td>
+                
+            </tr>
+        {% endif %}
+        {% else %}
+            <tr>
+                <td colspan="15">Aucun tuteur trouvé</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+   
+{% endblock %}

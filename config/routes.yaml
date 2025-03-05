@@ -1,0 +1,17 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+# config/routes.yaml
+app_profile:
+    path: /profile
+    controller: App\Controller\ProfileController::index
+    # config/rou
+offres_liste:
+    path: /offres
+    controller: App\Controller\OffreController::index
+
+offres_ajout:
+    path: /offres/ajouter  # ✅ Modifier le chemin pour éviter la duplication
+    controller: App\Controller\OffreController::ajouter
