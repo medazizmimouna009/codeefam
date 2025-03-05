@@ -1,0 +1,175 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Post index{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            background-color: #fff;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: scale(1.02);
+        }
+        .card img {
+            width: 100%;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .card-body {
+            padding: 15px;
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .card-text {
+            font-size: 14px;
+            color: #777;
+        }
+        .btn {
+            margin-right: 5px;
+        }
+        .reactions {
+            margin-top: 10px;
+        }
+        .emoji-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5em;
+            margin-right: 5px;
+        }
+        .chat-form {
+            margin-top: 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h1>Post index</h1>
+
+    <div class="mb-4">
+        {{ form_start(form, {'attr': { 'novalidate': 'novalidate' }}) }}
+            <div class="form-group">
+                {{ form_label(form.contenu) }}
+                {{ form_widget(form.contenu) }}
+                {{ form_errors(form.contenu) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.image) }}
+                {{ form_widget(form.image) }}
+                {{ form_errors(form.image) }}
+            </div>
+            <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+        {{ form_end(form) }}
+    </div>
+
+    <div class="row">
+        {% for post in posts %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card" data-id="{{ post.id }}">
+                    {% if post.image %}
+                        <img src="{{ asset('uploads/images/' ~ post.image) }}" class="card-img-top" alt="Post Image">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ post.contenu }}</h5>
+                        <p class="card-text"><small class="text-muted">{{ post.dateCreation ? post.dateCreation|date('Y-m-d H:i:s') : '' }}</small></p>
+                        <a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn btn-primary">Add Comments</a>
+                        {% if app.user and app.user == post.idUser %}
+                            <a href="{{ path('app_post_edit', {'id': post.id, 'user_id': user_id}) }}" class="btn btn-primary">Edit</a>
+                            <button class="btn btn-danger delete-post" data-csrf-token="{{ csrf_token('delete' ~ post.id) }}">Delete</button>
+                        {% endif %}
+                        <div class="reactions">
+                            {% for reaction in post.reactions %}
+                                <span>{{ reaction.emoji }} ({{ post.reactions|length }})</span>
+                            {% endfor %}
+                            <button class="emoji-btn" data-emoji="👍" data-post-id="{{ post.id }}">👍</button>
+                            <button class="emoji-btn" data-emoji="❤️" data-post-id="{{ post.id }}">❤️</button>
+                            <button class="emoji-btn" data-emoji="😂" data-post-id="{{ post.id }}">😂</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <p>No records found</p>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <script>
+        document.querySelectorAll('.delete-post').forEach(button => {
+            button.addEventListener('click', function() {
+                const postElement = this.closest('.card');
+                const postId = postElement.getAttribute('data-id');
+                const csrfToken = this.getAttribute('data-csrf-token');
+
+                console.log('Post ID:', postId);
+                console.log('CSRF Token:', csrfToken);
+
+                fetch(`/post/${postId}/delete`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Post deleted successfully');
+                        postElement.remove();
+                    } else {
+                        console.error('Failed to delete post. Status:', response.status);
+                        alert('Failed to delete post.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while trying to delete the post.');
+                });
+            });
+        });
+
+        document.querySelectorAll('.emoji-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const emoji = this.getAttribute('data-emoji');
+                const postId = this.getAttribute('data-post-id');
+
+                fetch(`/post/${postId}/react`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token('react') }}'
+                    },
+                    body: JSON.stringify({ emoji: emoji })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Reaction added successfully');
+                        location.reload();
+                    } else {
+                        console.error('Failed to add reaction');
+                        alert('Failed to add reaction.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while trying to add the reaction.');
+                });
+            });
+        });
+    </script>
+    <script>
+(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="-EqE_ByXNvl5ubTE9IVI6";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+</script>
+<iframe
+    src="https://www.chatbase.co/chatbot-iframe/-EqE_ByXNvl5ubTE9IVI6"
+    width="100%"
+    style="height: 100%; min-height: 700px"
+    frameborder="0"
+></iframe> 
+{% endblock %}

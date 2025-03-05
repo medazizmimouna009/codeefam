@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commentaire{% endblock %}
+
+{% block body %}
+    <h1>My Commentaires</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Contenu</th>
+                <th>DateCreation</th>
+                <th>IdUser</th>
+                <th>IdPost</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for commentaire in commentaire %}
+                {% if commentaire.user == app.user %}
+                    <tr>
+                        <td>{{ commentaire.id }}</td>
+                        <td>{{ commentaire.contenu }}</td>
+                        <td>{{ commentaire.dateCreation ? commentaire.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
+                        <td>{{ commentaire.iduser }}</td>
+                        <td>{{ commentaire.idpost }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_commentaire_index') }}">back to list</a>
+{% endblock %}

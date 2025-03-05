@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 
+
 {% block title %}Users{% endblock %}
 
 {% block body %}
@@ -215,4 +216,62 @@
 </script>
 
     
+{% endblock %}
+
+{% block title %}User index{% endblock %}
+
+{% block body %}
+    <h1>User cote admin index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+              
+                <th>Email</th>
+                <th>Role</th>
+                <th>Password</th>
+                <th>IsVerified</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>DateDeNaissance</th>
+                <th>NumTel</th>
+                <th>Adresse</th>
+                <th>Bio</th>
+                <th>PhotoDeProfil</th>
+                <th>DateInscrit</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            {% if user.role == 'ROLE_USER' %}
+            <tr>
+               
+                <td>{{ user.email }}</td>
+                <td>{{ user.role }}</td>
+                <td>{{ user.password }}</td>
+                <td>{{ user.isVerified ? 'Yes' : 'No' }}</td>
+                <td>{{ user.nom }}</td>
+                <td>{{ user.prenom }}</td>
+                <td>{{ user.dateDeNaissance ? user.dateDeNaissance|date('Y-m-d') : '' }}</td>
+                <td>{{ user.numTel }}</td>
+                <td>{{ user.adresse }}</td>
+                <td>{{ user.bio }}</td>
+                <td>{{ user.photoDeProfil }}</td>
+                <td>{{ user.dateInscrit ? user.dateInscrit|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
+                    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% endif %}
+        {% else %}
+            <tr>
+                <td colspan="14">Aucun utilisateur trouvé</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_user_new') }}">Créer un nouvel utilisateur</a>
 {% endblock %}

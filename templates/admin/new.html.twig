@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 
+<<<<<<< HEAD
 {% block title %}Créer un nouvel Admin{% endblock %}
 
 {% block body %}
@@ -158,3 +159,14 @@
         });
     </script>
 {% endblock %}
+=======
+{% block title %}New Admin{% endblock %}
+
+{% block body %}
+    <h1>Create new Admin</h1>
+
+    {{ include('admin/_form.html.twig') }}
+
+    <a href="{{ path('app_admin_index') }}">back to list</a>
+{% endblock %}
+>>>>>>> gestionforum1

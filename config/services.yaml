@@ -5,6 +5,16 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     profile_pictures_directory: '%kernel.project_dir%/public/uploads/profile_pictures'
+
+
+    images_directory: '%kernel.project_dir%/public/uploads/images'
+    profanity_filter_api_key: '%env(API_NINJAS_KEY)%'
+    openai_api_key: '%env(OPENAI_API_KEY)%'
+    chatbot_api_key: '%env(CHATBOT_API_KEY)%'
+    image_to_text_api_key: '%env(IMAGE_TO_TEXT_API_KEY)%'
+    env(SNAPPY_PDF_BINARY): 'C:\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
+
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -22,3 +32,28 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Service\ProfanityFilterService:
+        arguments:
+            $apiKey: '%profanity_filter_api_key%'
+            $logger: '@logger'
+
+    App\Service\ChatService:
+        arguments:
+            $apiKey: '%chatbot_api_key%'
+            $logger: '@logger'
+
+    App\Service\PostService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $imagesDirectory: '%images_directory%'
+
+    Knp\Snappy\Pdf:
+        arguments:
+            $binary: '%env(resolve:SNAPPY_PDF_BINARY)%'
+
+
+
+
+
+

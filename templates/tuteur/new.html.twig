@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 
+
 {% block title %}Créer un nouvel Tuteur{% endblock %}
 
 {% block body %}
@@ -174,3 +175,14 @@
 
            
           
+
+{% block title %}New Tuteur{% endblock %}
+
+{% block body %}
+    <h1>Create new Tuteur</h1>
+
+    {{ include('tuteur/_form.html.twig') }}
+
+    <a href="{{ path('app_tuteur_index') }}">back to list</a>
+{% endblock %}
+

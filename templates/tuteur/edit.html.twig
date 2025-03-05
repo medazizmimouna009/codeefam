@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 
+
 {% block title %}Modifier un utilisateur{% endblock %}
 
 {% block body %}
@@ -169,3 +170,16 @@
         });
     </script>
 {% endblock %}
+
+{% block title %}Edit Tuteur{% endblock %}
+
+{% block body %}
+    <h1>Edit Tuteur</h1>
+
+    {{ include('tuteur/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_tuteur_index') }}">back to list</a>
+
+    {{ include('tuteur/_delete_form.html.twig') }}
+{% endblock %}
+

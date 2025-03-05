@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Post{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            padding: 20px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+
+        h1 {
+            color: #1877f2;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background-color: #1877f2;
+            border-color: #1877f2;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #165eab;
+        }
+
+        .btn-secondary {
+            background-color: #e4e6eb;
+            border-color: #e4e6eb;
+            color: #050505;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d0d3d8;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #dddfe2;
+        }
+
+        .form-control:focus {
+            border-color: #1877f2;
+            outline: none;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h1>Create new Post</h1>
+
+    <div class="card">
+        <div class="card-body">
+            {{ form_start(form, {'attr': { 'novalidate': 'novalidate' }}) }}
+                {{ form_widget(form) }}
+                <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <a href="{{ path('app_post_index', {'user_id': user_id}) }}" class="btn btn-secondary mt-3">Back to list</a>
+{% endblock %}

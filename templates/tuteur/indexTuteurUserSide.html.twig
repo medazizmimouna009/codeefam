@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 
+
 {% block title %}Tuteur index{% endblock %}
 
 {% block stylesheets %}
@@ -9,10 +10,19 @@
         .profile-card {
             max-width: 340px;
             background-color: #f8f9fa;
+
+{% block title %}Tuteur Index{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .floating-card {
+            margin-top: 50px;
+
             border: none;
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         }
+
 
         .profile-img {
             width: 150px;
@@ -40,11 +50,27 @@
         .btn-outline-primary:hover {
             background-color: #0d6efd;
             color: #fff;
+
+        .card-header {
+            background-color: #0d6efd;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .card-footer {
+            background-color: #f8f9fa;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+        .table {
+            margin-bottom: 0;
+
         }
     </style>
 {% endblock %}
 
 {% block body %}
+
     <div class="bg-light">
         <div class="container py-5">
           
@@ -111,6 +137,52 @@
                         <p class="text-muted">Aucun tuteur trouvé</p>
                     </div>
                 {% endfor %}
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card floating-card">
+                    <div class="card-header">
+                        <h1 class="h4 mb-0">Tuteur Cote User Index</h1>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Nom</th>
+                                    <th scope="col">Prenom</th>
+                                    <th scope="col">Date de Naissance</th>
+                                    <th scope="col">Bio</th>
+                                    <th scope="col">Photo de Profil</th>
+                                    <th scope="col">Specialite</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tuteur in tuteurs %}
+                                    {% if tuteur.role == 'ROLE_TUTEUR' %}
+                                        <tr>
+                                            <td>{{ tuteur.email }}</td>
+                                            <td>{{ tuteur.nom }}</td>
+                                            <td>{{ tuteur.prenom }}</td>
+                                            <td>{{ tuteur.dateDeNaissance ? tuteur.dateDeNaissance|date('Y-m-d') : '' }}</td>
+                                            <td>{{ tuteur.bio }}</td>
+                                            <td>
+                                                <img src="{{ asset('uploads/profile_pictures/' ~ (tuteur.photoDeProfil ?: 'default-profile.png')) }}" alt="Profile Picture" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+                                            </td>
+                                            <td>{{ tuteur.specialite }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="7">Aucun tuteur trouvé</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

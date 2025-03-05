@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 
+
 {% block title %}Tuteur Index{% endblock %}
 
 {% block body %}
@@ -200,3 +201,64 @@
         });
     </script>
 {% endblock %} 
+=======
+{% block title %}Tuteur index{% endblock %}
+
+{% block body %}
+    <h1>Tuteur cote admin index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+              
+                <th>Email</th>
+                <th>Role</th>
+                <th>Password</th>
+                <th>IsVerified</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>DateDeNaissance</th>
+                <th>NumTel</th>
+                <th>Adresse</th>
+                <th>Bio</th>
+                <th>PhotoDeProfil</th>
+                <th>DateInscrit</th>
+                <th>Specialite</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for tuteur in tuteurs %}
+        {% if tuteur.role == 'ROLE_TUTEUR' %}
+            <tr>
+          
+                <td>{{ tuteur.email }}</td>
+                <td>{{ tuteur.role }}</td>
+                <td>{{ tuteur.password }}</td>
+                <td>{{ tuteur.isVerified ? 'Yes' : 'No' }}</td>
+                <td>{{ tuteur.nom }}</td>
+                <td>{{ tuteur.prenom }}</td>
+                <td>{{ tuteur.dateDeNaissance ? tuteur.dateDeNaissance|date('Y-m-d') : '' }}</td>
+                <td>{{ tuteur.numTel }}</td>
+                <td>{{ tuteur.adresse }}</td>
+                <td>{{ tuteur.bio }}</td>
+                <td>{{ tuteur.photoDeProfil }}</td>
+                <td>{{ tuteur.dateInscrit ? tuteur.dateInscrit|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ tuteur.specialite }}</td>
+                <td>
+                    <a href="{{ path('app_tuteur_show', {'id': tuteur.id}) }}">show</a>
+                    <a href="{{ path('app_tuteur_edit', {'id': tuteur.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% endif %}
+        {% else %}
+            <tr>
+                <td colspan="15">Aucun tuteur trouvé</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_tuteur_new') }}">Créer un nouvel tuteur</a>
+{% endblock %}
+

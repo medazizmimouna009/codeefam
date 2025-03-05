@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chat{% endblock %}
+
+{% block body %}
+    <h1>Chat with GPT</h1>
+
+    <form method="get" action="{{ path('chat') }}">
+        <div class="form-group">
+            <label for="message">Your Message:</label>
+            <input type="text" id="message" name="message" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Send</button>
+    </form>
+
+    {% if responseMessage %}
+        <h2>Response:</h2>
+        <p>{{ responseMessage }}</p>
+    {% endif %}
+{% endblock %}

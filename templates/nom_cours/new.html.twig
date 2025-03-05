@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 
+<<<<<<< HEAD
 {% block body %}
     <h1>Créer un nouveau nom de cours</h1>
 
@@ -10,3 +11,14 @@
 
     <a href="{{ path('app_nom_cours_index') }}">Retour à la liste</a>
 {% endblock %}
+=======
+{% block title %}New NomCours{% endblock %}
+
+{% block body %}
+    <h1>Create new NomCours</h1>
+
+    {{ include('nom_cours/_form.html.twig') }}
+
+    <a href="{{ path('app_nom_cours_index') }}">back to list</a>
+{% endblock %}
+>>>>>>> gestionforum1

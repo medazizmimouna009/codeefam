@@ -43,16 +43,21 @@
           <li><a href="{{ path('app_home') }}" class="active">Accueil</a></li>
           <li><a href="{{ path('app_home') }}">À propos</a></li>
           <li><a href="{{ path('app_home') }}">Cours</a></li>
-          <li><a href="{{ path('app_home') }}">Tuteurs</a></li>
+
+          <li><a href="{{ path('app_home') }}">Formateurs</a></li>
           <li><a href="{{ path('app_home') }}">Événements</a></li>
           <li><a href="{{ path('app_home') }}">Tarifs</a></li>
+
+
           <li><a href="{{ path('app_home') }}">Contact</a></li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
       <a class="btn-getstarted" href="{{ path('app_register') }}">Commencer</a>
+
     <a class="btn-getstarted" href="{{ path('app_login') }}">Se connecter</a>
+
     </div>
   </header>
 
@@ -71,6 +76,7 @@
     </section><!-- /Hero Section -->
 
     <!-- About Section -->
+
     <section id="about" class="about section">
       <div class="container">
         <div class="row gy-4">
@@ -92,6 +98,34 @@
         </div>
       </div>
     </section><!-- /About Section -->
+
+ <section id="about" class="about section py-5">
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-6 order-1 order-lg-2" data-aos="fade-up" data-aos-delay="100">
+        <img src="{{ asset('landing/img/about.jpg') }}" class="img-fluid rounded shadow" alt="CodeFam">
+      </div>
+      <div class="col-lg-6 order-2 order-lg-1 content" data-aos="fade-up" data-aos-delay="200">
+       
+        
+
+        <!-- Display the offers dynamically -->
+        <h4 class="mt-4">Nos Offres :</h4>
+        <div class="row">
+          
+            
+        </div>
+
+        <a href="#" class="read-more mt-4 d-inline-flex align-items-center">
+          <span>En savoir plus</span><i class="bi bi-arrow-right ms-2"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
 
     <!-- Counts Section -->
     <section id="counts" class="section counts light-background">
@@ -269,8 +303,12 @@
                 <p class="description">Apprenez les techniques de SEO pour améliorer la visibilité de votre site web.</p>
                 <div class="trainer d-flex justify-content-between align-items-center">
                   <div class="trainer-profile d-flex align-items-center">
+
                     <img src="{{ asset('landing/img/trainers/trainer-2-2.jpg') }}" class="img-fluid" alt="">
                     <a href="" class="trainer-link">Lana</a>
+
+                    
+
                   </div>
                   <div class="trainer-rank d-flex align-items-center">
                     <i class="bi bi-person user-icon"></i>&nbsp;35
@@ -314,11 +352,16 @@
       <div class="container" data-aos="fade-up">
         <div class="section-title">
           <h2>Tarifs</h2>
+
           <p>Nos Plans Tarifaires</p>
+
+          <p>Nos Offres </p>
+
         </div>
         <div class="row">
           <div class="col-lg-3 col-md-6">
             <div class="box" data-aos="zoom-in" data-aos-delay="100">
+
               <h3>Plan Gratuit</h3>
               <h4><sup>$</sup>0<span> / mois</span></h4>
               <ul>
@@ -353,6 +396,28 @@
             <div class="box" data-aos="zoom-in" data-aos-delay="300">
               <h3>Plan Pro</h3>
               <h4><sup>$</sup>49<span> / mois</span></h4>
+
+              <h3>Lite</h3>
+              <h4><sup></sup>29 TND<span> / mois</span></h4>
+              <ul>
+                <li>Fonctionnalités de base
+
+</li>
+                <li>Support communautaire</li>
+                <li>Pas d'options premium</li>
+              
+              </ul>
+              <div class="btn-wrap">
+                <a href="#" class="btn-buy">Acheter</a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-lg-3 col-md-6 mt-4 mt-lg-0">
+            <div class="box" data-aos="zoom-in" data-aos-delay="300">
+              <h3>Pro</h3>
+              <h4><sup></sup>99 TND<span> / mois</span></h4>
+
               <ul>
                 <li>Toutes les fonctionnalités basiques</li>
                 <li>Accès complet</li>
@@ -384,6 +449,7 @@
         </div>
       </div>
     </section><!-- /Pricing Section -->
+
   <!-- Trainers Index Section -->
 <section id="trainers-index" class="section trainers-index">
 <div class="container">
@@ -408,7 +474,8 @@
         {% endfor %}
     </div>
 </div>
-</section><!-- /Trainers Index Section -->
+</section>
+
   </main>
 
   <footer id="footer" class="footer position-relative light-background">

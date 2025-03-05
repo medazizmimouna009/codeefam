@@ -1,6 +1,12 @@
 @import '../css/style.css';
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
+
 body {
     font-family: Arial, sans-serif;
 }
+@import 'bootstrap-select/dist/css/bootstrap-select.min.css';
+body {
+    font-family: Arial, sans-serif;
+}
+
