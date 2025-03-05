@@ -72,7 +72,6 @@ public function findByRole(string $role): array
 
 
 
-
 public function add(User $user, bool $flush = false): void
 {
     $this->getEntityManager()->persist($user);
@@ -86,4 +85,3 @@ public function add(User $user, bool $flush = false): void
 
 
 }
-

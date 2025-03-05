@@ -8,9 +8,6 @@ auth_oauth_check:
     path: /auth/oauth/check
 
 
-app_profile:
-    path: /profile
-    controller: App\Controller\ProfileController::index
 
  
 

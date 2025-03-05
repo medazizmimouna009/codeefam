@@ -35,11 +35,12 @@ class SecurityController extends AbstractController
 
 
 
-    #[Route("/login/google", name: 'auth_oauth_login', methods: ['GET'])]
+    #[Route("/login/google", name: 'auth_oauth_login', methods: ['GET','POST'])]
     public function loginGoogle(): Response
     {
         if ($this->getUser()) {
-            return $this->redirectToRoute('index');
+            return $this->redirectToRoute('app_home'); // or another existing route
+
         }
 
         return $this->render("security/login.html.twig");
@@ -64,7 +65,7 @@ class SecurityController extends AbstractController
             ->redirect(self::SCOPES[$service], ['prompt' => 'select_account']);
     }
 
-    #[Route('/oauth/check/{service}', name: 'auth_oauth_check', methods: ['GET', 'POST'])]
+    #[Route('/oauth/check/{service}', name: 'auth_oauth_check', methods: ['GET'])]
     public function check(): Response
     {
         return new Response(status: 200);

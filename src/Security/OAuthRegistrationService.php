@@ -51,4 +51,3 @@ class OAuthRegistrationService
         return $user;
     }
 }
-
