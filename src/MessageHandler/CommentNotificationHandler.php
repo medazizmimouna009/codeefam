@@ -2,11 +2,11 @@
 
 namespace App\MessageHandler;
 
-use App\Message\CommentNotification;
+use App\Message\CommentNotification as CommentNotificationMessage;
+use App\Notification\CommentNotification;
 use App\Repository\CommentaireRepository;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Notifier\NotifierInterface;
-use Symfony\Component\Notifier\Notification\Notification;
 
 class CommentNotificationHandler implements MessageHandlerInterface
 {
@@ -19,7 +19,7 @@ class CommentNotificationHandler implements MessageHandlerInterface
         $this->notifier = $notifier;
     }
 
-    public function __invoke(CommentNotification $notification)
+    public function __invoke(CommentNotificationMessage $notification)
     {
         $commentaire = $this->commentaireRepository->find($notification->getCommentId());
 
@@ -27,9 +27,7 @@ class CommentNotificationHandler implements MessageHandlerInterface
             return;
         }
 
-        $notification = (new Notification('New Comment', ['email']))
-            ->content(sprintf('A new comment was posted: %s', $commentaire->getContenu()));
-
+        $notification = new CommentNotification($commentaire->getContenu());
         $this->notifier->send($notification);
     }
 }
