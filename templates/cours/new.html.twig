@@ -1,81 +1,158 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouveau Cour{% endblock %}
+{% block title %}Nouveau Cours{% endblock %}
 
 {% block body %}
-    <h1>Créer Cour</h1>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4 text-primary fw-bold">
+            <i class="fas fa-book me-2"></i>Créer un Nouveau Cours
+        </h1>
 
-    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-   
-        <div class="mb-3">
-            {{ form_label(form.titre, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.titre, {'attr': {'class': 'invalid-feedback'}}) }}
+        <div class="card shadow-lg p-4 mx-auto" style="max-width: 800px;">
+            {{ form_start(form, {'attr': {'class': 'row g-3', 'novalidate': 'novalidate'}}) }}
+
+                {# Titre #}
+                <div class="mb-3">
+                    {{ form_label(form.titre, 'Titre', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.titre, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.titre.vars.valid ? '' : ' is-invalid'),
+                            'placeholder': 'Entrez le titre du cours'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.titre) }}
+                    </div>
+                </div>
+
+                {# Description #}
+                <div class="mb-3">
+                    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.description, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.description.vars.valid ? '' : ' is-invalid'),
+                            'placeholder': 'Entrez la description du cours'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.description) }}
+                    </div>
+                </div>
+
+                {# Durée #}
+                <div class="mb-3">
+                    {{ form_label(form.duree, 'Durée', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.duree, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.duree.vars.valid ? '' : ' is-invalid'),
+                            'placeholder': 'Entrez la durée du cours'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.duree) }}
+                    </div>
+                </div>
+
+                {# Fichier (PDF) #}
+                <div class="mb-3">
+                    {{ form_label(form.fichierFile, 'Fichier (PDF)', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.fichierFile, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.fichierFile.vars.valid ? '' : ' is-invalid')
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.fichierFile) }}
+                    </div>
+                </div>
+
+              
+
+                {# Catégorie #}
+                <div class="mb-3">
+                    {{ form_label(form.categorie, 'Catégorie', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.categorie, {
+                        'attr': {
+                            'class': 'form-select' ~ (form.categorie.vars.valid ? '' : ' is-invalid')
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.categorie) }}
+                    </div>
+                </div>
+
+                {# Nom du Cours #}
+                <div class="mb-3">
+                    {{ form_label(form.nomCours, 'Nom du Cours', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.nomCours, {
+                        'attr': {
+                            'class': 'form-select' ~ (form.nomCours.vars.valid ? '' : ' is-invalid')
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.nomCours) }}
+                    </div>
+                </div>
+
+                
+                    
+
+                {# Bouton de soumission #}
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success btn-lg" style="margin-left: 300px;">
+                        <i class="fas fa-save me-2"></i>Créer
+                    </button>
+                </div>
+            {{ form_end(form) }}
         </div>
 
-        <div class="mb-3">
-            {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.description, {'attr': {'class': 'invalid-feedback'}}) }}
+        {# Lien de retour à la liste #}
+        <div class="mt-4 text-center">
+            <a href="{{ path('app_cours_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+            </a>
         </div>
+    </div>
 
-         <div class="mb-3">
-            {{ form_label(form.prix, 'Prix', {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.prix, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.prix, {'attr': {'class': 'invalid-feedback'}}) }}
-        </div>
+    {# Script pour la sélection dynamique des cours par catégorie #}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#{{ form.categorie.vars.id }}').change(function () {
+                var categoryId = $(this).val();
+                var selectCours = $('#{{ form.nomCours.vars.id }}');
 
-          <div class="mb-3">
-            {{ form_label(form.duree, 'Duree', {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.duree, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.duree, {'attr': {'class': 'invalid-feedback'}}) }}
-        </div>
+                console.log("Catégorie sélectionnée :", categoryId); // 🔍 Debug
 
+                if (categoryId) {
+                    $.ajax({
+                        url: '{{ path("app_nom_cours_by_categorie") }}',
+                        type: 'GET',
+                        data: { categorieId: categoryId },
+                        success: function (data) {
+                            console.log("Données reçues :", data); // 🔍 Debug
+                            selectCours.empty();
+                            selectCours.append('<option value="">Sélectionnez un cours</option>');
 
-
-         <div class="mb-3">
-            {{ form_label(form.fichierFile, 'Fichier (PDF)', {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.fichierFile, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.fichierFile, {'attr': {'class': 'invalid-feedback'}}) }}
-        </div>
-
-         <div class="mb-3">
-            {{ form_label(form.videos, 'Videos', {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.videos, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.videos, {'attr': {'class': 'invalid-feedback'}}) }}
-        </div>
-
-        
-
-        <div class="mb-3">
-            {{ form_label(form.updatedAt, 'Date de mise a jour', {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.updatedAt, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.updatedAt, {'attr': {'class': 'invalid-feedback'}}) }}
-        </div>
-
-
-         <div class="mb-3">
-            {{ form_label(form.categorie, 'Categories', {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.categorie, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.categorie, {'attr': {'class': 'invalid-feedback'}}) }}
-        </div>
-
-         <div class="mb-3">
-            {{ form_label(form.nomCours, 'Nom du Cours', {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.nomCours, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.nomCours, {'attr': {'class': 'invalid-feedback'}}) }}
-        </div>
-
-        <div class="mb-3">
-            {{ form_label(form.tuteur, 'tuteur', {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.tuteur, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.tuteur, {'attr': {'class': 'invalid-feedback'}}) }}
-        </div>
-        
-
-
-        <button type="submit" class="btn btn-primary">Create</button>
-    {{ form_end(form) }}
-
-    <a href="{{ path('app_categorie_index') }}">back to list</a>
+                            if (data.length > 0) {
+                                $.each(data, function (key, value) {
+                                    selectCours.append('<option value="' + value.id + '">' + value.nom + '</option>');
+                                });
+                            } else {
+                                selectCours.append('<option value="">Aucun cours trouvé</option>');
+                            }
+                        },
+                        error: function () {
+                            console.error("Erreur lors du chargement des cours.");
+                            selectCours.empty();
+                            selectCours.append('<option value="">Erreur de chargement</option>');
+                        }
+                    });
+                } else {
+                    selectCours.empty();
+                    selectCours.append('<option value="">Sélectionnez une catégorie d’abord</option>');
+                }
+            });
+        });
+    </script>
 {% endblock %}

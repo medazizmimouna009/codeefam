@@ -19,6 +19,7 @@
     <link href="{{ asset('vendor/quill/quill.bubble.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/remixicon/remixicon.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/simple-datatables/style.css') }}" rel="stylesheet">
+     <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet">
 
     <!-- Template Main CSS File -->
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
@@ -326,39 +327,119 @@
 
 
              <li class="nav-item">
-                 <a class="nav-link collapsed" data-bs-target="#cours-nav" data-bs-toggle="collapse" href="#">
+                {% if is_granted('ROLE_ADMIN') %}
+                 <a class="nav-link collapsed" data-bs-target="#cours-nav" data-bs-toggle="collapse" href="#" >
              <i class="bi bi-book"   style="font-size: 1.8em;"></i><span>Gérer Cours</span><i class="bi bi-chevron-down ms-auto"></i>
                  </a>
+                {% endif %}
+               {% if is_granted('ROLE_TUTEUR') %}
+                 <a class="nav-link collapsed" data-bs-target="#cours-nav" data-bs-toggle="collapse" href="#" >
+             <i class="bi bi-book"   style="font-size: 1.8em;"></i><span>Gérer Cours</span><i class="bi bi-chevron-down ms-auto"></i>
+                 </a>
+                {% endif %}     
+                  {% if is_granted('ROLE_USER') %}
+                 <a class="nav-link collapsed" data-bs-target="#cours-nav" data-bs-toggle="collapse" href="#" >
+             <i class="bi bi-book"   style="font-size: 1.8em;"></i><span>Cours</span><i class="bi bi-chevron-down ms-auto"></i>
+                 </a>
+                {% endif %}            
                  <ul id="cours-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                      <li>
+                         {% if is_granted('ROLE_ADMIN') %}
+
                          <a href="{{ path('app_cours_new') }}">
                              <i class="bi bi-circle"></i><span>Ajouter Cours</span>
                          </a>
+                         {% endif %} 
+                     </li>
+                       <li>
+                         {% if is_granted('ROLE_TUTEUR') %}
+
+                         <a href="{{ path('app_cours_new') }}">
+                             <i class="bi bi-circle"></i><span>Ajouter Cours</span>
+                         </a>
+                         {% endif %} 
                      </li>
                      <li>
+                            {% if is_granted('ROLE_ADMIN') %}
                          <a href="{{ path('app_cours_index') }}">
                              <i class="bi bi-circle"></i><span>Liste Cours</span>
                          </a>
+                            {% endif %}
+                     </li>
+                       <li>
+                            {% if is_granted('ROLE_TUTEUR') %}
+                         <a href="{{ path('app_cours_index') }}">
+                             <i class="bi bi-circle"></i><span>Liste Cours</span>
+                         </a>
+                            {% endif %}
                      </li>
                      <li>
+                            {% if is_granted('ROLE_ADMIN') %}
                          <a href="{{ path('app_categorie_new') }}">
                              <i class="bi bi-circle"></i><span>Ajouter Categorie</span>
                          </a>
+                            {% endif %}
                      </li>
                      <li>
+                            {% if is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('app_categorie_index') }}">
                             <i class="bi bi-circle"></i><span>Liste Categorie</span>
                         </a>
+                            {% endif %}
                     </li>
                      <li>
+                            {% if is_granted('ROLE_TUTEUR') %}
+                        <a href="{{ path('app_categorie_index') }}">
+                            <i class="bi bi-circle"></i><span>Liste Categorie</span>
+                        </a>
+                            {% endif %}
+                    </li>
+                     <li>
+                            {% if is_granted('ROLE_ADMIN') %}
                          <a href="{{ path('app_nom_cours_new') }}">
                              <i class="bi bi-circle"></i><span>Ajouter Nom Cours</span>
                          </a>
+                            {% endif %}
                          <li>
+                            {% if is_granted('ROLE_ADMIN') %}
                             <a href="{{ path('app_nom_cours_index') }}">
                                 <i class="bi bi-circle"></i><span>Liste Nom Cours</span>
                             </a>
+                            {% endif %}
                         </li>
+                         <li>
+                            {% if is_granted('ROLE_TUTEUR') %}
+                            <a href="{{ path('app_nom_cours_index') }}">
+                                <i class="bi bi-circle"></i><span>Liste Nom Cours</span>
+                            </a>
+                            {% endif %}
+                        </li>
+                        <li>
+                        {% if is_granted('ROLE_ADMIN') %}
+                         <a href="{{ path('app_video_new') }}">
+                             <i class="bi bi-circle"></i><span>Ajouter video</span>
+                         </a>
+                        {% endif %}
+                         <li>
+                          <li>
+                        {% if is_granted('ROLE_TUTEUR') %}
+                         <a href="{{ path('app_video_new') }}">
+                             <i class="bi bi-circle"></i><span>Ajouter video</span>
+                         </a>
+                        {% endif %}
+                         <li>
+                         {% if is_granted('ROLE_ADMIN') %}
+                         <a href="{{ path('app_video_index') }}">
+                             <i class="bi bi-circle"></i><span>Liste video</span>
+                         </a>
+                            {% endif %}
+                     </li>
+                          <li>
+                         {% if is_granted('ROLE_TUTEUR') %}
+                         <a href="{{ path('app_video_index') }}">
+                             <i class="bi bi-circle"></i><span>Liste video</span>
+                         </a>
+                            {% endif %}
                      </li>
                  </ul>
              </li><!-- End Charts Nav -->
@@ -1130,7 +1211,9 @@
     <script src="{{ asset('vendor/quill/quill.js') }}"></script>
     <script src="{{ asset('vendor/simple-datatables/simple-datatables.js') }}"></script>
     <script src="{{ asset('vendor/tinymce/tinymce.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
     <script src="{{ asset('vendor/php-email-form/validate.js') }}"></script>
+    <script src="https://vjs.zencdn.net/7.15.4/video.min.js"></script>
 
     <!-- Template Main JS File -->
     <script src="{{ asset('js/main.js') }}"></script>

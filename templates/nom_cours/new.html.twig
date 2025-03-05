@@ -1,35 +1,86 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New NomCours{% endblock %}
+{% block title %}Nouveau NomCours{% endblock %}
 
 {% block body %}
-    <h1>Create new NomCours</h1>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4 text-primary fw-bold">
+            <i class="fas fa-plus-circle me-2"></i>Créer un nouveau NomCours
+        </h1>
 
-    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}}) }}
+        <div class="card shadow-lg p-4 mx-auto" style="max-width: 800px;">
+            {{ form_start(form, {'attr': {'class': 'row g-3 needs-validation', 'novalidate': 'novalidate'}}) }}
 
-        {# Champ Nom #}
-        <div class="form-group">
-            {{ form_label(form.nom, "Nom du cours") }}
-            {{ form_widget(form.nom, {'attr': {'class': 'form-control' ~ (not form.nom.vars.valid ? ' is-invalid' : '')}}) }}
-            <div class="invalid-feedback">
-                {{ form_errors(form.nom) }} {# Affiche les messages d'erreur #}
-            </div>
+                {# Champ Nom #}
+                <div class="mb-3">
+                    {{ form_label(form.nom, 'Nom du cours', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.nom, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.nom.vars.valid ? '' : ' is-invalid'),
+                            'placeholder': 'Entrez le nom du cours',
+                            'required': 'required',
+                            'minlength': '3',
+                            'maxlength': '100'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                    nom est obligatoire.
+                        {{ form_errors(form.nom) }}
+                    </div>
+                    <div class="valid-feedback">
+                       
+                    </div>
+                </div>
+
+                {# Champ Catégorie #}
+                <div class="mb-3">
+                    {{ form_label(form.categorie, 'Catégorie', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.categorie, {
+                        'attr': {
+                            'class': 'form-select' ~ (form.categorie.vars.valid ? '' : ' is-invalid'),
+                            'required': 'required'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                    catégorie est obligatoire.
+                        {{ form_errors(form.categorie) }}
+                    </div>
+                    <div class="valid-feedback">
+                     
+                    </div>
+                </div>
+
+                {# Bouton de soumission #}
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success btn-lg" style="margin-left: 300px;">
+                        <i class="fas fa-save me-2"></i>Créer
+                    </button>
+                </div>
+            {{ form_end(form) }}
         </div>
 
-        {# Champ Catégorie #}
-        <div class="form-group">
-            {{ form_label(form.categorie, "Catégorie") }}
-            {{ form_widget(form.categorie, {'attr': {'class': 'form-control' ~ (not form.categorie.vars.valid ? ' is-invalid' : '')}}) }}
-            <div class="invalid-feedback">
-                {{ form_errors(form.categorie) }} {# Affiche les messages d'erreur #}
-            </div>
+        {# Lien de retour à la liste #}
+        <div class="mt-4 text-center">
+            <a href="{{ path('app_nom_cours_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+            </a>
         </div>
+    </div>
 
-        {# Bouton de soumission #}
-        <button type="submit" class="btn btn-primary">Create</button>
-
-    {{ form_end(form) }}
-
-    {# Lien de retour à la liste #}
-    <a href="{{ path('app_nom_cours_index') }}" class="btn btn-secondary mt-3">back to list</a>
+    {# Script de validation Bootstrap #}
+    <script>
+        (function () {
+            'use strict';
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
 {% endblock %}

@@ -1,45 +1,261 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Cours index{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .filter-container {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .navigation {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-start !important; /* Align to the left */
+        }
+
+        .btn-toggle {
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 14px;
+            border: 1px solid #ced4da;
+            background-color: white;
+            color: #495057;
+            margin: 2px;
+        }
+
+        .btn-toggle.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .btn-toggle:hover {
+            background-color:rgba(96, 101, 105, 0.13)!important;
+        }
+
+        .btn-primary {
+            border-radius: 20px;
+            padding: 5px 20px;
+            font-size: 14px;
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .card-header {
+            background-color:rgb(212, 215, 219);
+            color: white;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .card-title {
+            margin-bottom: 0;
+        }
+
+        .table {
+            margin-top: 20px;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .btn-success {
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 14px;
+        }
+
+        .navigation {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .spinner {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            font-size: 40px;
+            color: #007bff; /* Spinner color */
+        }
+
+        /* Overlay to block interaction during loading */
+        .overlay {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 999;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Cours index</h1>
+    <div class="container">
+        <!-- Overlay and Spinner -->
+        <div class="overlay"></div>
+        <div class="spinner">
+            <i class="fas fa-spinner fa-spin"></i> <!-- Font Awesome spinner -->
+        </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Titre</th>
-                <th>Description</th>
-                <th>Prix</th>
-                <th>Duree</th>
-                <th>Fichier</th>
-                <th>UpdatedAt</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for cour in cours %}
-            <tr>
-                <td>{{ cour.id }}</td>
-                <td>{{ cour.titre }}</td>
-                <td>{{ cour.description }}</td>
-                <td>{{ cour.prix }}</td>
-                <td>{{ cour.duree }}</td>
-                <td>{{ cour.fichierFile }}</td>
-                <td>{{ cour.updatedAt ? cour.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_cours_show', {'id': cour.id}) }}">show</a>
-                    <a href="{{ path('app_cours_edit', {'id': cour.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">No courses found for you</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteCoursModal" tabindex="-1" aria-labelledby="deleteCoursModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteCoursModalLabel">Confirmer la suppression</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Êtes-vous sûr de vouloir supprimer le cours "<span id="coursTitre"></span>" ?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn btn-danger" id="confirmDelete">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <a href="{{ path('app_cours_new') }}">Create new</a>
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title">Liste des Cours</h1>
+            </div>
+            <div class="card-body">
+                <!-- Conteneur principal pour l'alignement -->
+                <div class="filter-container d-flex justify-content-between align-items-center mb-4">
+                    <!-- Bouton Ajouter Cours à gauche -->
+                    <a href="{{ path('app_cours_new') }}" class="btn btn-success btn-sm">
+                        <i class="bi bi-plus"></i> Ajouter un Cours
+                    </a>
+
+                    <!-- Conteneur des filtres et du bouton Filtrer -->
+                    <div class="d-flex gap-2">
+                        <form method="get" action="{{ path('app_cours_index') }}" class="d-flex align-items-center gap-2">
+                            <!-- Filtre Durée -->
+                            <div class="form-group">
+                                <label for="duree" class="sr-only">Durée</label>
+                                <select name="duree" id="duree" class="form-control form-control-sm">
+                                    <option value="">Toutes les durées</option>
+                                    <option value="1" {% if app.request.query.get('duree') == '1' %}selected{% endif %}>1 heure</option>
+                                    <option value="2" {% if app.request.query.get('duree') == '2' %}selected{% endif %}>2 heures</option>
+                                    <option value="3" {% if app.request.query.get('duree') == '3' %}selected{% endif %}>3 heures</option>
+                                </select>
+                            </div>
+
+                            <!-- Bouton Filtrer -->
+                            <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tableau des Cours -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Titre</th>
+                            <th>Description</th>
+                            <th>Durée</th>
+                            <th>Fichier</th>
+                            <th>Mis à jour le</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cour in cours %}
+                            <tr>
+                                <td>{{ cour.id }}</td>
+                                <td>{{ cour.titre }}</td>
+                                <td>{{ cour.description }}</td>
+                                <td>{{ cour.duree }}</td>
+                                <td>{{ cour.fichierFile }}</td>
+                                <td>{{ cour.updatedAt ? cour.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                                <td>
+                                    <!-- Bouton Voir avec icône -->
+                                    <a href="{{ path('app_cours_show', {'id': cour.id}) }}" class="btn btn-info btn-sm">
+                                        <i class="bi bi-eye"></i> <!-- Icône d'œil -->
+                                    </a>
+                                    <!-- Bouton Modifier avec icône -->
+                                    <a href="{{ path('app_cours_edit', {'id': cour.id}) }}" class="btn btn-warning btn-sm">
+                                        <i class="bi bi-pencil"></i> <!-- Icône de stylo -->
+                                    </a>
+                                    <!-- Bouton Supprimer avec icône -->
+                                    <button type="button" class="btn btn-danger btn-sm delete-btn" data-bs-toggle="modal" data-bs-target="#deleteCoursModal" data-cours-id="{{ cour.id }}" data-cours-titre="{{ cour.titre }}">
+                                        <i class="bi bi-trash"></i> <!-- Icône de poubelle -->
+                                    </button>
+                                    <!-- Hidden Delete Form -->
+                                    <form id="deleteForm{{ cour.id }}" action="{{ path('app_cours_delete', {'id': cour.id}) }}" method="post" style="display: none;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ cour.id) }}">
+                                    </form>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="7">Aucun cours disponible</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+               
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show spinner on form submission (filtering)
+            const filterForm = document.querySelector('form[method="get"]');
+            filterForm.addEventListener('submit', function() {
+                document.querySelector('.overlay').style.display = 'block';
+                document.querySelector('.spinner').style.display = 'block';
+            });
+
+            
+
+            // Delete Confirmation Modal Logic
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteCoursModal'));
+            const coursTitreElement = document.getElementById('coursTitre');
+            const confirmDeleteButton = document.getElementById('confirmDelete');
+            let deleteForm = null;
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const coursId = this.getAttribute('data-cours-id');
+                    const coursTitre = this.getAttribute('data-cours-titre');
+
+                    // Set the cours titre in the modal
+                    coursTitreElement.textContent = coursTitre;
+
+                    // Find the corresponding delete form
+                    deleteForm = document.getElementById('deleteForm' + coursId);
+
+                    // Show the modal
+                    deleteModal.show();
+                });
+            });
+
+            // Handle the delete confirmation
+            confirmDeleteButton.addEventListener('click', function() {
+                if (deleteForm) {
+                    deleteForm.submit(); // Submit the form to delete the cours
+                }
+            });
+        });
+    </script>
 {% endblock %}

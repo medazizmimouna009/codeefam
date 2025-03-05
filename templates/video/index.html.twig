@@ -1,41 +1,96 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Video index{% endblock %}
+{% block title %}Liste des vidéos{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Animation pour les cartes */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animated-card {
+            animation: fadeInUp 0.5s ease-in-out;
+            animation-fill-mode: backwards;
+        }
+
+        /* Style pour les cartes */
+        .video-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-card .card-body {
+            padding: 20px;
+        }
+
+        .video-card .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .video-card .card-text {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .video-card .btn {
+            border-radius: 25px;
+            padding: 8px 20px;
+            font-size: 14px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .video-card .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Style pour le message "Aucune vidéo trouvée" */
+        .no-videos {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            margin-top: 20px;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Video index</h1>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4 text-primary fw-bold">
+            <i class="fas fa-video me-2"></i>Liste des vidéos
+        </h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Titre</th>
-                <th>Description</th>
-                <th>ChemainVideo</th>
-                <th>DateAjout</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for video in videos %}
-            <tr>
-                <td>{{ video.id }}</td>
-                <td>{{ video.titre }}</td>
-                <td>{{ video.description }}</td>
-                <td>{{ video.chemainVideo }}</td>
-                <td>{{ video.dateAjout ? video.dateAjout|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_video_show', {'id': video.id}) }}">show</a>
-                    <a href="{{ path('app_video_edit', {'id': video.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_video_new') }}">Create new</a>
+        <div class="row">
+            {% for video in videos %}
+                <div class="col-md-4 mb-4 animated-card" style="animation-delay: {{ loop.index * 0.1 }}s;">
+                    <div class="card video-card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ video.titre }}</h5>
+                            <p class="card-text">{{ video.description }}</p>
+                            <a href="{{ path('app_video_show', {'id': video.id}) }}" class="btn btn-primary">
+                                <i class="fas fa-eye me-2"></i>Voir la vidéo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 no-videos">
+                    <p><i class="fas fa-film me-2"></i>Aucune vidéo trouvée.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

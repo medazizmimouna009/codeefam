@@ -8,7 +8,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
+
+
+
 #[ORM\Entity(repositoryClass: CategorieRepository::class)]
+
 class Categorie
 {
     #[ORM\Id]
@@ -27,7 +31,7 @@ class Categorie
     /**
      * @var Collection<int, Cours>
      */
-    #[ORM\OneToMany(targetEntity: Cours::class, mappedBy: 'categorie')]
+    #[ORM\OneToMany(targetEntity: Cours::class, mappedBy: 'categorie',cascade: ['remove'])]
     private Collection $cours;
 
     public function getId(): ?int
@@ -35,7 +39,7 @@ class Categorie
         return $this->id;
     }
 
-    #[ORM\OneToMany(targetEntity: NomCours::class, mappedBy: 'categorie')]
+    #[ORM\OneToMany(targetEntity: NomCours::class, mappedBy: 'categorie',cascade: ['remove'])]
     private Collection $nomCours;
 
     public function __construct()

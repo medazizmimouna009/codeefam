@@ -1,4 +1,26 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}}) }}
+
+{% for field in form %}
+    {% if field.vars.name != '_token' %}
+        <div class="mb-3">
+            {{ form_label(field, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            
+            {# ✅ Champ de formulaire avec validation Bootstrap #}
+            {{ form_widget(field, {'attr': {'class': 'form-control' ~ (not field.vars.valid ? ' is-invalid' : '')}}) }}
+            
+            {# 💥 Affichage des erreurs #}
+            {% for error in field.vars.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ error.message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endfor %}
+
+{# Boutons "Mettre à jour" et "Supprimer" alignés sur la même ligne #}
+<div class="d-flex justify-content-end mt-3">
+    <button class="btn btn-primary me-2"><i class="fas fa-save"></i> {{ button_label|default('Mettre à jour') }}</button>
+</div>
+
 {{ form_end(form) }}

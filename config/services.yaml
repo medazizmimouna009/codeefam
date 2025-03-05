@@ -6,16 +6,23 @@
 parameters:
     profile_pictures_directory: '%kernel.project_dir%/public/uploads/profile_pictures'
     fichiers_directory: '%kernel.project_dir%/public/uploads/fichiers'
-
-#parameters:
-   # cours_videos_directory: '%kernel.project_dir%/public/uploads/cours_videos'
-
-
+    videos_directory: '%kernel.project_dir%/public/uploads/videos'
+    
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # Configuration du service ZoomService
+    #App\Service\ZoomService:
+    #    arguments:
+            #$clientId: '%env(ZOOM_CLIENT_ID)%'
+            #$clientSecret: '%env(ZOOM_CLIENT_SECRET)%'
+            #$accountId: '%env(ZOOM_ACCOUNT_ID)%'
+    
+
+    
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name

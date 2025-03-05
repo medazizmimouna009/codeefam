@@ -8,8 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
-
-class VideoType extends AbstractType
+use Symfony\Component\Form\Extension\Core\Type\FileType;class VideoType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -25,6 +24,24 @@ class VideoType extends AbstractType
                     ])
                 ]
             ])
+            ->add('uploadedFile', FileType::class, [
+                'label' => 'Fichier vidéo',
+                'required' => false,
+                'mapped' => false, // Ce champ n'est pas mappé à l'entité
+                'constraints' => [
+                    new Assert\File([
+                        'maxSize' => '100M', // Taille maximale du fichier
+                        'mimeTypes' => [ // Types MIME autorisés
+                            'video/mp4',
+                            'video/avi',
+                            //'video/webm',
+                            'video/quicktime',
+                            'video/x-ms-wmv',
+                        ],
+                        'mimeTypesMessage' => 'Veuillez uploader un fichier vidéo valide (MP4, AVI, MOV, WMV).',
+                    ]),
+                ],
+            ])
             ->add('description', null, [
                 'constraints' => [
                     new Assert\NotBlank(['message' => "La description est obligatoire."]),
@@ -34,11 +51,7 @@ class VideoType extends AbstractType
                     ])
                 ]
             ])
-            ->add('chemainVideo', null, [
-                'constraints' => [
-                    new Assert\NotBlank(['message' => "Le chemin de la vidéo est obligatoire."])
-                ]
-            ])
+          
             ->add('dateAjout', null, [
                 'widget' => 'single_text',
                 'constraints' => [

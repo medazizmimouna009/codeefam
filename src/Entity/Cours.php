@@ -8,10 +8,15 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 
 #[ORM\Entity(repositoryClass: CoursRepository::class)]
+#[Vich\Uploadable] //Indique que cette entité peut gérer des fichiers uploadés.
+#[UniqueEntity(fields: ['titre'], message: 'Un cours avec ce titre existe déjà.')]
+
 class Cours
 {
     #[ORM\Id]
@@ -27,10 +32,6 @@ class Cours
     
     private ?string $description = null;
 
-    #[ORM\Column]
-   
-    private ?float $prix = null;
-
     #[ORM\Column(length: 255)]
     private ?string $duree = null;
 
@@ -38,6 +39,7 @@ class Cours
     #[ORM\Column(length: 255, nullable: true)] 
     private ?string $fichier = null;
 
+    #[Vich\UploadableField(mapping: 'cours_file', fileNameProperty: 'fichier')]
     private ?File $fichierFile = null;
 
     
@@ -52,6 +54,9 @@ class Cours
      */
     #[ORM\OneToMany(targetEntity: Video::class, mappedBy: 'cours')]
     private Collection $videos;
+
+
+
 
     #[ORM\ManyToOne(inversedBy: 'cours')]
     private ?Categorie $categorie = null;
@@ -101,17 +106,6 @@ class Cours
         return $this;
     }
 
-    public function getPrix(): ?float
-    {
-        return $this->prix;
-    }
-
-    public function setPrix(float $prix): static
-    {
-        $this->prix = $prix;
-
-        return $this;
-    }
 
     public function getDuree(): ?string
     {

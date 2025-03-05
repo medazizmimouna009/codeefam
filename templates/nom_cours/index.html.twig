@@ -1,35 +1,229 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}NomCours index{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .filter-container {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .navigation {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-start !important; /* Align to the left */
+        }
+
+        .btn-toggle {
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 14px;
+            border: 1px solid #ced4da;
+            background-color: white;
+            color: #495057;
+            margin: 2px;
+        }
+
+        .btn-toggle.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .btn-toggle:hover {
+            background-color:rgba(96, 101, 105, 0.13)!important;
+        }
+
+        .btn-primary {
+            border-radius: 20px;
+            padding: 5px 20px;
+            font-size: 14px;
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .card-header {
+            background-color:rgb(212, 215, 219);
+            color: white;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .card-title {
+            margin-bottom: 0;
+        }
+
+        .table {
+            margin-top: 20px;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .btn-success {
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 14px;
+        }
+
+        .navigation {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .spinner {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            font-size: 40px;
+            color: #007bff; /* Spinner color */
+        }
+
+        /* Overlay to block interaction during loading */
+        .overlay {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 999;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>NomCours index</h1>
+    <div class="container">
+        <!-- Overlay and Spinner -->
+        <div class="overlay"></div>
+        <div class="spinner">
+            <i class="fas fa-spinner fa-spin"></i> <!-- Font Awesome spinner -->
+        </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for nom_cour in nom_cours %}
-            <tr>
-                <td>{{ nom_cour.id }}</td>
-                <td>{{ nom_cour.nom }}</td>
-                <td>
-                    <a href="{{ path('app_nom_cours_show', {'id': nom_cour.id}) }}">show</a>
-                    <a href="{{ path('app_nom_cours_edit', {'id': nom_cour.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteNomCoursModal" tabindex="-1" aria-labelledby="deleteNomCoursModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteNomCoursModalLabel">Confirmer la suppression</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Êtes-vous sûr de vouloir supprimer le cours "<span id="nomCoursTexte"></span>" ?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn btn-danger" id="confirmDelete">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <a href="{{ path('app_nom_cours_new') }}">Create new</a>
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title">Liste des Nom de Cours</h1>
+            </div>
+            <div class="card-body">
+                <!-- Conteneur principal pour l'alignement -->
+                <div class="filter-container d-flex justify-content-between align-items-center mb-4">
+                    <!-- Bouton Ajouter Cours à gauche -->
+                        {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_nom_cours_new') }}" class="btn btn-success btn-sm">
+                        <i class="bi bi-plus"></i> Ajouter un Cours
+                    </a>
+                    {% endif %}
+                </div>
+
+                <!-- Tableau des Cours -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for nom_cour in nom_cours %}
+                            <tr>
+                                <td>{{ nom_cour.id }}</td>
+                                <td>{{ nom_cour.nom }}</td>
+                                <td>
+                                    <!-- Bouton Voir avec icône -->
+                                    <a href="{{ path('app_nom_cours_show', {'id': nom_cour.id}) }}" class="btn btn-info btn-sm">
+                                        <i class="bi bi-eye"></i> <!-- Icône d'œil -->
+                                    </a>
+                                    <!-- Bouton Modifier avec icône -->
+                                        {% if is_granted('ROLE_ADMIN') %}
+                                    <a href="{{ path('app_nom_cours_edit', {'id': nom_cour.id}) }}" class="btn btn-warning btn-sm">
+                                        <i class="bi bi-pencil"></i> <!-- Icône de stylo -->
+                                    </a>
+                                    {% endif %}
+                            
+                                    <!-- Bouton Supprimer avec icône -->
+                                        {% if is_granted('ROLE_ADMIN') %}
+                                    <button type="button" class="btn btn-danger btn-sm delete-btn" data-bs-toggle="modal" data-bs-target="#deleteNomCoursModal" data-nom-cours-id="{{ nom_cour.id }}" data-nom-cours-texte="{{ nom_cour.nom }}">
+                                        <i class="bi bi-trash"></i> <!-- Icône de poubelle -->
+                                    </button>
+                                    {% endif %}
+                                    <!-- Hidden Delete Form -->
+                                    <form id="deleteForm{{ nom_cour.id }}" action="{{ path('app_nom_cours_delete', {'id': nom_cour.id}) }}" method="post" style="display: none;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ nom_cour.id) }}">
+                                    </form>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="3">Aucun cours disponible</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Delete Confirmation Modal Logic
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteNomCoursModal'));
+            const nomCoursTexteElement = document.getElementById('nomCoursTexte');
+            const confirmDeleteButton = document.getElementById('confirmDelete');
+            let deleteForm = null;
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const nomCoursId = this.getAttribute('data-nom-cours-id');
+                    const nomCoursTexte = this.getAttribute('data-nom-cours-texte');
+
+                    // Set the cours texte in the modal
+                    nomCoursTexteElement.textContent = nomCoursTexte;
+
+                    // Find the corresponding delete form
+                    deleteForm = document.getElementById('deleteForm' + nomCoursId);
+
+                    // Show the modal
+                    deleteModal.show();
+                });
+            });
+
+            // Handle the delete confirmation
+            confirmDeleteButton.addEventListener('click', function() {
+                if (deleteForm) {
+                    deleteForm.submit(); // Submit the form to delete the cours
+                }
+            });
+        });
+    </script>
 {% endblock %}

@@ -78,4 +78,20 @@ final class CategorieController extends AbstractController
 
         return $this->redirectToRoute('app_categorie_index', [], Response::HTTP_SEE_OTHER);
     }
+
+ // Ajoutez cette méthode pour afficher les cours d'une catégorie
+ #[Route('/category/{id}/cours', name: 'app_cours_by_category', methods: ['GET'])]
+ public function coursByCategory(Categorie $categorie): Response
+ {
+     // Récupérer les cours associés à cette catégorie
+     $cours = $categorie->getCours();
+
+     // Passer les données à la vue
+     return $this->render('categorie/cours_de_categorie.html.twig', [
+         'categorie' => $categorie,
+         'cours' => $cours,
+     ]);
+ }
+
+
 }

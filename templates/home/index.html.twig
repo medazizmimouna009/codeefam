@@ -225,89 +225,37 @@
       </div>
     </section><!-- /Features Section -->
 
-    <!-- Courses Section -->
-    <section id="courses" class="courses section">
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Cours</h2>
-        <p>Cours Populaires</p>
-      </div><!-- End Section Title -->
-      <div class="container">
+<!-- Categories Section -->
+<section id="categories" class="categories section">
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Catégories</h2>
+        <p>Explorez nos cours</p>
+    </div><!-- End Section Title -->
+    <div class="container">
         <div class="row">
-          <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
-            <div class="course-item">
-              <img src="{{ asset('landing/img/course-1.jpg') }}" class="img-fluid" alt="...">
-              <div class="course-content">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <p class="category">Développement Web</p>
-                  <p class="price">$169</p>
+            {% for categorie in categories %}
+                <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="category-item">
+                        <img src="{{ asset('landing/img/course-1.jpg') }}" class="img-fluid" alt="{{ categorie.nomCategorie }}">
+                        <div class="category-content">
+                            <h3>{{ categorie.nomCategorie }}</h3>
+                            <p>{{ categorie.description }}</p>
+                            <a href="{{ path('app_cours_by_category', {'id': categorie.id}) }}" class="btn btn-primary">
+                                Voir les cours
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <h3><a href="{{ path('app_home') }}">Conception de Sites Web</a></h3>
-                <p class="description">Apprenez à concevoir des sites web modernes et réactifs avec les dernières technologies.</p>
-                <div class="trainer d-flex justify-content-between align-items-center">
-                  <div class="trainer-profile d-flex align-items-center">
-                    <img src="{{ asset('landing/img/trainers/trainer-1-2.jpg') }}" class="img-fluid" alt="">
-                    <a href="" class="trainer-link">Antonio</a>
-                  </div>
-                  <div class="trainer-rank d-flex align-items-center">
-                    <i class="bi bi-person user-icon"></i>&nbsp;50
-                    &nbsp;&nbsp;
-                    <i class="bi bi-heart heart-icon"></i>&nbsp;65
-                  </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info" role="alert">
+                        Aucune catégorie disponible pour le moment.
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div> <!-- End Course Item-->
-          <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0" data-aos="zoom-in" data-aos-delay="200">
-            <div class="course-item">
-              <img src="{{ asset('landing/img/course-2.jpg') }}" class="img-fluid" alt="...">
-              <div class="course-content">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <p class="category">Marketing</p>
-                  <p class="price">$250</p>
-                </div>
-                <h3><a href="{{ path('app_home') }}">Optimisation pour les Moteurs de Recherche</a></h3>
-                <p class="description">Apprenez les techniques de SEO pour améliorer la visibilité de votre site web.</p>
-                <div class="trainer d-flex justify-content-between align-items-center">
-                  <div class="trainer-profile d-flex align-items-center">
-                    <img src="{{ asset('landing/img/trainers/trainer-2-2.jpg') }}" class="img-fluid" alt="">
-                    <a href="" class="trainer-link">Lana</a>
-                  </div>
-                  <div class="trainer-rank d-flex align-items-center">
-                    <i class="bi bi-person user-icon"></i>&nbsp;35
-                    &nbsp;&nbsp;
-                    <i class="bi bi-heart heart-icon"></i>&nbsp;42
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> <!-- End Course Item-->
-          <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-lg-0" data-aos="zoom-in" data-aos-delay="300">
-            <div class="course-item">
-              <img src="{{ asset('landing/img/course-3.jpg') }}" class="img-fluid" alt="...">
-              <div class="course-content">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <p class="category">Contenu</p>
-                  <p class="price">$180</p>
-                </div>
-                <h3><a href="{{ path('app_home') }}">Rédaction de Contenu</a></h3>
-                <p class="description">Apprenez à rédiger des contenus engageants et optimisés pour le web.</p>
-                <div class="trainer d-flex justify-content-between align-items-center">
-                  <div class="trainer-profile d-flex align-items-center">
-                    <img src="{{ asset('landing/img/trainers/trainer-3-2.jpg') }}" class="img-fluid" alt="">
-                    <a href="" class="trainer-link">Brandon</a>
-                  </div>
-                  <div class="trainer-rank d-flex align-items-center">
-                    <i class="bi bi-person user-icon"></i>&nbsp;20
-                    &nbsp;&nbsp;
-                    <i class="bi bi-heart heart-icon"></i>&nbsp;85
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> <!-- End Course Item-->
+            {% endfor %}
         </div>
-      </div>
-    </section><!-- /Courses Section -->
+    </div>
+</section><!-- /Categories Section -->
 
     <!-- Pricing Section -->
     <section id="pricing" class="pricing section">

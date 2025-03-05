@@ -3,7 +3,14 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
-# config/routes.yaml
+
+
 app_profile:
     path: /profile
     controller: App\Controller\ProfileController::index
+
+
+video_rate:
+    path: /video/{id}/rate
+    controller: App\Controller\VideoController::rate
+    methods: [GET, POST]   

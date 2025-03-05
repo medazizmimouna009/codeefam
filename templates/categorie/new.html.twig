@@ -1,27 +1,55 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Categorie{% endblock %}
+{% block title %}Nouvelle Catégorie{% endblock %}
 
 {% block body %}
-    <h1>Create new Categorie</h1>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4 text-primary fw-bold">Créer une nouvelle catégorie</h1>
 
-    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-   
-        <div class="mb-3">
-            {{ form_label(form.nomCategorie, 'Nom de la catégorie', {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.nomCategorie, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.nomCategorie, {'attr': {'class': 'invalid-feedback'}}) }}
+        <div class="card shadow-lg p-4 mx-auto" style="max-width: 600px;">
+            {{ form_start(form, {'attr': {'class': 'row g-3', 'novalidate': 'novalidate'}}) }}
+                {# Nom de la catégorie #}
+                <div class="mb-3">
+                    {{ form_label(form.nomCategorie, 'Nom de la catégorie', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.nomCategorie, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.nomCategorie.vars.valid ? '' : ' is-invalid'),
+                            'placeholder': 'Entrez le nom de la catégorie'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.nomCategorie) }}
+                    </div>
+                </div>
+
+                {# Description de la catégorie #}
+                <div class="mb-3">
+                    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.description, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.description.vars.valid ? '' : ' is-invalid'),
+                            'placeholder': 'Entrez une description pour la catégorie'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.description) }}
+                    </div>
+                </div>
+
+                {# Bouton de soumission #}
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-plus me-2"></i>Créer
+                    </button>
+                </div>
+            {{ form_end(form) }}
         </div>
 
-        <div class="mb-3">
-            {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.description, {'attr': {'class': 'invalid-feedback'}}) }}
+        {# Bouton de retour avec icône #}
+        <div class="mt-4 text-center">
+            <a href="{{ path('app_categorie_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+            </a>
         </div>
-
-
-        <button type="submit" class="btn btn-primary">Create</button>
-    {{ form_end(form) }}
-
-    <a href="{{ path('app_categorie_index') }}">back to list</a>
+    </div>
 {% endblock %}
