@@ -1,0 +1,413 @@
+{# templates/quiz/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .filter-container {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .navigation {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-start !important; /* Align to the left */
+        }
+
+        .btn-toggle {
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 14px;
+            border: 1px solid #ced4da;
+            background-color: white;
+            color: #495057;
+            margin: 2px;
+        }
+
+        .btn-toggle.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .btn-toggle:hover {
+            background-color:rgba(96, 101, 105, 0.13)!important;
+        }
+
+        .btn-primary {
+            border-radius: 20px;
+            padding: 5px 20px;
+            font-size: 14px;
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .card-header {
+            background-color:rgb(212, 215, 219);
+            color: white;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .card-title {
+            margin-bottom: 0;
+        }
+
+        .table {
+            margin-top: 20px;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .btn-success {
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 14px;
+        }
+
+        .navigation {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .spinner {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            font-size: 40px;
+            color: #007bff; /* Spinner color */
+        }
+
+        /* Overlay to block interaction during loading */
+        .overlay {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 999;
+        }
+
+        /* Style pour les questions */
+        .questions-container {
+            display: none; /* Masqué par défaut */
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .question {
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-weight: bold;
+        }
+
+        .reponses {
+            margin-left: 20px;
+        }
+
+        .reponse {
+            margin-bottom: 5px;
+        }
+
+        /* Search Bar CSS */
+        .search-bar {
+            max-width: 500px;
+            margin: 20px auto;
+        }
+
+        .search-bar .input-group {
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar .form-control {
+            border: none;
+            padding-left: 20px;
+        }
+
+        .search-bar .btn {
+            border: none;
+            padding: 10px 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <!-- Overlay and Spinner -->
+        <div class="overlay"></div>
+        <div class="spinner">
+            <i class="fas fa-spinner fa-spin"></i> <!-- Font Awesome spinner -->
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteQuizModal" tabindex="-1" aria-labelledby="deleteQuizModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteQuizModalLabel">Confirmer la suppression</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Êtes-vous sûr de vouloir supprimer le quiz "<span id="quizName"></span>" ?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn btn-danger" id="confirmDelete">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title">Liste des Quiz</h1>
+            </div>
+            <div class="card-body">
+                <!-- Conteneur principal pour l'alignement -->
+                <div class="filter-container d-flex justify-content-between align-items-center mb-4">
+                    <!-- Bouton Ajouter Quiz à gauche -->
+                    <a href="{{ path('app_quiz_new') }}" class="btn btn-success btn-sm">
+                        <i class="bi bi-plus"></i> Ajouter un Quiz
+                    </a>
+                    <a href="{{ path('quiz_global_stats') }}" class="btn btn-success btn-lg shadow-sm hover-shadow">
+                        <i class="bi bi-bar-chart-line-fill me-2"></i> Statistiques globales
+                    </a>
+
+                    <!-- Conteneur des filtres et du bouton Filtrer -->
+                    <div class="d-flex gap-2">
+                        <form method="get" action="{{ path('app_quiz_index') }}" class="d-flex align-items-center gap-2">
+                            <!-- Filtre Niveau -->
+                            <div class="form-group">
+                                <label for="niveau" class="sr-only">Niveau</label>
+                                <div class="btn-group" role="group" aria-label="Niveau">
+                                    <button type="button" class="btn btn-toggle {% if app.request.query.get('niveau') == '' %}active{% endif %}" data-value="">Tous les niveaux</button>
+                                    <button type="button" class="btn btn-toggle {% if app.request.query.get('niveau') == 'facile' %}active{% endif %}" data-value="facile">Facile</button>
+                                    <button type="button" class="btn btn-toggle {% if app.request.query.get('niveau') == 'moyen' %}active{% endif %}" data-value="moyen">Moyen</button>
+                                    <button type="button" class="btn btn-toggle {% if app.request.query.get('niveau') == 'difficile' %}active{% endif %}" data-value="difficile">Difficile</button>
+                                </div>
+                                <input type="hidden" name="niveau" id="niveau" value="{{ app.request.query.get('niveau') }}">
+                            </div>
+
+                            <!-- Filtre Cours -->
+                            <div class="form-group">
+                                <label for="nomCours" class="sr-only">Cours</label>
+                                <select name="nomCours" id="nomCours" class="form-control form-control-sm">
+                                    <option value="">Tous les cours</option>
+                                    {% for cours in nomCours %}
+                                        <option value="{{ cours.id }}" {% if app.request.query.get('nomCours') == cours.id %}selected{% endif %}>{{ cours.nom }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Bouton Filtrer -->
+                            <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="search-bar mb-4">
+                    <div class="input-group">
+                        <input type="text" id="search-input" class="form-control" placeholder="Rechercher un quiz..." aria-label="Search" aria-describedby="search-addon">
+                        <button class="btn btn-outline-secondary" type="button" id="search-addon">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tableau des Quiz -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nom du Quiz</th>
+                            <th>Niveau</th>
+                            <th>Cours</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="quiz-table-body">
+                        {% for quiz in quizzes %}
+                            <tr>
+                                <td>{{ quiz.nom }}</td>
+                                <td>{{ quiz.niveau }}</td>
+                                <td>{{ quiz.nomCours.nom }}</td>
+                                <td>
+                                    <!-- Bouton Afficher les questions -->
+                                    <button type="button" class="btn btn-transparent btn-sm show-questions-btn" data-quiz-id="{{ quiz.id }}">
+                                        <i class="bi bi-eye-fill me-2"></i> Afficher les questions
+                                    </button>
+
+                                    <a href="{{ path('quiz_single_statistics', {'id': quiz.id}) }}" class="btn btn-transparent btn-sm">
+                                        <i class="bi bi-bar-chart-line-fill me-2"></i> Voir les statistiques
+                                    </a>
+
+                                    <!-- Bouton Éditer avec icône -->
+                                    <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}" class="btn btn-warning btn-sm">
+                                        <i class="bi bi-pencil"></i> <!-- Icône de stylo (non remplie) -->
+                                    </a>
+                                    <!-- Bouton Supprimer avec icône -->
+                                    <button type="button" class="btn btn-danger btn-sm delete-btn" data-bs-toggle="modal" data-bs-target="#deleteQuizModal" data-quiz-id="{{ quiz.id }}" data-quiz-name="{{ quiz.nom }}">
+                                        <i class="bi bi-trash"></i> <!-- Icône de poubelle (non remplie) -->
+                                    </button>
+                                    <!-- Hidden Delete Form -->
+                                    <form id="deleteForm{{ quiz.id }}" action="{{ path('app_quiz_delete', {'id': quiz.id}) }}" method="post" style="display: none;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ quiz.id) }}">
+                                    </form>
+                                </td>
+                            </tr>
+                            <!-- Conteneur des questions (masqué par défaut) -->
+                            <tr id="questions-{{ quiz.id }}" class="questions-container">
+                                <td colspan="4">
+                                    <div class="questions-list">
+                                        {% for question in quiz.questions %}
+                                            <div class="question">
+                                                <div class="question-text">{{ question.texte }}</div>
+                                                <div class="reponses">
+                                                    {% for reponse in question.reponses %}
+                                                        <div class="reponse">
+                                                            {{ reponse.texte }}
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4">Aucun quiz disponible</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <div class="navigation">
+                    {{ knp_pagination_render(quizzes) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Dynamic Search Script -->
+    <script>
+        document.getElementById('search-input').addEventListener('input', function () {
+            const searchQuery = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#quiz-table-body tr');
+
+            rows.forEach(row => {
+                const rowText = row.textContent.toLowerCase();
+                if (rowText.includes(searchQuery)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const niveauButtons = document.querySelectorAll('.btn-group .btn-toggle');
+            const niveauInput = document.getElementById('niveau');
+
+            niveauButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    niveauButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    niveauInput.value = this.getAttribute('data-value');
+                });
+            });
+
+            // Show spinner on form submission (filtering)
+            const filterForm = document.querySelector('form[method="get"]');
+            filterForm.addEventListener('submit', function() {
+                document.querySelector('.overlay').style.display = 'block';
+                document.querySelector('.spinner').style.display = 'block';
+            });
+
+            // Show spinner on pagination link click
+            const paginationLinks = document.querySelectorAll('.pagination a');
+            paginationLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    document.querySelector('.overlay').style.display = 'block';
+                    document.querySelector('.spinner').style.display = 'block';
+                });
+            });
+
+            // Delete Confirmation Modal Logic
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteQuizModal'));
+            const quizNameElement = document.getElementById('quizName');
+            const confirmDeleteButton = document.getElementById('confirmDelete');
+            let deleteForm = null;
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const quizId = this.getAttribute('data-quiz-id');
+                    const quizName = this.getAttribute('data-quiz-name');
+
+                    // Set the quiz name in the modal
+                    quizNameElement.textContent = quizName;
+
+                    // Find the corresponding delete form
+                    deleteForm = document.getElementById('deleteForm' + quizId);
+
+                    // Show the modal
+                    deleteModal.show();
+                });
+            });
+
+            // Handle the delete confirmation
+            confirmDeleteButton.addEventListener('click', function() {
+                if (deleteForm) {
+                    deleteForm.submit(); // Submit the form to delete the quiz
+                }
+            });
+
+            // Afficher/Masquer les questions
+            const showQuestionsButtons = document.querySelectorAll('.show-questions-btn');
+            showQuestionsButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const quizId = this.getAttribute('data-quiz-id');
+                    const questionsContainer = document.getElementById(`questions-${quizId}`);
+
+                    // Basculer l'affichage des questions
+                    if (questionsContainer.style.display === 'none' || questionsContainer.style.display === '') {
+                        questionsContainer.style.display = 'table-row';
+                        this.innerHTML = '<i class="bi bi-eye-slash"></i> Masquer les questions';
+                    } else {
+                        questionsContainer.style.display = 'none';
+                        this.innerHTML = '<i class="bi bi-eye"></i> Afficher les questions';
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

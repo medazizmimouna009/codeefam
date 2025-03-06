@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Post Management{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .btn {
+            margin-right: 5px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h1>Admin Post Management</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Content</th>
+                <th>Image</th>
+                <th>Date Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in posts %}
+                <tr data-id="{{ post.id }}">
+                    <td>{{ post.id }}</td>
+                    <td>{{ post.contenu }}</td>
+                    <td>
+                        {% if post.image %}
+                            <img src="{{ asset('uploads/images/' ~ post.image) }}" alt="Post Image" width="100">
+                        {% endif %}
+                    </td>
+                    <td>{{ post.dateCreation ? post.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
+                    <td>
+                        <button class="btn btn-danger delete-post" data-csrf-token="{{ csrf_token('delete' ~ post.id) }}"><i class="bi bi-trash"></i></button>
+                    
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">No records found</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        document.querySelectorAll('.delete-post').forEach(button => {
+            button.addEventListener('click', function() {
+                const postElement = this.closest('tr');
+                const postId = postElement.getAttribute('data-id');
+                const csrfToken = this.getAttribute('data-csrf-token');
+
+                console.log('Post ID:', postId);
+                console.log('CSRF Token:', csrfToken);
+
+                fetch(`/post/${postId}/delete`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Post deleted successfully');
+                        postElement.remove();
+                    } else {
+                        console.error('Failed to delete post. Status:', response.status);
+                        alert('Failed to delete post.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while trying to delete the post.');
+                });
+            });
+        });
+    </script>
+{% endblock %}

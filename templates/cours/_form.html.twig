@@ -1,0 +1,23 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}}) }}
+
+{% for field in form %}
+    {% if field.vars.name != '_token' %}
+        <div class="mb-3"> {# ✅ Réduction de l'espacement entre les champs #}
+            {{ form_label(field, null, {'label_attr': {'class': 'form-label fw-bold'}}) }} {# ✅ Taille normale et en gras #}
+
+            {{ form_widget(field, {'attr': {'class': 'form-control' ~ (not field.vars.valid ? ' is-invalid' : '')}}) }} {# ✅ Taille standard des champs #}
+
+            {% for error in field.vars.errors %}
+                <div class="invalid-feedback d-block text-danger">
+                    {{ error.message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endfor %}
+
+<div class="d-flex justify-content-end"> {# ✅ Alignement à droite #}
+    <button class="btn btn-primary">Mettre à jour</button> {# ✅ Taille normale du bouton #}
+</div>
+
+{{ form_end(form) }}

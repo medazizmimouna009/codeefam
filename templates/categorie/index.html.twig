@@ -1,0 +1,231 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .filter-container {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .navigation {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-start !important; /* Align to the left */
+        }
+
+        .btn-toggle {
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 14px;
+            border: 1px solid #ced4da;
+            background-color: white;
+            color: #495057;
+            margin: 2px;
+        }
+
+        .btn-toggle.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .btn-toggle:hover {
+            background-color:rgba(96, 101, 105, 0.13)!important;
+        }
+
+        .btn-primary {
+            border-radius: 20px;
+            padding: 5px 20px;
+            font-size: 14px;
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .card-header {
+            background-color:rgb(212, 215, 219);
+            color: white;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .card-title {
+            margin-bottom: 0;
+        }
+
+        .table {
+            margin-top: 20px;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .btn-success {
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 14px;
+        }
+
+        .navigation {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .spinner {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            font-size: 40px;
+            color: #007bff; /* Spinner color */
+        }
+
+        /* Overlay to block interaction during loading */
+        .overlay {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 999;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <!-- Overlay and Spinner -->
+        <div class="overlay"></div>
+        <div class="spinner">
+            <i class="fas fa-spinner fa-spin"></i> <!-- Font Awesome spinner -->
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteCategorieModal" tabindex="-1" aria-labelledby="deleteCategorieModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteCategorieModalLabel">Confirmer la suppression</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Êtes-vous sûr de vouloir supprimer la catégorie "<span id="categorieName"></span>" ?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn btn-danger" id="confirmDelete">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title">Liste des Catégories</h1>
+            </div>
+            <div class="card-body">
+                <!-- Conteneur principal pour l'alignement -->
+                <div class="filter-container d-flex justify-content-between align-items-center mb-4">
+                    <!-- Bouton Ajouter Catégorie à gauche -->
+                        {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_categorie_new') }}" class="btn btn-success btn-sm">
+                        <i class="bi bi-plus"></i> Ajouter une Catégorie
+                    </a>
+                    {% endif %}
+                </div>
+
+                <!-- Tableau des Catégories -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nom de la Catégorie</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for categorie in categories %}
+                            <tr>
+                                <td>{{ categorie.id }}</td>
+                                <td>{{ categorie.nomCategorie }}</td>
+                                <td>{{ categorie.description }}</td>
+                                <td>
+                                    <!-- Bouton Afficher -->
+                                    <a href="{{ path('app_categorie_show', {'id': categorie.id}) }}" class="btn btn-info btn-sm">
+                                        <i class="bi bi-eye"></i> 
+                                    </a>
+                                    <!-- Bouton Éditer -->
+                                     {% if is_granted('ROLE_ADMIN') %}
+                                    <a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}" class="btn btn-warning btn-sm">
+                                        <i class="bi bi-pencil"></i> 
+                                    </a>
+                                    {% endif %}
+                                    {% if is_granted('ROLE_ADMIN') %}
+
+                                    <!-- Bouton Supprimer -->
+                                    <button type="button" class="btn btn-danger btn-sm delete-btn" data-bs-toggle="modal" data-bs-target="#deleteCategorieModal" data-categorie-id="{{ categorie.id }}" data-categorie-name="{{ categorie.nomCategorie }}">
+                                        <i class="bi bi-trash"></i> 
+                                    </button>
+                                    {% endif %}
+                                    <!-- Hidden Delete Form -->
+                                    <form id="deleteForm{{ categorie.id }}" action="{{ path('app_categorie_delete', {'id': categorie.id}) }}" method="post" style="display: none;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ categorie.id) }}">
+                                    </form>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4">Aucune catégorie disponible</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Delete Confirmation Modal Logic
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteCategorieModal'));
+            const categorieNameElement = document.getElementById('categorieName');
+            const confirmDeleteButton = document.getElementById('confirmDelete');
+            let deleteForm = null;
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const categorieId = this.getAttribute('data-categorie-id');
+                    const categorieName = this.getAttribute('data-categorie-name');
+
+                    // Set the categorie name in the modal
+                    categorieNameElement.textContent = categorieName;
+
+                    // Find the corresponding delete form
+                    deleteForm = document.getElementById('deleteForm' + categorieId);
+
+                    // Show the modal
+                    deleteModal.show();
+                });
+            });
+
+            // Handle the delete confirmation
+            confirmDeleteButton.addEventListener('click', function() {
+                if (deleteForm) {
+                    deleteForm.submit(); // Submit the form to delete the categorie
+                }
+            });
+        });
+    </script>
+{% endblock %}

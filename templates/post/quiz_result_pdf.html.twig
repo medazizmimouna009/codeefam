@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post Content</title>
+    <style>
+        .post-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            background-color: #fff;
+        }
+        .post-content {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .post-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .post-date {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="post-container">
+        <div class="post-content">
+            {{ post.contenu }}
+        </div>
+        {% if post.image %}
+            <img src="{{ absolute_url(asset('uploads/images/' ~ post.image)) }}" alt="Post Image" class="post-image">
+        {% endif %}
+        <div class="post-date">
+            Created on: {{ post.dateCreation|date('Y-m-d H:i:s') }}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Commentaire{% endblock %}
+
+{% block body %}
+    <h1>Forum</h1>
+    <div class="forum-container">
+        <div class="post">
+            <div class="post-header">
+                <img src="{{ asset('uploads/profile_pictures/' ~ (app.user.photoDeProfil ?: '67b31cb9765e7.jpg')) }}" alt="Profile" class="rounded-circle" style="width: 40px; height: 40px;">
+                <span>{{ app.user.nom }} {{ app.user.prenom }}</span>
+            </div>
+            <div class="post-body">
+                <p>What's on your mind?</p>
+                {{ include('commentaire/_form.html.twig', { 'form': form, 'user_id': app.user.id }) }}
+            </div>
+        </div>
+        <div class="posts-list">
+            {% for commentaire in commentaires %}
+                <div class="post">
+                    <div class="post-header">
+                        <img src="{{ asset('uploads/profile_pictures/' ~ (commentaire.user.photoDeProfil ?: '67b31cb9765e7.jpg')) }}" alt="Profile" class="rounded-circle" style="width: 40px; height: 40px;">
+                        <span>{{ commentaire.user.nom }} {{ commentaire.user.prenom }}</span>
+                    </div>
+                    <div class="post-body">
+                        <p>{{ commentaire.contenu }}</p>
+                        {% if commentaire.user == app.user %}
+                            <button class="btn btn-link" onclick="document.getElementById('edit-form-{{ commentaire.id }}').style.display='block'">Edit</button>
+                            <div id="edit-form-{{ commentaire.id }}" style="display: none;">
+                                {{ form_start(edit_forms[commentaire.id]) }}
+                                {{ form_widget(edit_forms[commentaire.id]) }}
+                                <button class="btn btn-primary mt-2" type="submit">Save</button>
+                                {{ form_end(edit_forms[commentaire.id]) }}
+                            </div>
+                            <form method="post" action="{{ path('app_commentaire_delete', {'id': commentaire.id}) }}" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ commentaire.id) }}">
+                                <button class="btn btn-danger mt-2">Delete</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <a href="{{ path('app_commentaire_index') }}">back to list</a>
+{% endblock %}

@@ -1,0 +1,53 @@
+{# templates/chart/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Sales Chart</h2>
+
+    {# Canvas pour le graphique (taille réduite) #}
+    <div style="width: 300px; height: 300px; margin: auto;"> {# Conteneur pour contrôler la taille #}
+        <canvas id="myChart" width="300" height="300"></canvas>
+    </div>
+
+    {# Inclure Chart.js depuis un CDN #}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    {# Script pour créer le graphique #}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const myChart = new Chart(ctx, {
+                type: 'pie', {# Type de graphique : pie chart #}
+                data: {
+                    labels: ['Part 1', 'Part 2'], {# Deux catégories #}
+                    datasets: [{
+                        label: 'Répartition',
+                        data: [60, 40], {# Données pour les deux parties (60% et 40%) #}
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.6)', {# Couleur pour la première partie #}
+                            'rgba(54, 162, 235, 0.6)' {# Couleur pour la deuxième partie #}
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true, {# Rendre le graphique responsive #}
+                    maintainAspectRatio: false, {# Désactiver le maintien du ratio pour ajuster la taille #}
+                    plugins: {
+                        legend: {
+                            position: 'top', {# Position de la légende #}
+                        },
+                        title: {
+                            display: true,
+                            text: 'Répartition en 2 parties' {# Titre du graphique #}
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

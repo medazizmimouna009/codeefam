@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du nom de cours{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4 text-primary fw-bold">
+            <i class="fas fa-info-circle me-2"></i>Détails du nom de cours
+        </h1>
+
+        <!-- Carte pour les détails du nom de cours -->
+        <div class="card shadow-lg mb-4">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">{{ nom_cour.nom }}</h5>
+                <p class="card-text">
+                    <strong>Catégorie :</strong>
+                    {% if nom_cour.categorie %}
+                        {{ nom_cour.categorie.nomCategorie }}
+                    {% else %}
+                        <span class="text-muted">Aucune catégorie associée.</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <!-- Section des cours associés -->
+        <h2 class="text-center mb-4 text-primary fw-bold">
+            <i class="fas fa-book me-2"></i>Cours associés
+        </h2>
+
+        {% if nom_cour.cours is not empty %}
+            <div class="row">
+                {% for cours in nom_cour.cours %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">{{ cours.titre }}</h5>
+                                <p class="card-text">{{ cours.description }}</p>
+                                <p class="card-text">
+                                    <strong>Durée :</strong> {{ cours.duree }} minutes
+                                </p>
+                                <a href="{{ path('app_cours_show', {'id': cours.id}) }}" class="btn btn-primary">
+                                    <i class="fas fa-eye me-2"></i>Voir
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center" role="alert">
+                <i class="fas fa-info-circle me-2"></i>Aucun cours associé à ce nom de cours.
+            </div>
+        {% endif %}
+
+        <!-- Boutons d'action -->
+        <div class="d-flex justify-content-center gap-3 mt-4">
+            <a href="{{ path('app_nom_cours_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+            </a>
+                {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('app_nom_cours_edit', {'id': nom_cour.id}) }}" class="btn btn-warning">
+                <i class="fas fa-edit me-2"></i>Modifier
+            </a>
+             {% endif %}
+        </div>
+    </div>
+{% endblock %}

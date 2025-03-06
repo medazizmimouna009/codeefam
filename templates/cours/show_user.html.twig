@@ -1,0 +1,553 @@
+{# templates/cours/show_user.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Cours : {{ cour.titre }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Calque noir non transparent */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black; /* Noir non transparent */
+            z-index: 1000; /* Au-dessus de tout le contenu */
+            display: none; /* Masqué par défaut */
+        }
+
+        /* Message d'avertissement */
+        #overlay div {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        /* Styles pour le lecteur vidéo */
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+        }
+
+        /* Styles pour les boutons de contrôle de la vitesse */
+        .speed-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        .speed-controls .btn {
+            margin: 5px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.8);
+            color: #000;
+            border: none;
+            transition: background 0.3s ease;
+        }
+
+        .speed-controls .btn:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+
+        /* Styles pour les boutons d'action */
+        .action-buttons .btn {
+            margin: 5px;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 14px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .action-buttons .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Styles pour le visualiseur de PDF */
+        #pdf-viewer {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            display: none; /* Masqué par défaut */
+            overflow-y: auto; /* Activer le défilement vertical */
+            max-height: 80vh; /* Limiter la hauteur à 80% de la fenêtre */
+        }
+
+        #pdf-canvas {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Contrôles de zoom et de pagination */
+        #pdf-controls {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        #pdf-controls button {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        #pdf-controls button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        #page-info {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        /* Styles pour la liste des vidéos */
+        .video-list {
+            max-height: 80vh;
+            overflow-y: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-item {
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+            color: #2d3436;
+        }
+
+        .video-item:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .video-item.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* Styles pour la vidéo principale */
+        .video-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #main-video {
+            border-radius: 10px;
+        }
+
+        /* Styles pour le formulaire de notation */
+        .rating-form {
+            margin-top: 10px;
+        }
+
+        .star-rating {
+            direction: rtl; /* Inverse l'ordre des étoiles */
+            display: inline-block;
+        }
+
+        .star-rating input {
+            opacity: 0; /* Rendre les boutons radio invisibles */
+            position: absolute; /* Les retirer du flux normal */
+        }
+
+        .star-rating label {
+            color: #bbb; /* Couleur des étoiles non sélectionnées */
+            cursor: pointer;
+            font-size: 30px;
+            padding: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input:checked ~ label {
+            color: #f7b731; /* Couleur des étoiles sélectionnées */
+        }
+
+        .submit-rating {
+            background: #007bff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .submit-rating:hover {
+            background: #0056b3;
+        }
+
+        .rating-container {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 10px 10px 20px #d1d1d1,
+                       -10px -10px 20px #ffffff;
+            max-width: 400px;
+            margin: 2rem auto;
+        }
+
+        .rating-emoji {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .rating-title {
+            color: #2d3436;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Alertes personnalisées */
+        .alert-custom {
+            border-radius: 10px;
+            padding: 15px;
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .icon-custom {
+            margin-right: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <!-- Calque noir non transparent masqué -->
+    <div id="overlay">
+        <div>La capture d'écran et l'enregistrement d'écran sont interdits.</div>
+    </div>
+
+    <div class="container mt-5">
+        <!-- Titre avec animation -->
+        <h1 class="text-center mb-4 text-primary fw-bold animated-title">
+            <i class="fas fa-book icon-custom"></i>{{ cour.titre }}
+        </h1>
+
+        <!-- Carte pour les détails du cours -->
+        <div class="card card-details mb-4">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">{{ cour.titre }}</h5>
+                <p class="card-text"><strong>Catégorie :</strong> {{ cour.categorie.nomCategorie }}</p>
+                <p class="card-text"><strong>Description :</strong> {{ cour.description }}</p>
+            </div>
+        </div>
+
+        <!-- Section PDF -->
+        <h2 class="text-center mb-4 text-primary fw-bold">
+            <i class="fas fa-file-pdf icon-custom"></i>Fichier
+        </h2>
+        <div class="mb-4 text-center">
+            {% if cour.fichier %}
+                <button id="view-pdf-btn" class="btn btn-primary-custom btn-custom">
+                    <i class="fas fa-eye icon-custom"></i>Voir le PDF
+                </button>
+                <button id="hide-pdf-btn" class="btn btn-danger btn-custom" style="display: none;">
+                    <i class="fas fa-eye-slash icon-custom"></i>Masquer le PDF
+                </button>
+                <a href="{{ path('app_cours_download', {'id': cour.id}) }}" class="btn btn-secondary-custom btn-custom">
+                    <i class="fas fa-download icon-custom"></i>Télécharger le PDF
+                </a>
+            {% else %}
+                <div class="alert alert-custom" role="alert">
+                    <i class="fas fa-info-circle icon-custom"></i>Aucun fichier PDF disponible.
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Visualiseur de PDF -->
+        <div id="pdf-viewer">
+            <div id="pdf-controls">
+                <button id="zoom-in-btn">Zoom +</button>
+                <button id="zoom-out-btn">Zoom -</button>
+                <span id="page-info">Page 1 sur 1</span>
+            </div>
+            <div id="pdf-pages-container" style="overflow-y: auto; max-height: 80vh;">
+                <!-- Les pages du PDF seront ajoutées ici -->
+            </div>
+        </div>
+
+        <!-- Section Vidéos -->
+        <h2 class="text-center mb-4 text-primary fw-bold">
+            <i class="fas fa-video icon-custom"></i>Vidéos
+        </h2>
+        {% if cour.videos is not empty %}
+            <div class="row">
+                <!-- Colonne de gauche : Vidéo principale -->
+                <div class="col-md-8">
+                    <div class="card video-card">
+                        <div class="card-body">
+                            <h5 class="card-title" id="video-title">Vidéo 1 : {{ cour.videos[0].titre }}</h5>
+                            <div class="video-container">
+                                <video id="main-video" controls>
+                                    <source src="{{ asset('uploads/videos/' ~ cour.videos[0].videoName) }}" type="video/mp4">
+                                    Votre navigateur ne supporte pas la lecture de vidéos.
+                                </video>
+                            </div>
+
+                            <!-- Afficher la moyenne des notes uniquement pour l'admin -->
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <p class="mt-2 rating">
+                                    <i class="fas fa-star"></i> Note moyenne : {{ cour.videos[0].getAverageRating() }}/5
+                                </p>
+                            {% endif %}
+
+                            <!-- Formulaire de notation -->
+                            {% if is_granted('ROLE_USER') %}
+                                <div class="rating-form">
+                                    {% set userRating = cour.videos[0].getUserRating(app.user) %}
+                                    {% if userRating %}
+                                        <p>Votre note : {{ userRating.value }}/5</p>
+                                    {% else %}
+                                        <p>Vous n'avez pas encore noté cette vidéo</p>
+                                    {% endif %}
+
+                                    <!-- Bouton pour ouvrir la modale de notation -->
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#ratingModal{{ cour.videos[0].id }}">
+                                        <i class="fas fa-star"></i> Noter cette vidéo
+                                    </button>
+                                </div>
+                            {% else %}
+                                <p>Connectez-vous pour noter cette vidéo</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colonne de droite : Liste des vidéos et moyenne des notes -->
+                <div class="col-md-4">
+                    <div class="list-group video-list">
+                        {% for video in cour.videos %}
+                            <a href="#" class="list-group-item list-group-item-action video-item {% if loop.first %}active{% endif %}" 
+                               data-video-src="{{ asset('uploads/videos/' ~ video.videoName) }}" 
+                               data-video-id="{{ video.id }}">
+                                Vidéo {{ loop.index }} : {{ video.titre }}
+                                <span class="badge bg-primary rounded-pill float-end">
+                                    {{ video.getAverageRating() }}/5
+                                </span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modales de notation pour chaque vidéo -->
+            {% for video in cour.videos %}
+                <div class="modal fade" id="ratingModal{{ video.id }}" tabindex="-1" aria-labelledby="ratingModalLabel{{ video.id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="ratingModalLabel{{ video.id }}">Noter la vidéo : {{ video.titre }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                {{ form_start(ratingForms[video.id], {'attr': {'id': 'ratingForm', 'action': path('video_rate', {'id': video.id}), 'class': 'rating-form' }}) }}
+                                    <div class="rating-container text-center">
+                                        <div class="rating-emoji">
+                                            😊
+                                        </div>
+                                        <h3 class="rating-title">How was your experience?</h3>
+                                        <div class="star-rating">
+                                            {% for i in 5..1 %}
+                                                <input 
+                                                    type="radio" 
+                                                    id="star{{ video.id }}-{{ i }}" 
+                                                    name="value" 
+                                                    value="{{ i }}" 
+                                                    {{ ratingForms[video.id].value.vars.value == i ? 'checked' : '' }} 
+                                                />
+                                                <label for="star{{ video.id }}-{{ i }}" class="fas fa-star"></label>
+                                            {% endfor %}
+                                        </div>
+                                        <button type="submit" class="submit-rating">Noter cette vidéo</button>
+                                    </div>
+                                {{ form_end(ratingForms[video.id]) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-custom" role="alert">
+                <i class="fas fa-info-circle icon-custom"></i>Aucune vidéo disponible.
+            </div>
+        {% endif %}
+
+        <!-- Bouton de retour -->
+        <div class="text-center mt-5">
+            <a href="{{ path('app_cours_by_category', {'id': cour.categorie.id}) }}" class="btn btn-outline-secondary-custom btn-custom">
+                <i class="fas fa-arrow-left icon-custom"></i>Retour à la liste
+            </a>
+        </div>
+    </div>
+
+    <!-- Inclure PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <script>
+        // Gestion du PDF Viewer
+        let pdfDoc = null;
+        let currentPage = 1;
+        let totalPages = 0;
+        let scale = 1.5;
+
+        const viewPdfBtn = document.getElementById('view-pdf-btn');
+        const hidePdfBtn = document.getElementById('hide-pdf-btn');
+        const pdfViewer = document.getElementById('pdf-viewer');
+        const pdfPagesContainer = document.getElementById('pdf-pages-container');
+
+        viewPdfBtn.addEventListener('click', function() {
+            pdfViewer.style.display = 'block';
+            viewPdfBtn.style.display = 'none';
+            hidePdfBtn.style.display = 'inline-block';
+
+            const pdfUrl = "{{ path('app_cours_download', {'id': cour.id}) }}";
+
+            pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
+                pdfDoc = pdfDoc_;
+                totalPages = pdfDoc.numPages;
+                pdfPagesContainer.innerHTML = '';
+
+                for (let i = 1; i <= totalPages; i++) {
+                    renderPage(i, pdfPagesContainer);
+                }
+
+                document.getElementById('page-info').textContent = `Page 1 sur ${totalPages}`;
+            }).catch(function(error) {
+                console.error('Erreur lors du chargement du PDF : ', error);
+            });
+        });
+
+        hidePdfBtn.addEventListener('click', function() {
+            pdfViewer.style.display = 'none';
+            viewPdfBtn.style.display = 'inline-block';
+            hidePdfBtn.style.display = 'none';
+            pdfPagesContainer.innerHTML = '';
+        });
+
+        function renderPage(pageNum, container) {
+            pdfDoc.getPage(pageNum).then(function(page) {
+                const viewport = page.getViewport({ scale: scale });
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+
+                page.render(renderContext).promise.then(function() {
+                    container.appendChild(canvas);
+                    const spacer = document.createElement('div');
+                    spacer.style.height = '20px';
+                    container.appendChild(spacer);
+                });
+            });
+        }
+
+        document.getElementById('zoom-in-btn').addEventListener('click', function() {
+            scale += 0.25;
+            renderAllPages();
+        });
+
+        document.getElementById('zoom-out-btn').addEventListener('click', function() {
+            if (scale > 0.25) {
+                scale -= 0.25;
+                renderAllPages();
+            }
+        });
+
+        function renderAllPages() {
+            pdfPagesContainer.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                renderPage(i, pdfPagesContainer);
+            }
+        }
+
+        // Gestion de la playlist vidéo
+        document.addEventListener('DOMContentLoaded', function () {
+            const videoItems = document.querySelectorAll('.video-item');
+            const mainVideo = document.getElementById('main-video');
+            const videoTitle = document.getElementById('video-title');
+
+            videoItems.forEach(item => {
+                item.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    videoItems.forEach(video => video.classList.remove('active'));
+                    item.classList.add('active');
+
+                    const videoSrc = item.getAttribute('data-video-src');
+                    const videoId = item.getAttribute('data-video-id');
+                    mainVideo.querySelector('source').src = videoSrc;
+                    mainVideo.load();
+
+                    videoTitle.textContent = item.textContent;
+                });
+            });
+        });
+
+        // Détecter les actions suspectes
+        document.addEventListener('keydown', function (e) {
+            // Détecter Ctrl+Shift+I (Outils de développement)
+            if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+                document.getElementById('overlay').style.display = 'block';
+            }
+            // Détecter Ctrl+Shift+C (Inspecteur d'éléments)
+            if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+                document.getElementById('overlay').style.display = 'block';
+            }
+            // Détecter F12 (Outils de développement)
+            if (e.key === 'F12') {
+                document.getElementById('overlay').style.display = 'block';
+            }
+        });
+
+        // Détecter la capture d'écran via des extensions
+        window.addEventListener('blur', function () {
+            document.getElementById('overlay').style.display = 'block';
+        });
+
+        // Détecter quand l'utilisateur revient à la page
+        window.addEventListener('focus', function () {
+            document.getElementById('overlay').style.display = 'none';
+        });
+    </script>
+{% endblock %}

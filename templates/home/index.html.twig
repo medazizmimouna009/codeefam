@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>CodeFam</title>
+  <meta name="description" content="Plateforme d'e-learning dédiée au codage">
+  <meta name="keywords" content="e-learning, codage, programmation, CodeFam">
+
+  <!-- Favicons -->
+  <link href="{{ asset('landing/img/favicon.png') }}" rel="icon">
+  <link href="{{ asset('landing/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ asset('landing/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('landing/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link href="{{ asset('landing/vendor/aos/aos.css') }}" rel="stylesheet">
+  <link href="{{ asset('landing/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('landing/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="{{ asset('landing/css/main.css') }}" rel="stylesheet">
+
+
+
+
+<style>
+  .pricing-section {
+  background-color: #f8f9fa;
+}
+
+.pricing-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+  border-radius: 15px;
+}
+
+.pricing-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.feature-list li {
+  margin-bottom: 0.8rem;
+  color: #6c757d;
+}
+
+.popular-badge {
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  border-radius: 20px;
+}
+
+.gradient-custom {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+.btn-primary {
+  background-color: #6366f1;
+  border-color: #6366f1;
+}
+
+.btn-primary:hover {
+  background-color: #4f46e5;
+  border-color: #4f46e5;
+}
+  </style>
+
+
+  </head>
+
+<body class="index-page">
+
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+      <a href="{{ path('app_home') }}" class="logo d-flex align-items-center me-auto">
+      <img src="{{ asset('landing/img/logo.png') }}" alt="CodeFam Logo" >
+       
+    </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="{{ path('app_home') }}" class="active">Accueil</a></li>
+          <li><a href="{{ path('app_home') }}">À propos</a></li>
+          <li><a href="{{ path('app_home') }}">Cours</a></li>
+          <li><a href="{{ path('app_home') }}">Tuteurs</a></li>
+          <li><a href="{{ path('app_home') }}">Événements</a></li>
+          <li><a href="{{ path('app_home') }}">Tarifs</a></li>
+          <li><a href="{{ path('app_home') }}">Contact</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <a class="btn-getstarted" href="{{ path('app_register') }}">Commencer</a>
+    <a class="btn-getstarted" href="{{ path('app_login') }}">Se connecter</a>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section dark-background">
+      <img src="{{ asset('landing/img/hero-bg.jpg') }}" alt="" data-aos="fade-in">
+      <div class="container">
+        <h2 data-aos="fade-up" data-aos-delay="100">Apprendre Aujourd'hui,<br>Diriger Demain</h2>
+        <p data-aos="fade-up" data-aos-delay="200">Nous sommes une équipe de développeurs talentueux créant des sites web avec Bootstrap</p>
+        <div class="d-flex mt-4" data-aos="fade-up" data-aos-delay="300">
+          <a href="{{ path('app_home') }}" class="btn-get-started">Commencer</a>
+        </div>
+      </div>
+    </section><!-- /Hero Section -->
+
+    <!-- About Section -->
+    <section id="about" class="about section">
+      <div class="container">
+        <div class="row gy-4">
+          <div class="col-lg-6 order-1 order-lg-2" data-aos="fade-up" data-aos-delay="100">
+            <img src="{{ asset('landing/img/about.jpg') }}" class="img-fluid" alt="">
+          </div>
+          <div class="col-lg-6 order-2 order-lg-1 content" data-aos="fade-up" data-aos-delay="200">
+            <h3>Pourquoi choisir CodeFam ?</h3>
+            <p class="fst-italic">
+              CodeFam est une plateforme d'e-learning dédiée au codage, offrant des cours de qualité pour tous les niveaux.
+            </p>
+            <ul>
+              <li><i class="bi bi-check-circle"></i> <span>Accès à des cours de codage de haute qualité.</span></li>
+              <li><i class="bi bi-check-circle"></i> <span>Formateurs expérimentés et passionnés.</span></li>
+              <li><i class="bi bi-check-circle"></i> <span>Communauté active et support continu.</span></li>
+            </ul>
+            <a href="#" class="read-more"><span>En savoir plus</span><i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </section><!-- /About Section -->
+
+    <!-- Counts Section -->
+    <section id="counts" class="section counts light-background">
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row gy-4">
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-item text-center w-100 h-100">
+              <span data-purecounter-start="0" data-purecounter-end="1232" data-purecounter-duration="1" class="purecounter"></span>
+              <p>Étudiants</p>
+            </div>
+          </div><!-- End Stats Item -->
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-item text-center w-100 h-100">
+              <span data-purecounter-start="0" data-purecounter-end="64" data-purecounter-duration="1" class="purecounter"></span>
+              <p>Cours</p>
+            </div>
+          </div><!-- End Stats Item -->
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-item text-center w-100 h-100">
+              <span data-purecounter-start="0" data-purecounter-end="42" data-purecounter-duration="1" class="purecounter"></span>
+              <p>Événements</p>
+            </div>
+          </div><!-- End Stats Item -->
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-item text-center w-100 h-100">
+              <span data-purecounter-start="0" data-purecounter-end="24" data-purecounter-duration="1" class="purecounter"></span>
+              <p>Formateurs</p>
+            </div>
+          </div><!-- End Stats Item -->
+        </div>
+      </div>
+    </section><!-- /Counts Section -->
+
+    <!-- Why Us Section -->
+    <section id="why-us" class="section why-us">
+      <div class="container">
+        <div class="row gy-4">
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="why-box">
+              <h3>Pourquoi choisir nos produits ?</h3>
+              <p>
+                CodeFam offre une gamme complète de cours de codage, des bases aux techniques avancées, pour vous aider à devenir un expert en programmation.
+              </p>
+              <div class="text-center">
+                <a href="#" class="more-btn"><span>En savoir plus</span> <i class="bi bi-chevron-right"></i></a>
+              </div>
+            </div>
+          </div><!-- End Why Box -->
+          <div class="col-lg-8 d-flex align-items-stretch">
+            <div class="row gy-4" data-aos="fade-up" data-aos-delay="200">
+              <div class="col-xl-4">
+                <div class="icon-box d-flex flex-column justify-content-center align-items-center">
+                  <i class="bi bi-clipboard-data"></i>
+                  <h4>Apprentissage structuré</h4>
+                  <p>Des cours bien organisés pour une progression efficace.</p>
+                </div>
+              </div><!-- End Icon Box -->
+              <div class="col-xl-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="icon-box d-flex flex-column justify-content-center align-items-center">
+                  <i class="bi bi-gem"></i>
+                  <h4>Ressources de qualité</h4>
+                  <p>Accès à des ressources et des outils de haute qualité.</p>
+                </div>
+              </div><!-- End Icon Box -->
+              <div class="col-xl-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="icon-box d-flex flex-column justify-content-center align-items-center">
+                  <i class="bi bi-inboxes"></i>
+                  <h4>Support continu</h4>
+                  <p>Support et assistance continue pour tous les étudiants.</p>
+                </div>
+              </div><!-- End Icon Box -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section><!-- /Why Us Section -->
+
+    <!-- Features Section -->
+    <section id="features" class="features section">
+      <div class="container">
+        <div class="row gy-4">
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="features-item">
+              <i class="bi bi-eye" style="color: #ffbb2c;"></i>
+              <h3><a href="" class="stretched-link">Cours interactifs</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="features-item">
+              <i class="bi bi-infinity" style="color: #5578ff;"></i>
+              <h3><a href="" class="stretched-link">Accès illimité</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="features-item">
+              <i class="bi bi-mortarboard" style="color: #e80368;"></i>
+              <h3><a href="" class="stretched-link">Formateurs experts</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="400">
+            <div class="features-item">
+              <i class="bi bi-nut" style="color: #e361ff;"></i>
+              <h3><a href="" class="stretched-link">Projets pratiques</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="500">
+            <div class="features-item">
+              <i class="bi bi-shuffle" style="color: #47aeff;"></i>
+              <h3><a href="" class="stretched-link">Flexibilité</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="600">
+            <div class="features-item">
+              <i class="bi bi-star" style="color: #ffa76e;"></i>
+              <h3><a href="" class="stretched-link">Certifications</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="700">
+            <div class="features-item">
+              <i class="bi bi-x-diamond" style="color: #11dbcf;"></i>
+              <h3><a href="" class="stretched-link">Communauté</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="800">
+            <div class="features-item">
+              <i class="bi bi-camera-video" style="color: #4233ff;"></i>
+              <h3><a href="" class="stretched-link">Webinaires</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+        </div>
+      </div>
+    </section><!-- /Features Section -->
+
+
+
+<!-- Categories Section -->
+<section id="categories" class="categories section">
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Catégories</h2>
+        <p>Explorez nos cours</p>
+    </div><!-- End Section Title -->
+    <div class="container">
+        <div class="row">
+            {% for categorie in categories %}
+                <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="category-item">
+                        <img src="{{ asset('landing/img/course-1.jpg') }}" class="img-fluid" alt="{{ categorie.nomCategorie }}">
+                        <div class="category-content">
+                            <h3>{{ categorie.nomCategorie }}</h3>
+                            <p>{{ categorie.description }}</p>
+                            <a href="{{ path('app_cours_by_category', {'id': categorie.id}) }}" class="btn btn-primary">
+                                Voir les cours
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info" role="alert">
+                        Aucune catégorie disponible pour le moment.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section><!-- /Categories Section -->
+
+
+
+
+<section id="pricing" class="pricing-section bg-light">
+    <div class="container py-5" data-aos="fade-up">
+        <div class="row text-center mb-5">
+            <div class="col">
+                <h2 class="display-4 fw-bold">Tarifs</h2>
+                <p class="text-muted">Nos Offres</p>
+            </div>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for offre in offres %}
+                <div class="col">
+                    <div class="card h-100 pricing-card shadow-sm position-relative">
+                        {% if offre.type == 'pro' %}
+                            <span class="badge gradient-custom text-white popular-badge px-4 py-2">Populaire</span>
+                        {% endif %}
+                        <div class="card-body p-5">
+                            <h3 class="card-title text-uppercase mb-4">{{ offre.type|capitalize }}</h3>
+                            <h1 class="display-5 mb-4">{{ offre.prix }} TND<small class="text-muted fw-light">/mois</small></h1>
+                            <ul class="list-unstyled feature-list">
+                                <li><i class="bi bi-check2 text-primary me-2"></i>{{ offre.duree }} mois</li>
+                                {% if offre.type == 'lite' %}
+                                    <li><i class="bi bi-check2 text-primary me-2"></i>Jusqu'à 5 projets actifs</li>
+                                    <li><i class="bi bi-check2 text-primary me-2"></i>Fonctionnalités avancées</li>
+                                    <li><i class="bi bi-check2 text-primary me-2"></i>Support par e-mail pendant les heures de bureau</li>
+                                {% elseif offre.type == 'pro' %}
+                                    <li><i class="bi bi-check2 text-primary me-2"></i>cours illimités</li>
+                                    <li><i class="bi bi-check2 text-primary me-2"></i>Accès complet à toutes les fonctionnalités premium</li>
+                                    <li><i class="bi bi-check2 text-primary me-2"></i>Support par email prioritaire</li>
+                                    <li><i class="bi bi-check2 text-primary me-2"></i>Support premium</li>
+                                {% elseif offre.type == 'enterprise' %}
+                                    <li><i class="bi bi-check2 text-primary me-2"></i>Toutes les fonctionnalités Pro</li>
+                                    <li><i class="bi bi-check2 text-primary me-2"></i>Accès illimité</li>
+                                    <li><i class="bi bi-check2 text-primary me-2"></i>Support 24/7</li>
+                                    <li><i class="bi bi-check2 text-primary me-2"></i>Gestionnaire de compte dédié</li>
+                                    <li><i class="bi bi-check2 text-primary me-2"></i>Solutions personnalisées</li>
+                                {% endif %}
+                            </ul>
+                            <div class="btn-wrap">
+                                <a href="{{ path('app_payment', {'id': offre.id}) }}" class="btn btn-primary btn-lg w-100 mt-4">Acheter</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Trainers Index Section -->
+<section id="trainers-index" class="section trainers-index">
+<div class="container">
+    <div class="row">
+        {% for tuteur in tuteurs|slice(0, 4) %}
+        <div class="col-lg-4 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="100">
+            <div class="member">
+                <img src="{{ tuteur.photoDeProfil ? asset('uploads/profile_pictures/' ~ tuteur.photoDeProfil) : asset('img/placeholderprofile.png') }}" class="img-fluid" alt="{{ tuteur.prenom }} {{ tuteur.nom }}">
+                <div class="member-content">
+                    <h4>{{ tuteur.prenom }} {{ tuteur.nom }}</h4>
+                    <span>{{ tuteur.specialite }}</span>
+                    <p>{{ tuteur.bio }}</p>
+                    <div class="social">
+                        <a href=""><i class="bi bi-twitter-x"></i></a>
+                        <a href=""><i class="bi bi-facebook"></i></a>
+                        <a href=""><i class="bi bi-instagram"></i></a>
+                        <a href=""><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div><!-- End Team Member -->
+        {% endfor %}
+    </div>
+</div>
+</section><!-- /Trainers Index Section -->
+  </main>
+
+  <footer id="footer" class="footer position-relative light-background">
+
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-4 col-md-6 footer-about">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <span class="sitename">Mentor</span>
+          </a>
+          <div class="footer-contact pt-3">
+            <p>A108 Adam Street</p>
+            <p>New York, NY 535022</p>
+            <p class="mt-3"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p>
+            <p><strong>Email:</strong> <span>info@example.com</span></p>
+          </div>
+          <div class="social-links d-flex mt-4">
+            <a href=""><i class="bi bi-twitter-x"></i></a>
+            <a href=""><i class="bi bi-facebook"></i></a>
+            <a href=""><i class="bi bi-instagram"></i></a>
+            <a href=""><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Useful Links</h4>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About us</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Terms of service</a></li>
+            <li><a href="#">Privacy policy</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Our Services</h4>
+          <ul>
+            <li><a href="#">Web Design</a></li>
+            <li><a href="#">Web Development</a></li>
+            <li><a href="#">Product Management</a></li>
+            <li><a href="#">Marketing</a></li>
+            <li><a href="#">Graphic Design</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-4 col-md-12 footer-newsletter">
+          <h4>Our Newsletter</h4>
+          <p>Subscribe to our newsletter and receive the latest news about our products and services!</p>
+          <form action="forms/newsletter.php" method="post" class="php-email-form">
+            <div class="newsletter-form"><input type="email" name="email"><input type="submit" value="Subscribe"></div>
+            <div class="loading">Loading</div>
+            <div class="error-message"></div>
+            <div class="sent-message">Your subscription request has been sent. Thank you!</div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+      <p>© <span>Copyright</span> <strong class="px-1 sitename">Mentor</strong> <span>All Rights Reserved</span></p>
+      <div class="credits">
+        <!-- All the links in the footer should remain intact. -->
+        <!-- You can delete the links only if you've purchased the pro version. -->
+        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
+        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> Distributed by <a href=“https://themewagon.com>ThemeWagon
+      </div>
+    </div>
+
+  </footer>
+
+ 
+  <!-- Scroll Top -->
+<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+<!-- Preloader -->
+<div id="preloader"></div>
+
+<!-- Vendor JS Files -->
+<script src="{{ asset('landing/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('landing/vendor/php-email-form/validate.js') }}"></script>
+<script src="{{ asset('landing/vendor/aos/aos.js') }}"></script>
+<script src="{{ asset('landing/vendor/glightbox/js/glightbox.min.js') }}"></script>
+<script src="{{ asset('landing/vendor/purecounter/purecounter_vanilla.js') }}"></script>
+<script>
+new PureCounter();
+</script>
+
+<script src="{{ asset('landing/vendor/swiper/swiper-bundle.min.js') }}"></script>
+
+<!-- Main JS File -->
+<script src="{{ asset('landing/js/main.js') }}"></script>
+</body>
+</html>

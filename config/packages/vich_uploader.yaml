@@ -1,0 +1,22 @@
+vich_uploader:
+    db_driver: orm # Utilisez 'orm' pour Doctrine ORM
+
+    mappings:
+        cours_file: # Nom de la configuration (vous pouvez le personnaliser)
+            uri_prefix: /uploads/fichiers # URL publique pour accéder aux fichiers
+            upload_destination: '%kernel.project_dir%/public/uploads/fichiers' # Répertoire de stockage
+
+            namer: Vich\UploaderBundle\Naming\OrignameNamer # Utilise le nom original du fichier
+            inject_on_load: false
+            delete_on_update: true
+            delete_on_remove: true
+
+
+
+      #  video_upload: # Configuration pour les vidéos
+       #     uri_prefix: /uploads/videos
+        #    upload_destination: '%kernel.project_dir%/public/uploads/videos'
+            
+         #   namer: Vich\UploaderBundle\Naming\OrignameNamer
+          #  delete_on_update: true
+           # delete_on_remove: true

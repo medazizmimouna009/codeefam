@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Offres{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4 text-center">Nos Offres</h1>
+
+        <!-- Formulaire de recherche -->
+        <form action="{{ path('app_offre_index') }}" method="get" class="mb-4">
+            <div class="input-group">
+                <input type="number" name="prix" class="form-control" value="{{ prix }}" placeholder="Rechercher par prix">
+                <button type="submit" class="btn btn-primary">Rechercher</button>
+            </div>
+        </form>
+
+        <!-- Affichage des offres -->
+        {% if offres is not empty %}
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Type</th>
+                        <th>Durée</th>
+                        <th>Prix</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for offre in offres %}
+                        <tr>
+                            <td>{{ offre.type }}</td>
+                            <td>{{ offre.duree }}</td>
+                            <td>{{ offre.prix }} TND</td>
+                            <td>
+                                <a href="{{ path('app_offre_show', {'id': offre.id}) }}" class="btn btn-primary btn-sm">Show</a>
+                                <a href="{{ path('app_offre_edit', {'id': offre.id}) }}" class="btn btn-info btn-sm">Edit</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="text-center text-danger">Aucune offre trouvée pour "{{ prix }}".</p>
+        {% endif %}
+
+        <div class="text-center mt-3">
+            <a href="{{ path('app_offre_new') }}" class="btn btn-success">Create new</a>
+        </div>
+    </div>
+{% endblock %}
+

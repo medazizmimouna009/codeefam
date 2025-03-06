@@ -1,0 +1,334 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ video.titre }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Animation pour le titre */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animated-title {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Style pour la carte des détails */
+        .card-details {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-details:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Style pour le lecteur vidéo */
+        .video-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            background: #000;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+        }
+
+        /* Boutons de contrôle de la vitesse */
+        .speed-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        .speed-controls .btn {
+            margin: 5px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.8);
+            color: #000;
+            border: none;
+            transition: background 0.3s ease;
+        }
+
+        .speed-controls .btn:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+
+        /* Boutons d'action */
+        .action-buttons .btn {
+            margin: 5px;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 14px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .action-buttons .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Styles pour le système de notation */
+        .rating-container {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 10px 10px 20px #d1d1d1,
+                       -10px -10px 20px #ffffff;
+            max-width: 400px;
+            margin: 2rem auto;
+        }
+
+        .star-rating {
+            direction: rtl; /* Inverse l'ordre des étoiles */
+            display: inline-block;
+            padding: 20px;
+        }
+
+        .star-rating input {
+            opacity: 0; /* Rendre les boutons radio invisibles */
+            position: absolute; /* Les retirer du flux normal */
+        }
+
+        .star-rating label {
+            color: #bbb; /* Couleur des étoiles non sélectionnées */
+            cursor: pointer;
+            font-size: 30px;
+            padding: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input:checked ~ label {
+            color: #f7b731; /* Couleur des étoiles sélectionnées */
+        }
+
+        .rating-title {
+            color: #2d3436;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .submit-rating {
+            background: linear-gradient(145deg, #f7b731, #f0932b);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            color: white;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .submit-rating:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(247, 183, 49, 0.4);
+        }
+
+        .rating-emoji {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <!-- Titre avec animation -->
+        <h1 class="text-center mb-4 text-primary fw-bold animated-title">
+            <i class="fas fa-video me-2"></i>{{ video.titre }}
+        </h1>
+
+        <!-- Carte pour les détails de la vidéo -->
+        <div class="card card-details mb-4">
+            <div class="card-body">
+                <p class="lead">{{ video.description }}</p>
+                <p class="mb-0">
+                    <strong>Date d'ajout :</strong> {{ video.dateAjout ? video.dateAjout|date('Y-m-d H:i:s') : 'Non spécifiée' }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Lecteur vidéo avec contrôles de vitesse -->
+        <div class="card shadow-lg mb-4">
+            <div class="card-body p-0">
+                <div class="video-container">
+                    <video id="videoPlayer" controls class="w-100">
+                        <source src="{{ asset('uploads/videos/' ~ video.videoName) }}" type="video/mp4">
+                        Votre navigateur ne supporte pas la lecture de vidéos.
+                    </video>
+
+                    <!-- Boutons de contrôle de la vitesse -->
+                    <div class="speed-controls">
+                        <button id="speedUp" class="btn" title="Accélérer">
+                            <i class="fas fa-forward"></i>
+                        </button>
+                        <button id="speedDown" class="btn" title="Ralentir">
+                            <i class="fas fa-backward"></i>
+                        </button>
+                        <button id="resetSpeed" class="btn" title="Vitesse normale">
+                            <i class="fas fa-sync"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+ {% if is_granted('ROLE_USER') %}
+        <!-- Affichage de la note moyenne et bouton pour noter la vidéo -->
+        <div class="card mb-4">
+            <div class="card-body">
+            
+                {% if app.user %}
+                    {# Récupérer la note de l'utilisateur actuel pour cette vidéo #}
+                    {% set userRating = video.getUserRating(app.user) %}
+                    {% if userRating %}
+                        <h2>Votre note : {{ userRating.value }}/5</h2>
+                    {% else %}
+                        <h2>Vous n'avez pas encore noté cette vidéo</h2>
+                    {% endif %}
+                {% else %}
+                    <h2>Connectez-vous pour noter cette vidéo</h2>
+                {% endif %}
+
+                <!-- Bouton pour ouvrir la modale -->
+                 
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#ratingModal">
+                    <i class="fas fa-star"></i> Noter cette vidéo
+                </button>
+                
+            </div>
+        </div>
+{% endif %}
+        <!-- Boutons d'action -->
+        <div class="d-flex justify-content-between mt-4 action-buttons">
+            <!-- Bouton Retour -->
+            <a href="{{ path('app_video_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+            </a>
+
+            <!-- Boutons Modifier et Supprimer -->
+            <div>
+                <a href="{{ path('app_video_edit', {'id': video.id}) }}" class="btn btn-warning">
+                    <i class="fas fa-edit me-2"></i>Modifier
+                </a>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteVideoModal">
+                    <i class="fas fa-trash me-2"></i>Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale de confirmation de suppression -->
+    <div class="modal fade" id="deleteVideoModal" tabindex="-1" aria-labelledby="deleteVideoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteVideoModalLabel">Confirmer la suppression</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir supprimer la vidéo "{{ video.titre }}" ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <form id="deleteForm" action="{{ path('app_video_delete', {'id': video.id}) }}" method="post" style="display: inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ video.id) }}">
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale pour le formulaire de notation -->
+    <div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ratingModalLabel">Noter la vidéo : {{ video.titre }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {# Formulaire de notation avec étoiles #}
+                    {{ form_start(form, {'attr': {'id': 'ratingForm', 'action': path('video_rate', {'id': video.id}), 'class': 'rating-form' }}) }}
+                        <div class="rating-container text-center">
+                            <div class="rating-emoji">
+                                😊
+                            </div>
+                            <h3 class="rating-title">How was your experience?</h3>
+                            <div class="star-rating">
+                                {% for i in 5..1 %}
+                                    <input 
+                                        type="radio" 
+                                        id="star{{ i }}" 
+                                        name="value" 
+                                        value="{{ i }}" 
+                                        {{ form.value.vars.value == i ? 'checked' : '' }} 
+                                    />
+                                    <label for="star{{ i }}" class="fas fa-star"></label>
+                                {% endfor %}
+                            </div>
+                            
+                            <button type="submit" class="submit-rating">Submit Rating</button>
+                            
+                        </div>
+                        
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script pour contrôler la vitesse de lecture -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const videoPlayer = document.getElementById('videoPlayer');
+            const speedUp = document.getElementById('speedUp');
+            const speedDown = document.getElementById('speedDown');
+            const resetSpeed = document.getElementById('resetSpeed');
+
+            // Vitesse de lecture initiale
+            let playbackRate = 1;
+
+            // Accélérer la vidéo
+            speedUp.addEventListener('click', function () {
+                playbackRate += 0.5; // Augmente la vitesse de 0.5x
+                if (playbackRate > 4) playbackRate = 4; // Limite à 4x
+                videoPlayer.playbackRate = playbackRate;
+                console.log(`Vitesse de lecture : ${playbackRate}x`);
+            });
+
+            // Ralentir la vidéo
+            speedDown.addEventListener('click', function () {
+                playbackRate -= 0.5; // Réduit la vitesse de 0.5x
+                if (playbackRate < 0.5) playbackRate = 0.5; // Limite à 0.5x
+                videoPlayer.playbackRate = playbackRate;
+                console.log(`Vitesse de lecture : ${playbackRate}x`);
+            });
+
+            // Réinitialiser la vitesse
+            resetSpeed.addEventListener('click', function () {
+                playbackRate = 1; // Réinitialise à 1x
+                videoPlayer.playbackRate = playbackRate;
+                console.log(`Vitesse de lecture : ${playbackRate}x`);
+            });
+        });
+    </script>
+{% endblock %}

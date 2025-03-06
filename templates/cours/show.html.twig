@@ -1,0 +1,333 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du cours{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* General styling */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        .card {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .btn {
+            margin-right: 10px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            color: black;
+            border: none;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        /* PDF Viewer styling */
+        #pdf-viewer {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            display: none; /* Hidden by default */
+            overflow-y: auto; /* Enable vertical scroll */
+            max-height: 80vh; /* Limit height to 80% of viewport */
+        }
+
+        #pdf-canvas {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Zoom and page controls */
+        #pdf-controls {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        #pdf-controls button {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        #pdf-controls button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        #page-info {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #333;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4 text-primary fw-bold">
+            <i class="fas fa-book me-2"></i>Détails du cours
+        </h1>
+
+        <div class="card shadow-lg mb-4">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">{{ cour.titre }}</h5>
+                <p class="card-text"><strong>Catégorie :</strong> 
+                    {% if cour.categorie %}
+                        {{ cour.categorie.nomCategorie }}
+                    {% else %}
+                        Aucune catégorie associée.
+                    {% endif %}
+                </p>
+                <p class="card-text"><strong>Description :</strong> {{ cour.description }}</p>
+                <p class="card-text"><strong>Durée :</strong> {{ cour.duree }}</p>
+            </div>
+        </div>
+
+        <h2 class="text-center mb-4 text-primary fw-bold">
+            <i class="fas fa-file-pdf me-2"></i>Fichier
+        </h2>
+        <div class="mb-4 text-center">
+            {% if cour.fichier %}
+                <button id="view-pdf-btn" class="btn btn-primary">
+                    <i class="fas fa-eye me-2"></i>Voir le PDF
+                </button>
+                <button id="hide-pdf-btn" class="btn btn-danger" style="display: none;">
+                    <i class="fas fa-eye-slash me-2"></i>Masquer le PDF
+                </button>
+                <a href="{{ path('app_cours_download', {'id': cour.id}) }}" class="btn btn-secondary">
+                    <i class="fas fa-download me-2"></i>Télécharger le PDF
+                </a>
+            {% else %}
+                <div class="alert alert-info text-center" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>Aucun fichier PDF disponible.
+                </div>
+            {% endif %}
+        </div>
+
+        <div id="pdf-viewer">
+            <div id="pdf-controls">
+                <button id="zoom-in-btn">Zoom +</button>
+                <button id="zoom-out-btn">Zoom -</button>
+                <span id="page-info">Page 1 sur 1</span>
+            </div>
+            <div id="pdf-pages-container" style="overflow-y: auto; max-height: 80vh;">
+                <!-- Les pages du PDF seront ajoutées ici -->
+            </div>
+        </div>
+
+        <h2 class="text-center mb-4 text-primary fw-bold">
+            <i class="fas fa-video me-2"></i>Vidéos
+        </h2>
+        {% if cour.videos is not empty %}
+            <div class="row">
+                {% for video in cour.videos %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">Vidéo {{ loop.index }}</h5>
+                                <video width="100%" controls>
+                                    <source src="{{ asset('uploads/videos/' ~ video.videoName) }}" type="video/mp4">
+                                    Votre navigateur ne supporte pas la lecture de vidéos.
+                                </video>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center" role="alert">
+                <i class="fas fa-info-circle me-2"></i>Aucune vidéo disponible.
+            </div>
+        {% endif %}
+
+        <h2 class="text-center mb-4 text-primary fw-bold">
+            <i class="fas fa-clock me-2"></i>Dernière mise à jour
+        </h2>
+        <p class="text-center">{{ cour.updatedAt ? cour.updatedAt|date('Y-m-d H:i:s') : 'Non disponible' }}</p>
+
+        <div class="text-center mt-5">
+            <a href="{{ path('app_cours_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+            </a>
+             {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('app_cours_edit', {'id': cour.id}) }}" class="btn btn-warning">
+                <i class="fas fa-edit me-2"></i>Modifier
+            </a>
+            {% endif %}
+
+              {% if is_granted('ROLE_TUTEUR') %}
+            <a href="{{ path('app_cours_edit', {'id': cour.id}) }}" class="btn btn-warning">
+                <i class="fas fa-edit me-2"></i>Modifier
+            </a>
+            {% endif %}
+        </div>
+
+        {{ include('cours/_delete_form.html.twig') }}
+    </div>
+
+    <!-- Include pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <script>
+        let pdfDoc = null;
+        let currentPage = 1;
+        let totalPages = 0;
+        let scale = 1.5; // Initial scale
+
+        // Boutons
+        const viewPdfBtn = document.getElementById('view-pdf-btn');
+        const hidePdfBtn = document.getElementById('hide-pdf-btn');
+        const pdfViewer = document.getElementById('pdf-viewer');
+        const pdfPagesContainer = document.getElementById('pdf-pages-container');
+
+        // Afficher le PDF
+        viewPdfBtn.addEventListener('click', function() {
+            pdfViewer.style.display = 'block';
+            viewPdfBtn.style.display = 'none';
+            hidePdfBtn.style.display = 'inline-block';
+
+            const pdfUrl = "{{ path('app_cours_download', {'id': cour.id}) }}";
+
+            // Load the PDF
+            pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
+                pdfDoc = pdfDoc_;
+                totalPages = pdfDoc.numPages;
+                console.log('PDF loaded');
+
+                // Clear previous pages
+                pdfPagesContainer.innerHTML = '';
+
+                // Render all pages
+                for (let i = 1; i <= totalPages; i++) {
+                    renderPage(i, pdfPagesContainer);
+                }
+
+                // Update page info
+                document.getElementById('page-info').textContent = `Page 1 sur ${totalPages}`;
+            }).catch(function(error) {
+                console.error('Error loading PDF: ', error);
+            });
+        });
+
+        // Masquer le PDF
+        hidePdfBtn.addEventListener('click', function() {
+            pdfViewer.style.display = 'none';
+            viewPdfBtn.style.display = 'inline-block';
+            hidePdfBtn.style.display = 'none';
+            pdfPagesContainer.innerHTML = ''; // Clear the PDF pages
+        });
+
+        function renderPage(pageNum, container) {
+            pdfDoc.getPage(pageNum).then(function(page) {
+                const viewport = page.getViewport({ scale: scale });
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+
+                // Render the page into the canvas
+                page.render(renderContext).promise.then(function() {
+                    // Append the canvas to the container
+                    container.appendChild(canvas);
+
+                    // Add a small margin between pages
+                    const spacer = document.createElement('div');
+                    spacer.style.height = '20px';
+                    container.appendChild(spacer);
+                });
+            });
+        }
+
+        // Zoom in
+        document.getElementById('zoom-in-btn').addEventListener('click', function() {
+            scale += 0.25;
+            renderAllPages();
+        });
+
+        // Zoom out
+        document.getElementById('zoom-out-btn').addEventListener('click', function() {
+            if (scale > 0.25) {
+                scale -= 0.25;
+                renderAllPages();
+            }
+        });
+
+        function renderAllPages() {
+            pdfPagesContainer.innerHTML = ''; // Clear previous pages
+            for (let i = 1; i <= totalPages; i++) {
+                renderPage(i, pdfPagesContainer);
+            }
+        }
+    </script>
+{% endblock %}

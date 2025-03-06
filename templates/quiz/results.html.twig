@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="pagetitle">
+        <h1>Résultats du Quiz : {{ quiz.nom }}</h1>
+    </div>
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Votre score : {{ score }} / {{ totalQuestions }}</h2>
+
+                        {% if score / totalQuestions >= 0.5 or attempts >= 2 %}
+                            <h3 class="card-subtitle mb-3">Détail des réponses :</h3>
+                            <ul class="list-group">
+                                {% for userReponse in userReponses %}
+                                    <li class="list-group-item mb-2">
+                                        <strong>Question :</strong> {{ userReponse.question.texte }}<br>
+                                        <strong>Votre réponse :</strong> {{ userReponse.reponse.texte }}<br>
+                                        <strong>Correcte :</strong>
+                                        <span class="badge {{ userReponse.estCorrecte ? 'bg-success' : 'bg-danger' }}">
+                                            {{ userReponse.estCorrecte ? 'Oui' : 'Non' }}
+                                        </span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                        <div class="text-center mt-4">
+                            {% if score / totalQuestions < 0.5 and attempts < 2 %}
+                                {# Afficher le bouton "Refaire le quiz" si le score est inférieur à 50% et que l'utilisateur n'a pas déjà utilisé ses deux tentatives #}
+                                <a href="{{ path('quiz_play', {'id': quiz.id}) }}" class="btn btn-warning">
+                                    Refaire le quiz
+                                </a>
+                                <p class="text-muted mt-2">Vous avez droit à une seule tentative supplémentaire.</p>
+                            {% else %}
+                                {# Afficher le bouton "Retour à la liste des quiz" si le score est supérieur ou égal à 50% ou si l'utilisateur a déjà utilisé ses deux tentatives #}
+                                <a href="{{ path('app_quiz_list') }}" class="bi bi-arrow-left-circle me-2">
+                                    Retour à la liste des quiz
+                                </a>
+                            {% endif %}
+
+                            {# Bouton pour télécharger le PDF #}
+                            <a href="{{ path('quiz_results_pdf', {'id': quiz.id}) }}" class="bi bi-file-earmark-pdf-fill me-2">
+                                Télécharger les résultats en PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

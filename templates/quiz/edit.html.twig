@@ -1,0 +1,201 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier un Quiz{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4 text-primary fw-bold">Modifier un Quiz</h1>
+
+        <div class="card shadow-lg p-4 mx-auto" style="max-width: 600px;">
+            {{ form_start(form, {'attr': {'class': 'row g-3', 'novalidate': 'novalidate'}}) }}
+                {# Nom du Quiz #}
+                <div class="mb-3">
+                    {{ form_label(form.nom, 'Nom du Quiz', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.nom, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.nom.vars.valid ? '' : ' is-invalid'),
+                            'placeholder': 'Entrez le nom du quiz'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.nom) }}
+                    </div>
+                </div>
+
+                {# Niveau de difficulté #}
+                <div class="mb-3">
+                    {{ form_label(form.niveau, 'Niveau de difficulté', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.niveau, {
+                        'attr': {
+                            'class': 'form-select niveau-select' ~ (form.niveau.vars.valid ? '' : ' is-invalid')
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.niveau) }}
+                    </div>
+                </div>
+
+                {# Cours associé #}
+                <div class="mb-3">
+                    {{ form_label(form.nomCours, 'Cours associé', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.nomCours, {
+                        'attr': {
+                            'class': 'form-select nom-cours-select' ~ (form.nomCours.vars.valid ? '' : ' is-invalid')
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.nomCours) }}
+                    </div>
+                </div>
+
+                {# Nombre de questions #}
+                <div class="mb-3">
+                    {{ form_label(form.nombreQuestions, 'Nombre de questions', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.nombreQuestions, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.nombreQuestions.vars.valid ? '' : ' is-invalid'),
+                            'min': 1,
+                            'max': 50
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.nombreQuestions) }}
+                    </div>
+                </div>
+
+                {# Bouton pour générer les questions #}
+                <div class="mb-3">
+                    <button type="button" id="generate-questions" class="btn btn-outline-primary w-100 mb-3">
+                        <i class="fas fa-sync-alt me-2"></i>Générer les Questions
+                    </button>
+                </div>
+
+                {# Conteneur pour les questions générées #}
+                <div id="questions-container" class="mb-3">
+                    <label class="form-label fw-bold">Questions</label>
+                    {# Les questions seront injectées ici dynamiquement via JavaScript #}
+                </div>
+
+                {# Champ caché pour stocker les IDs des questions sélectionnées #}
+                <input type="hidden" name="quiz[questions]" id="selected-questions" value="{{ quiz.questions|map(q => q.id)|join(',') }}" />
+
+                {# Bouton de soumission #}
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+
+        {# Bouton de retour avec icône #}
+        <div class="mt-4 text-center">
+            <a href="{{ path('app_quiz_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const generateButton = document.getElementById('generate-questions');
+            const niveauSelect = document.querySelector('.niveau-select');
+            const nomCoursSelect = document.querySelector('.nom-cours-select');
+            const nombreQuestionsInput = document.querySelector('input[name="quiz[nombreQuestions]"]');
+            const questionsContainer = document.getElementById('questions-container');
+            const selectedQuestionsInput = document.getElementById('selected-questions');
+
+            // Fonction pour afficher les questions existantes
+            function loadExistingQuestions() {
+                const selectedQuestionIds = selectedQuestionsInput.value.split(',').filter(id => id !== '');
+                if (selectedQuestionIds.length > 0) {
+                    fetch(`/quiz/get-questions-by-ids?ids=${selectedQuestionIds.join(',')}`)
+                        .then(response => response.json())
+                        .then(questions => {
+                            questions.forEach(question => {
+                                const div = document.createElement('div');
+                                div.className = 'form-check';
+
+                                const checkbox = document.createElement('input');
+                                checkbox.type = 'checkbox';
+                                checkbox.name = `quiz[questions][]`;
+                                checkbox.value = question.id;
+                                checkbox.id = `question_${question.id}`;
+                                checkbox.className = 'form-check-input';
+                                checkbox.checked = true; // Cocher les questions existantes
+
+                                const label = document.createElement('label');
+                                label.htmlFor = `question_${question.id}`;
+                                label.className = 'form-check-label';
+                                label.textContent = question.texte;
+
+                                div.appendChild(checkbox);
+                                div.appendChild(label);
+                                questionsContainer.appendChild(div);
+                            });
+                        });
+                }
+            }
+
+            // Charger les questions existantes au chargement de la page
+            loadExistingQuestions();
+
+            generateButton.addEventListener('click', function () {
+                const selectedNiveau = niveauSelect.value;
+                const selectedCours = nomCoursSelect.value;
+                const nombreQuestions = parseInt(nombreQuestionsInput.value); // Assurez-vous que c'est un entier
+
+                // Appel AJAX pour générer les questions
+                fetch(`/quiz/generate-questions?niveau=${selectedNiveau}&nomCours=${selectedCours}&nombreQuestions=${nombreQuestions}`)
+                    .then(response => response.json())
+                    .then(questions => {
+                        // Effacer les questions actuelles
+                        questionsContainer.innerHTML = '';
+
+                        // Ajouter les nouvelles questions
+                        questions.forEach(question => {
+                            const div = document.createElement('div');
+                            div.className = 'form-check';
+
+                            const checkbox = document.createElement('input');
+                            checkbox.type = 'checkbox';
+                            checkbox.name = `quiz[questions][]`;
+                            checkbox.value = question.id;
+                            checkbox.id = `question_${question.id}`;
+                            checkbox.className = 'form-check-input';
+
+                            const label = document.createElement('label');
+                            label.htmlFor = `question_${question.id}`;
+                            label.className = 'form-check-label';
+                            label.textContent = question.texte;
+
+                            div.appendChild(checkbox);
+                            div.appendChild(label);
+                            questionsContainer.appendChild(div);
+                        });
+
+                        // Mettre à jour le champ caché avec les IDs des questions sélectionnées
+                        if (selectedQuestionsInput) {
+                            selectedQuestionsInput.value = questions.map(q => q.id).join(',');
+                        }
+                    });
+            });
+        });
+
+        
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('form').addEventListener('submit', function (event) {
+                let nomInput = document.querySelector('#quiz_nom');
+                if (nomInput.value.trim() === '') {
+                    nomInput.classList.add('is-invalid');
+                    event.preventDefault();
+                } else {
+                    nomInput.classList.remove('is-invalid');
+                }
+            });
+        });
+    </script>
+    
+{% endblock %}

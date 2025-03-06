@@ -1,0 +1,207 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Cours{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4 text-primary fw-bold">
+            <i class="fas fa-edit me-2"></i>Modifier le Cours
+        </h1>
+
+        <div class="card shadow-lg p-4 mx-auto" style="max-width: 800px;">
+            {{ form_start(form, {'attr': {'class': 'row g-3 needs-validation', 'novalidate': 'novalidate'}}) }}
+
+                {# Titre #}
+                <div class="mb-3">
+                    {{ form_label(form.titre, 'Titre', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.titre, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.titre.vars.valid ? '' : ' is-invalid'),
+                            'placeholder': 'Entrez le titre du cours',
+                            'required': 'required',
+                            'minlength': '5',
+                            'maxlength': '100'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                    titre est obligatoire.
+                        {{ form_errors(form.titre) }}
+                    </div>
+                    <div class="valid-feedback">
+                      
+                    </div>
+                </div>
+
+                {# Description #}
+                <div class="mb-3">
+                    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.description, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.description.vars.valid ? '' : ' is-invalid'),
+                            'placeholder': 'Entrez la description du cours',
+                            'required': 'required',
+                            'minlength': '10',
+                            'maxlength': '500'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                    description est obligatoire.
+                        {{ form_errors(form.description) }}
+                    </div>
+                    <div class="valid-feedback">
+                     
+                    </div>
+                </div>
+
+                {# Durée #}
+                <div class="mb-3">
+                    {{ form_label(form.duree, 'Durée', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.duree, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.duree.vars.valid ? '' : ' is-invalid'),
+                            'placeholder': 'Entrez la durée du cours (en minutes)',
+                            'required': 'required',
+                            'min': '1',
+                            'max': '600'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                    duree est obligatoire.
+                        {{ form_errors(form.duree) }}
+                    </div>
+                    <div class="valid-feedback">
+                   
+                    </div>
+                </div>
+
+                {# Fichier (PDF) #}
+                <div class="mb-3">
+                    {{ form_label(form.fichierFile, 'Fichier (PDF)', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.fichierFile, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.fichierFile.vars.valid ? '' : ' is-invalid'),
+                            'accept': 'application/pdf',
+                            'required': 'required'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                    fichierFile est obligatoire.
+                        {{ form_errors(form.fichierFile) }}
+                    </div>
+                    <div class="valid-feedback">
+                      
+                    </div>
+                </div>
+
+                {# Catégorie #}
+                <div class="mb-3">
+                    {{ form_label(form.categorie, 'Catégorie', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.categorie, {
+                        'attr': {
+                            'class': 'form-select' ~ (form.categorie.vars.valid ? '' : ' is-invalid'),
+                            'required': 'required'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                    categorie est obligatoire.
+                        {{ form_errors(form.categorie) }}
+                    </div>
+                    <div class="valid-feedback">
+                   
+                    </div>
+                </div>
+
+                {# Nom du Cours #}
+                <div class="mb-3">
+                    {{ form_label(form.nomCours, 'Nom du Cours', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.nomCours, {
+                        'attr': {
+                            'class': 'form-select' ~ (form.nomCours.vars.valid ? '' : ' is-invalid'),
+                            'required': 'required'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                   nomCours est obligatoire.
+                        {{ form_errors(form.nomCours) }}
+                    </div>
+                    <div class="valid-feedback">
+                  
+                    </div>
+                </div>
+
+                {# Bouton de soumission #}
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success btn-lg" style="margin-left: 300px;">
+                        <i class="fas fa-save me-2"></i>Mettre à jour
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+
+        {# Lien de retour à la liste #}
+        <div class="mt-4 text-center">
+            <a href="{{ path('app_cours_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+            </a>
+        </div>
+    </div>
+
+    {# Script pour la sélection dynamique des cours par catégorie #}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#{{ form.categorie.vars.id }}').change(function () {
+                var categoryId = $(this).val();
+                var selectCours = $('#{{ form.nomCours.vars.id }}');
+
+                console.log("Catégorie sélectionnée :", categoryId); // 🔍 Debug
+
+                if (categoryId) {
+                    $.ajax({
+                        url: '{{ path("app_nom_cours_by_categorie") }}',
+                        type: 'GET',
+                        data: { categorieId: categoryId },
+                        success: function (data) {
+                            console.log("Données reçues :", data); // 🔍 Debug
+                            selectCours.empty();
+                            selectCours.append('<option value="">Sélectionnez un cours</option>');
+
+                            if (data.length > 0) {
+                                $.each(data, function (key, value) {
+                                    selectCours.append('<option value="' + value.id + '">' + value.nom + '</option>');
+                                });
+                            } else {
+                                selectCours.append('<option value="">Aucun cours trouvé</option>');
+                            }
+                        },
+                        error: function () {
+                            console.error("Erreur lors du chargement des cours.");
+                            selectCours.empty();
+                            selectCours.append('<option value="">Erreur de chargement</option>');
+                        }
+                    });
+                } else {
+                    selectCours.empty();
+                    selectCours.append('<option value="">Sélectionnez une catégorie d’abord</option>');
+                }
+            });
+        });
+    </script>
+
+    {# Script de validation Bootstrap #}
+    <script>
+        (function () {
+            'use strict';
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+{% endblock %}

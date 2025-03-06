@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Achat index{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4 text-center">Achat index</h1>
+        
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>  
+                    <th>Utilisateur Id</th>
+                    <th>TypeAchat</th>
+                    <th>DateAchat</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for achat in achats %}
+                <tr>
+                    <td>{{ achat.utilisateur.id }}</td>
+                    <td>{{ achat.typeAchat }}</td>
+                    <td>{{ achat.dateAchat ? achat.dateAchat|date('Y-m-d H:i:s') : '' }}</td>
+                    <td>{{ achat.statut }}</td>
+                    <td>
+                        <a href="{{ path('app_achat_show', {'idAchat': achat.idAchat}) }}" class="btn btn-primary btn-sm">Show</a>
+                        <a href="{{ path('app_achat_edit', {'idAchat': achat.idAchat}) }}" class="btn btn-info btn-sm">Edit</a>
+                        <a href="{{ path('app_achat_delete', {'idAchat': achat.idAchat}) }}" class="btn btn-danger btn-sm">Supprimer</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">No records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        
+        <div class="text-center">
+            <a href="{{ path('app_achat_new') }}" class="btn btn-success">Create new</a>
+        </div>
+    </div>
+{% endblock %}

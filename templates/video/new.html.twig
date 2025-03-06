@@ -1,0 +1,144 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter une vidéo{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4 text-primary fw-bold">
+            <i class="fas fa-video me-2"></i>Ajouter une vidéo
+        </h1>
+
+        <div class="card shadow-lg p-4 mx-auto" style="max-width: 800px;">
+            {{ form_start(form, {'attr': {'class': 'row g-3 needs-validation', 'novalidate': 'novalidate'}}) }}
+
+                {# Champ Titre #}
+                <div class="mb-3">
+                    {{ form_label(form.titre, 'Titre', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.titre, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.titre.vars.valid ? '' : ' is-invalid'),
+                            'placeholder': 'Entrez le titre de la vidéo',
+                            'required': 'required',
+                            'minlength': '3',
+                            'maxlength': '100'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.titre) }}
+                        titre est obligatoire.
+                    </div>
+                    <div class="valid-feedback">
+                      
+                    </div>
+                </div>
+
+                {# Champ Description #}
+                <div class="mb-3">
+                    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.description, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.description.vars.valid ? '' : ' is-invalid'),
+                            'placeholder': 'Entrez la description de la vidéo',
+                            'required': 'required',
+                            'minlength': '10',
+                            'maxlength': '500'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.description) }}
+                        description est obligatoire.
+                    </div>
+                    <div class="valid-feedback">
+                     
+                    </div>
+                </div>
+
+                {# Champ Fichier vidéo #}
+                <div class="mb-3">
+                    {{ form_label(form.uploadedFile, 'Fichier vidéo', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.uploadedFile, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.uploadedFile.vars.valid ? '' : ' is-invalid'),
+                            'accept': 'video/*',
+                            'required': 'required'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.uploadedFile) }}
+                        uploadedFile est obligatoire.
+                    </div>
+                    <div class="valid-feedback">
+                      
+                    </div>
+                </div>
+
+                {# Champ Date d'ajout #}
+                <div class="mb-3">
+                    {{ form_label(form.dateAjout, 'Date d\'ajout', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.dateAjout, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.dateAjout.vars.valid ? '' : ' is-invalid'),
+                            'required': 'required'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.dateAjout) }}
+                        dateAjout est obligatoire.
+                    </div>
+                    <div class="valid-feedback">
+                       
+                    </div>
+                </div>
+
+                {# Champ Cours #}
+                <div class="mb-3">
+                    {{ form_label(form.cours, 'Cours', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.cours, {
+                        'attr': {
+                            'class': 'form-select' ~ (form.cours.vars.valid ? '' : ' is-invalid'),
+                            'required': 'required'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.cours) }}
+                        cours est obligatoire.
+                    </div>
+                    <div class="valid-feedback">
+                       
+                    </div>
+                </div>
+
+                {# Bouton de soumission #}
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-save me-2"></i>Créer
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+
+        {# Lien de retour à la liste #}
+        <div class="mt-4 text-center">
+            <a href="{{ path('app_video_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+            </a>
+        </div>
+    </div>
+
+    {# Script de validation Bootstrap #}
+    <script>
+        (function () {
+            'use strict';
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier la vidéo{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4 text-primary fw-bold">
+            <i class="fas fa-edit me-2"></i>Modifier la vidéo
+        </h1>
+
+        <div class="card shadow-lg p-4 mx-auto" style="max-width: 800px;">
+            {{ include('video/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="d-flex justify-content-between mt-4">
+            <!-- Bouton Retour -->
+            <a href="{{ path('app_video_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+            </a>
+
+            <!-- Bouton Supprimer avec confirmation -->
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteVideoModal">
+                <i class="fas fa-trash me-2"></i>Supprimer
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal de confirmation de suppression -->
+    <div class="modal fade" id="deleteVideoModal" tabindex="-1" aria-labelledby="deleteVideoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteVideoModalLabel">Confirmer la suppression</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir supprimer cette vidéo ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <form id="deleteForm" action="{{ path('app_video_delete', {'id': video.id}) }}" method="post" style="display: inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ video.id) }}">
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{# templates/categorie/all_categories.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Toutes les Catégories{% endblock %}
+
+{% block body %}
+    <!-- Categories Section -->
+    <section id="categories" class="categories section">
+        <div class="container section-title" data-aos="fade-up">
+            <h2>Toutes les Catégories</h2>
+            <p>Explorez nos cours par catégorie</p>
+        </div><!-- End Section Title -->
+        <div class="container">
+            <div class="row">
+                {% for categorie in categories %}
+                    <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
+                        <div class="category-item">
+                            <img src="{{ asset('landing/img/course-1.jpg') }}" class="img-fluid" alt="{{ categorie.nomCategorie }}">
+                            <div class="category-content">
+                                <h3>{{ categorie.nomCategorie }}</h3>
+                                <p>{{ categorie.description }}</p>
+                                <!-- Link to the courses for this category -->
+                                <a href="{{ path('app_cours_byy_category', {'id': categorie.id}) }}" class="btn btn-primary">
+                                    Voir les cours
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12">
+                        <div class="alert alert-info" role="alert">
+                            Aucune catégorie disponible pour le moment.
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section><!-- /Categories Section -->
+{% endblock %}
