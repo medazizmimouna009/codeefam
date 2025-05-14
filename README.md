@@ -1,4 +1,4 @@
-"""# 🌐 CodeFam – Plateforme Éducative de Codage (Web)
+# 🌐 CodeFam – Plateforme Éducative de Codage (Web)
 
 <p align="center">
   <a href="https://github.com/CodeFam">
@@ -218,4 +218,4 @@ Pour une application web développée avec le framework Symfony PHP, un système
   <img src="https://img.shields.io/badge/Made%20with-Symfony-blue" alt="Made with Symfony"/>
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License MIT"/>
 </p>
-"""
+
