@@ -19,6 +19,7 @@
 - Acheter des offres premium via un système de paiement sécurisé (**Stripe**).
 - Gérer leur profil et suivre leur progression.
 - Bénéficier d'une recherche intelligente des offres par prix.
+- Participer à des événements éducatifs avec un système de réservation intégré.
 
 L'objectif est de fournir une expérience d'apprentissage intuitive, sécurisée et engageante pour les passionnés de programmation.
 
