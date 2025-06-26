@@ -1,0 +1,625 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Événements{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.5/main.min.css" rel="stylesheet">
+    <style>
+        /* Ensure full page is white */
+        body, .main, .section, .container {
+            background-color: #fff !important;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-left: 0; /* Align to left edge */
+            padding-right: 0;
+            margin-left: 0; /* Remove any default centering */
+        }
+        .main {
+            padding-top: 0; /* Remove top padding to align content to top */
+        }
+        .page-header {
+            padding: 20px 0;
+            margin-bottom: 30px;
+            text-align: left;
+            background: #fff;
+            color: #2c3e50;
+            margin-left: 0; /* Align to left edge */
+        }
+        .page-header h1 {
+            font-size: 1.5rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .page-header .lead {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        #calendar {
+            width: 100%; /* Full width of the container */
+            height: calc(100vh - 300px); /* Dynamic height: viewport height minus space for header, filter, and footer */
+            margin: 0 0 30px 0; /* Align to top left, remove auto margins */
+            padding: 20px;
+            background: #fff;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+            box-shadow: none;
+            transition: all 0.3s ease;
+        }
+        .filter-container {
+            margin-bottom: 20px;
+            margin-left: 0; /* Align to left edge */
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: none;
+            display: flex;
+            justify-content: flex-start; /* Align items to the left */
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .filter-container select, .filter-container input {
+            border-radius: 5px;
+            padding: 8px 15px;
+            width: 200px;
+            transition: border-color 0.3s ease;
+        }
+        .filter-container select:focus, .filter-container input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .new-event-btn {
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-weight: 500;
+            box-shadow: none;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            text-decoration: none;
+        }
+        .new-event-btn:hover {
+            background-color: #218838;
+        }
+        .event-table {
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #fff;
+            margin-bottom: 30px;
+            margin-left: 0; /* Align to left edge */
+            display: none;
+            box-shadow: none;
+        }
+        .event-table th {
+            background: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+        .event-table td, .event-table th {
+            padding: 15px;
+            vertical-align: middle;
+        }
+        .event-row {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .event-row:hover {
+            background-color: #f8f9fa;
+            transform: none;
+            box-shadow: none;
+        }
+        .event-title {
+            font-weight: 600;
+            color: #2c3e50;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .event-title:hover {
+            color: #3498db;
+        }
+        .event-type {
+            background-color: #e9ecef;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+        .event-type:hover {
+            background-color: #dcdde1;
+        }
+        .btn-action {
+            transition: all 0.2s ease;
+            margin: 2px;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        .btn-action:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background-color: #f1f1f1;
+        }
+        .event-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .event-status:hover {
+            transform: scale(1.2);
+        }
+        .status-active {
+            background-color: #2ecc71;
+        }
+        .status-upcoming {
+            background-color: #f39c12;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .fc-button {
+            border-radius: 20px !important;
+            padding: 6px 12px !important;
+            transition: all 0.2s ease !important;
+            background-color: #3498db !important;
+            color: white !important;
+            border: none !important;
+        }
+        .fc-button:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+        }
+        .badge-count {
+            background-color: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 0.9em;
+            transition: transform 0.3s ease;
+        }
+        .badge-count:hover {
+            transform: scale(1.1);
+        }
+        .toggle-table-btn {
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-weight: 500;
+            box-shadow: none;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            text-decoration: none;
+        }
+        .toggle-table-btn:hover {
+            background-color: #2980b9;
+        }
+        .fc-event {
+            border: none !important;
+            background: linear-gradient(45deg, #3498db, #2ecc71) !important;
+            color: white !important;
+            border-radius: 5px !important;
+            padding: 2px 5px !important;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .fc-event:hover {
+            transform: scale(1.05);
+        }
+        /* Footer styling */
+        .footer {
+            text-align: center;
+            padding: 10px 0;
+            color: #6c757d;
+            font-size: 0.9em;
+            border-top: 1px solid #e9ecef;
+            margin-top: auto;
+            flex-shrink: 0;
+            margin-left: 0; /* Align to left edge */
+        }
+        /* Flash message alignment */
+        .alert {
+            margin-left: 0; /* Align to left edge */
+            border-radius: 5px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <main id="main" class="main">
+        <div class="container py-0"> <!-- Removed top padding -->
+            <div class="page-header">
+                <h1 class="mb-3"><i class="bi bi-calendar-event me-2"></i> Liste des Événements</h1>
+                <p class="lead">Home / Événements</p>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="spinner"></div>
+            </div>
+
+            <!-- Filter, Search, and Action Container -->
+            <div class="filter-container">
+                <div class="d-flex gap-3 align-items-center">
+                    <input type="text" class="form-control" id="searchFilter" placeholder="Rechercher par titre..." aria-label="Rechercher des événements">
+                    <select class="form-select" id="typeFilter">
+                        <option value="">Tous les types</option>
+                        {% for evenement in evenements %}
+                            {% if loop.first or evenement.type != evenements[loop.index0 - 1].type %}
+                                <option value="{{ evenement.type }}">{{ evenement.type | capitalize }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <select class="form-select" id="statusFilter">
+                        <option value="">Tous les statuts</option>
+                        <option value="active">Actifs</option>
+                        <option value="upcoming">À venir</option>
+                    </select>
+                </div>
+                <div class="d-flex gap-3 align-items-center">
+                    <span class="badge-count">
+                        <i class="bi bi-calendar-event me-1"></i>
+                        <span id="eventCount">{{ evenements|length }}</span> événement{{ evenements|length > 1 ? 's' : '' }}
+                    </span>
+                    <a href="{{ path('evenement_new') }}" class="new-event-btn">
+                        <i class="bi bi-plus-circle me-2"></i>Créer un nouvel événement
+                    </a>
+                    <button id="toggleTable" class="toggle-table-btn">Afficher la liste</button>
+                </div>
+            </div>
+
+            <!-- FullCalendar as Primary View -->
+            <div id="calendar"></div>
+
+            <!-- Table View (Toggleable) -->
+            {% if evenements is not empty %}
+                <div class="event-table" id="eventTableContainer">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0" id="eventTable">
+                            <thead>
+                                <tr>
+                                    <th>Statut</th>
+                                    <th>Titre</th>
+                                    <th>Type</th>
+                                    <th>Date de début</th>
+                                    <th>Date de fin</th>
+                                    <th>Lieu</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for evenement in evenements %}
+                                    <tr class="event-row" 
+                                        data-type="{{ evenement.type | lower }}" 
+                                        data-status="{% if evenement.startDate|date('U') <= 'now'|date('U') %}active{% else %}upcoming{% endif %}"
+                                        data-title="{{ evenement.titre | lower }}">
+                                        <td>
+                                            {% set now = "now"|date("U") %}
+                                            {% set startDate = evenement.startDate|date("U") %}
+                                            <span class="event-status {% if startDate <= now %}status-active{% else %}status-upcoming{% endif %}"></span>
+                                        </td>
+                                        <td class="event-title" data-bs-toggle="tooltip" title="{{ evenement.description|default('Aucune description') }}">{{ evenement.titre }}</td>
+                                        <td><span class="event-type">{{ evenement.type | capitalize }}</span></td>
+                                        <td>
+                                            {% if evenement.startDate %}
+                                                <i class="bi bi-calendar-event me-1"></i>
+                                                {{ evenement.startDate|date('d/m/Y H:i') }}
+                                            {% else %}
+                                                <span class="text-muted">Non défini</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if evenement.endDate %}
+                                                <i class="bi bi-calendar-event me-1"></i>
+                                                {{ evenement.endDate|date('d/m/Y H:i') }}
+                                            {% else %}
+                                                <span class="text-muted">Non défini</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <i class="bi bi-geo-alt me-1"></i>
+                                            {{ evenement.location ?: 'En ligne' }}
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{{ path('evenement_edit', {'id': evenement.id}) }}" 
+                                               class="btn btn-warning btn-action" 
+                                               data-bs-toggle="tooltip" 
+                                               title="Modifier">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </a>
+                                            <a href="{{ path('evenement_sync_google', {'id': evenement.id}) }}" 
+                                               class="btn btn-primary btn-action sync-google" 
+                                               data-bs-toggle="tooltip" 
+                                               title="Synchroniser avec Google Calendar">
+                                                <i class="bi bi-google"></i>
+                                            </a>
+                                            <form method="POST" 
+                                                  action="{{ path('evenement_delete', {'id': evenement.id}) }}" 
+                                                  style="display:inline;"
+                                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id) }}">
+                                                <button type="submit" 
+                                                        class="btn btn-danger btn-action" 
+                                                        data-bs-toggle="tooltip" 
+                                                        title="Supprimer">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-warning text-center p-4 rounded-lg">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    Aucun événement n'a été trouvé.
+                    <p class="mt-2 mb-0">Commencez par créer votre premier événement !</p>
+                </div>
+            {% endif %}
+
+            <!-- Flash Messages -->
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message|raw }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+            {% for message in app.flashes('info') %}
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+
+            
+        </div>
+    </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- FullCalendar UMD Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.5/main.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize FullCalendar
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: {
+                    url: '{{ path('evenement_json') }}',
+                    method: 'GET',
+                    failure: function() {
+                        Swal.fire('Erreur', 'Impossible de charger les événements.', 'error');
+                    }
+                },
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+                },
+                eventClick: function(info) {
+                    const location = info.event.extendedProps.location || 'En ligne';
+                    Swal.fire({
+                        title: info.event.title,
+                        html: `
+                            <p><strong>Lieu:</strong> ${location}</p>
+                            <p><strong>Début:</strong> ${info.event.start.toLocaleString('fr-FR')}</p>
+                            <p><strong>Fin:</strong> ${info.event.end ? info.event.end.toLocaleString('fr-FR') : 'Non défini'}</p>
+                        `,
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonText: 'Modifier',
+                        cancelButtonText: 'Supprimer',
+                        confirmButtonColor: '#3498db',
+                        cancelButtonColor: '#e74c3c',
+                        reverseButtons: true,
+                        showLoaderOnConfirm: true,
+                        preConfirm: () => {
+                            window.location.href = '{{ path('evenement_edit', {'id': '__ID__'}) }}'.replace('__ID__', info.event.id);
+                        },
+                        allowOutsideClick: () => !Swal.isLoading()
+                    }).then((result) => {
+                        if (result.dismiss === Swal.DismissReason.cancel) {
+                            Swal.fire({
+                                title: 'Confirmation',
+                                text: 'Êtes-vous sûr de vouloir supprimer cet événement ?',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: 'Oui, supprimer',
+                                cancelButtonText: 'Annuler',
+                                confirmButtonColor: '#e74c3c',
+                                cancelButtonColor: '#3498db',
+                                reverseButtons: true,
+                                showLoaderOnConfirm: true,
+                                preConfirm: () => {
+                                    return fetch(`{{ path('evenement_delete', {'id': '__ID__'}) }}`.replace('__ID__', info.event.id), {
+                                        method: 'POST',
+                                        headers: {
+                                            'X-Requested-With': 'XMLHttpRequest',
+                                            'Content-Type': 'application/x-www-form-urlencoded'
+                                        },
+                                        body: `?_token=${encodeURIComponent('{{ csrf_token('delete') }}'.replace('delete', 'delete' + info.event.id))}`
+                                    }).then(response => {
+                                        if (!response.ok) throw new Error('Erreur lors de la suppression');
+                                        info.event.remove();
+                                        document.getElementById('eventCount').textContent = calendar.getEvents().length;
+                                        return response.json();
+                                    });
+                                }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    Swal.fire('Supprimé!', 'L\'événement a été supprimé.', 'success');
+                                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                                    Swal.fire('Annulé', 'La suppression a été annulée.', 'info');
+                                }
+                            }).catch(error => {
+                                Swal.fire('Erreur', error.message, 'error');
+                            });
+                        }
+                    });
+                },
+                editable: false,
+                locale: 'fr',
+                timeZone: 'local',
+                buttonText: {
+                    today: 'Aujourd\'hui',
+                    month: 'Mois',
+                    week: 'Semaine',
+                    day: 'Jour',
+                    list: 'Liste'
+                },
+                loading: function(isLoading) {
+                    document.getElementById('loadingOverlay').style.display = isLoading ? 'flex' : 'none';
+                },
+                eventDidMount: function(info) {
+                    const tooltip = new bootstrap.Tooltip(info.el, {
+                        title: info.event.extendedProps.description || 'Aucune description',
+                        placement: 'top',
+                        trigger: 'hover'
+                    });
+                }
+            });
+            calendar.render();
+
+            // Filter and Search Events
+            const searchFilter = document.getElementById('searchFilter');
+            const typeFilter = document.getElementById('typeFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const eventTable = document.getElementById('eventTable');
+            const rows = eventTable ? eventTable.querySelectorAll('.event-row') : [];
+            const eventCountEl = document.getElementById('eventCount');
+
+            function filterEvents() {
+                const searchText = searchFilter.value.toLowerCase().trim();
+                const selectedType = typeFilter.value.toLowerCase();
+                const selectedStatus = statusFilter.value;
+
+                let visibleEvents = 0;
+
+                calendar.getEvents().forEach(event => {
+                    const eventTitle = event.title ? event.title.toLowerCase() : '';
+                    const eventType = event.extendedProps.type ? event.extendedProps.type.toLowerCase() : '';
+                    const isActive = event.start <= new Date();
+                    const searchMatch = !searchText || eventTitle.includes(searchText);
+                    const typeMatch = !selectedType || eventType === selectedType;
+                    const statusMatch = !selectedStatus || 
+                        (selectedStatus === 'active' && isActive) || 
+                        (selectedStatus === 'upcoming' && !isActive);
+                    const isVisible = searchMatch && typeMatch && statusMatch;
+                    event.setProp('display', isVisible ? 'auto' : 'none');
+                    if (isVisible) visibleEvents++;
+                });
+
+                eventCountEl.textContent = visibleEvents;
+
+                if (eventTable) {
+                    rows.forEach(row => {
+                        const rowTitle = row.getAttribute('data-title').toLowerCase();
+                        const rowType = row.getAttribute('data-type').toLowerCase();
+                        const rowStatus = row.getAttribute('data-status');
+                        const searchMatch = !searchText || rowTitle.includes(searchText);
+                        const typeMatch = !selectedType || rowType === selectedType;
+                        const statusMatch = !selectedStatus || rowStatus === selectedStatus;
+                        const isVisible = searchMatch && typeMatch && statusMatch;
+                        row.style.display = isVisible ? '' : 'none';
+                    });
+                }
+            }
+
+            searchFilter.addEventListener('input', filterEvents);
+            typeFilter.addEventListener('change', filterEvents);
+            statusFilter.addEventListener('change', filterEvents);
+
+            // Toggle Table View
+            const toggleTableBtn = document.getElementById('toggleTable');
+            const eventTableContainer = document.getElementById('eventTableContainer');
+            if (toggleTableBtn && eventTableContainer) {
+                toggleTableBtn.addEventListener('click', function() {
+                    const isVisible = eventTableContainer.style.display !== 'none';
+                    eventTableContainer.style.display = isVisible ? 'none' : 'block';
+                    this.textContent = isVisible ? 'Afficher la liste' : 'Masquer la liste';
+                });
+            }
+
+            // Google Sync Button Loading State
+            const syncButtons = document.querySelectorAll('.sync-google');
+            syncButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const href = this.getAttribute('href');
+                    this.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>';
+                    this.disabled = true;
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 500);
+                });
+            });
+
+            // Animation for spinning icon
+            const styleSheet = document.createElement('style');
+            styleSheet.textContent = `
+                .spin {
+                    animation: spin 1s linear infinite;
+                }
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(styleSheet);
+        });
+    </script>
+    <!-- SweetAlert2 and Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

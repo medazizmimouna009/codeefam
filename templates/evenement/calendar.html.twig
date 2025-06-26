@@ -1,0 +1,176 @@
+{# templates/evenement/calendar.html.twig #}
+{% extends 'home.html.twig' %}
+
+{% block title %}Calendrier des Événements{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.5/main.min.css" rel="stylesheet">
+    <style>
+        /* Ensure full page is white */
+        body, .main, .section, {
+            background-color: #fff !important;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-left: 0; /* Align to left edge */
+            padding-right: 0;
+            margin-left: 0; /* Remove any default centering */
+        }
+        .main {
+            padding-top: 0; /* Remove top padding to align content to top */
+        }
+        .page-header {
+            padding: 20px 0;
+            margin-bottom: 30px;
+            text-align: left;
+            background: #fff;
+            color: #2c3e50;
+            margin-left: 0; /* Align to left edge */
+        }
+        .page-header h1 {
+            font-size: 1.5rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .page-header .lead {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        #calendar {
+            width: 100%; /* Full width of the container */
+            height: calc(100vh - 300px); /* Dynamic height: viewport height minus space for header, filter, and footer */
+            margin: 0 0 30px 0; /* Align to top left, remove auto margins */
+            padding: 20px;
+            background: #fff;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+            box-shadow: none;
+            transition: all 0.3s ease;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .fc-button {
+            border-radius: 20px !important;
+            padding: 6px 12px !important;
+            transition: all 0.2s ease !important;
+            background-color: #3498db !important;
+            color: white !important;
+            border: none !important;
+        }
+        .fc-button:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+        }
+        .fc-event {
+            border: none !important;
+            background: linear-gradient(45deg, #3498db, #2ecc71) !important;
+            color: white !important;
+            border-radius: 5px !important;
+            padding: 2px 5px !important;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .fc-event:hover {
+            transform: scale(1.05);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <main id="main" class="main">
+        <div class="container py-0"> <!-- Removed top padding -->
+            <div class="page-header">
+                <h1 class="mb-3"><i class="bi bi-calendar-event me-2"></i> Calendrier des Événements</h1>
+                <p class="lead">Home / Calendrier</p>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="spinner"></div>
+            </div>
+
+            <!-- FullCalendar -->
+            <div id="calendar"></div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- FullCalendar UMD Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.5/main.min.js"></script>
+    <!-- SweetAlert2 and Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize FullCalendar
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: {
+                    url: '{{ path('evenement_json') }}',
+                    method: 'GET',
+                    failure: function() {
+                        Swal.fire('Erreur', 'Impossible de charger les événements.', 'error');
+                    }
+                },
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+                },
+                
+                editable: false,
+                locale: 'fr',
+                timeZone: 'local',
+                buttonText: {
+                    today: 'Aujourd\'hui',
+                    month: 'Mois',
+                    week: 'Semaine',
+                    day: 'Jour',
+                    list: 'Liste'
+                },
+                loading: function(isLoading) {
+                    document.getElementById('loadingOverlay').style.display = isLoading ? 'flex' : 'none';
+                },
+                eventDidMount: function(info) {
+                    const tooltip = new bootstrap.Tooltip(info.el, {
+                        title: info.event.extendedProps.description || 'Aucune description',
+                        placement: 'top',
+                        trigger: 'hover'
+                    });
+                }
+            });
+            calendar.render();
+        });
+    </script>
+{% endblock %}

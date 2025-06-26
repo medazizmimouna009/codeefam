@@ -1,0 +1,35 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+# Manually defined routes for Evenement
+app_evenement_new:
+    path: /evenement/new
+    controller: App\Controller\EvenementController::new
+    methods: [GET, POST]
+
+app_evenement_index:
+    path: /evenement
+    controller: App\Controller\EvenementController::index
+    methods: [GET]
+# Manually defined routes for Reservation
+app_reservation_new:
+    path: /reservation/new
+    controller: App\Controller\ReservationController::new
+    methods: [GET, POST]
+
+app_reservation_index:
+    path: /reservation
+    controller: App\Controller\ReservationController::index
+    methods: [GET]
+app_reservation_edit:
+    path: /reservation
+    controller: App\Controller\ReservationController::edit
+    methods: [GET, POST]
+app_reservation_delete:
+    path: /reservation
+    controller: App\Controller\ReservationController::delete
+    methods: [GET, DELETE]
+
